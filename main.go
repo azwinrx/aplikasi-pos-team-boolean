@@ -1,10 +1,12 @@
 package main
 
 import (
-	"fmt"
-	"log"
+	"aplikasi-pos-team-boolean/cmd"
+	"aplikasi-pos-team-boolean/internal/data/repository"
+	"aplikasi-pos-team-boolean/internal/wire"
 	"aplikasi-pos-team-boolean/pkg/database"
 	"aplikasi-pos-team-boolean/pkg/utils"
+	"log"
 )
 
 func main() {
@@ -14,11 +16,13 @@ func main() {
 		log.Fatalf("Failed to read config: %v", err)
 	}
 
-	// Cek koneksi database (ignore return DB, hanya handle error)
-	_, err = database.InitDB(config.DB)
+	// Initialize database
+	db, err := database.InitDB(config.DB)
 	if err != nil {
 		log.Fatalf("Failed to connect to database: %v", err)
 	}
 
-	fmt.Println("Database connection successful!")
+	repo := repository.NewRepository(db)
+	router := wire.Wiring(repo)
+	cmd.APiserver(router)
 }
