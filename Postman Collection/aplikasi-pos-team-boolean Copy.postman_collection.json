@@ -1,0 +1,498 @@
+{
+	"info": {
+		"_postman_id": "9d9e45ef-3e44-4b52-b5a6-53071cfdd05e",
+		"name": "aplikasi-pos-team-boolean Copy",
+		"description": "API Collection for POS Application - Team Boolean",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "50992172"
+	},
+	"item": [
+		{
+			"name": "Health Check",
+			"item": [
+				{
+					"name": "Health Check",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/health",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"health"
+							]
+						},
+						"description": "Check if server is running"
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Inventory",
+			"item": [
+				{
+					"name": "1. GET All Inventories",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/v1/inventories?page=1&limit=10",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"inventories"
+							],
+							"query": [
+								{
+									"key": "page",
+									"value": "1",
+									"description": "Page number"
+								},
+								{
+									"key": "limit",
+									"value": "10",
+									"description": "Items per page"
+								}
+							]
+						},
+						"description": "Get all inventories without filter"
+					},
+					"response": []
+				},
+				{
+					"name": "2. GET Inventories by Filter",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/v1/inventories/filter?search=cola&status=active&category=beverage&stock=instock&unit=litre&min_qty=50&max_qty=200&min_price=10&max_price=50&page=1&limit=10&sort_by=name&sort_dir=asc",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"inventories",
+								"filter"
+							],
+							"query": [
+								{
+									"key": "search",
+									"value": "cola",
+									"description": "Search by name"
+								},
+								{
+									"key": "status",
+									"value": "active",
+									"description": "Filter by status (active/inactive)"
+								},
+								{
+									"key": "category",
+									"value": "beverage",
+									"description": "Filter by category"
+								},
+								{
+									"key": "stock",
+									"value": "instock",
+									"description": "Filter by stock status (instock/lowstock/outofstock)"
+								},
+								{
+									"key": "unit",
+									"value": "litre",
+									"description": "Filter by unit"
+								},
+								{
+									"key": "min_qty",
+									"value": "50",
+									"description": "Minimum quantity"
+								},
+								{
+									"key": "max_qty",
+									"value": "200",
+									"description": "Maximum quantity"
+								},
+								{
+									"key": "min_price",
+									"value": "10",
+									"description": "Minimum price"
+								},
+								{
+									"key": "max_price",
+									"value": "50",
+									"description": "Maximum price"
+								},
+								{
+									"key": "page",
+									"value": "1",
+									"description": "Page number"
+								},
+								{
+									"key": "limit",
+									"value": "10",
+									"description": "Items per page"
+								},
+								{
+									"key": "sort_by",
+									"value": "name",
+									"description": "Sort by field (name/quantity/retail_price/created_at/category/status)"
+								},
+								{
+									"key": "sort_dir",
+									"value": "asc",
+									"description": "Sort direction (asc/desc)"
+								}
+							]
+						},
+						"description": "Get inventories with multiple filters"
+					},
+					"response": []
+				},
+				{
+					"name": "3. POST Create Inventory",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"image\": \"https://example.com/coca-cola.jpg\",\n  \"name\": \"Coca Cola 1L\",\n  \"category\": \"beverage\",\n  \"quantity\": 100,\n  \"status\": \"active\",\n  \"retail_price\": 15.50\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/v1/inventories",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"inventories"
+							]
+						},
+						"description": "Create new inventory item"
+					},
+					"response": []
+				},
+				{
+					"name": "4. PUT Update Inventory",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"image\": \"https://example.com/coca-cola-updated.jpg\",\n  \"name\": \"Coca Cola 1.5L\",\n  \"category\": \"beverage\",\n  \"quantity\": 150,\n  \"status\": \"active\",\n  \"retail_price\": 18.00\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/v1/inventories/:id",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"inventories",
+								":id"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "1",
+									"description": "Inventory ID"
+								}
+							]
+						},
+						"description": "Update existing inventory item"
+					},
+					"response": []
+				},
+				{
+					"name": "5. DELETE Inventory",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/v1/inventories/:id",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"inventories",
+								":id"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "1",
+									"description": "Inventory ID"
+								}
+							]
+						},
+						"description": "Delete inventory item (soft delete)"
+					},
+					"response": []
+				}
+			],
+			"description": "Inventory management endpoints"
+		},
+		{
+			"name": "Staff",
+			"item": [
+				{
+					"name": "1. GET All Staff",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/v1/staff?page=1&limit=10&sort_by=full_name&sort_order=asc",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"staff"
+							],
+							"query": [
+								{
+									"key": "page",
+									"value": "1",
+									"description": "Page number"
+								},
+								{
+									"key": "limit",
+									"value": "10",
+									"description": "Items per page"
+								},
+								{
+									"key": "sort_by",
+									"value": "full_name",
+									"description": "Sort by field (full_name/email/salary/date_of_birth/created_at)"
+								},
+								{
+									"key": "sort_order",
+									"value": "asc",
+									"description": "Sort order (asc/desc)"
+								}
+							]
+						},
+						"description": "Get list of all staff with pagination only (no filters)"
+					},
+					"response": [
+						{
+							"name": "Success Response",
+							"originalRequest": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{base_url}}/api/v1/staff?page=1&limit=10",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"api",
+										"v1",
+										"staff"
+									],
+									"query": [
+										{
+											"key": "page",
+											"value": "1"
+										},
+										{
+											"key": "limit",
+											"value": "10"
+										}
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								}
+							],
+							"cookie": [],
+							"body": "{\n  \"status\": true,\n  \"message\": \"success get data\",\n  \"data\": [\n    {\n      \"id\": 1,\n      \"name\": \"John Doe\",\n      \"email\": \"john.doe@example.com\",\n      \"phone\": \"081234567890\",\n      \"age\": 34,\n      \"salary\": 5000000,\n      \"timings\": \"8am to 5pm\"\n    },\n    {\n      \"id\": 2,\n      \"name\": \"Jane Smith\",\n      \"email\": \"jane.smith@example.com\",\n      \"phone\": \"081234567891\",\n      \"age\": 29,\n      \"salary\": 3500000,\n      \"timings\": \"9am to 6pm\"\n    },\n    {\n      \"id\": 3,\n      \"name\": \"Bob Wilson\",\n      \"email\": \"bob.wilson@example.com\",\n      \"phone\": \"081234567892\",\n      \"age\": 32,\n      \"salary\": 4000000,\n      \"timings\": \"10am to 7pm\"\n    }\n  ],\n  \"pagination\": {\n    \"page\": 1,\n    \"limit\": 10,\n    \"total_pages\": 1,\n    \"total_items\": 3\n  }\n}"
+						}
+					]
+				},
+				{
+					"name": "2. POST Create Staff",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"full_name\": \"Alice Johnson\",\n  \"email\": \"alice.johnson@example.com\",\n  \"role\": \"cashier\",\n  \"phone_number\": \"081234567893\",\n  \"salary\": 3500000,\n  \"date_of_birth\": \"1995-05-15\",\n  \"shift_start_timing\": \"08:00:00\",\n  \"shift_end_timing\": \"16:00:00\",\n  \"address\": \"Semarang, Indonesia\",\n  \"additional_details\": \"Experienced cashier with 2 years of experience\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/v1/staff",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"staff"
+							]
+						},
+						"description": "Create new staff member"
+					},
+					"response": []
+				},
+				{
+					"name": "3. PUT Update Staff",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"full_name\": \"Alice Johnson Updated\",\n  \"email\": \"alice.johnson@example.com\",\n  \"role\": \"supervisor\",\n  \"phone_number\": \"081234567893\",\n  \"salary\": 4000000,\n  \"date_of_birth\": \"1995-05-15\",\n  \"shift_start_timing\": \"09:00:00\",\n  \"shift_end_timing\": \"17:00:00\",\n  \"address\": \"Semarang, Indonesia\",\n  \"additional_details\": \"Promoted to supervisor\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/v1/staff/:id",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"staff",
+								":id"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "1",
+									"description": "Staff ID"
+								}
+							]
+						},
+						"description": "Update existing staff member"
+					},
+					"response": []
+				},
+				{
+					"name": "4. GET Staff by ID",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/v1/staff/:id",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"staff",
+								":id"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "1",
+									"description": "Staff ID"
+								}
+							]
+						},
+						"description": "Get staff detail by ID"
+					},
+					"response": []
+				},
+				{
+					"name": "5. DELETE Staff",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/v1/staff/:id",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"staff",
+								":id"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "1",
+									"description": "Staff ID"
+								}
+							]
+						},
+						"description": "Delete staff member (soft delete)"
+					},
+					"response": []
+				},
+				{
+					"name": "6. Staff by Email",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/v1/staff/email?email=rudi.hartono@pos.com",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"staff",
+								"email"
+							],
+							"query": [
+								{
+									"key": "email",
+									"value": "rudi.hartono@pos.com"
+								}
+							]
+						},
+						"description": "Get staff by email address using query parameter"
+					},
+					"response": []
+				}
+			],
+			"description": "Staff management endpoints"
+		}
+	],
+	"variable": [
+		{
+			"key": "base_url",
+			"value": "http://localhost:8080",
+			"type": "string"
+		}
+	]
+}

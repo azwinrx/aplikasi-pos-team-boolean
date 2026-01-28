@@ -1,4 +1,3 @@
-
 package utils
 
 import (
@@ -9,6 +8,7 @@ import (
 type Configuration struct {
 	AppName     string
 	Port        string
+	Env         string
 	Debug       bool
 	Limit       int
 	PathLogging string
@@ -45,6 +45,7 @@ func ReadConfiguration() (Configuration, error) {
 	return Configuration{
 		AppName:     viper.GetString("APP_NAME"),
 		Port:        viper.GetString("PORT"),
+		Env:         viper.GetString("ENV"),
 		Debug:       viper.GetBool("DEBUG"),
 		Limit:       viper.GetInt("LIMIT"),
 		PathLogging: viper.GetString("PATH_LOGGING"),
