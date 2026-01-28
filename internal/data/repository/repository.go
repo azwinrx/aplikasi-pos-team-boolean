@@ -2,10 +2,20 @@ package repository
 
 import (
 	"context"
-
+  "gorm.io/gorm"
 	"aplikasi-pos-team-boolean/internal/data/entity"
 	"aplikasi-pos-team-boolean/internal/dto"
 )
+
+type Repository struct {
+	UserRepo UserRepository
+}
+
+func NewRepository(db *gorm.DB) Repository {
+	return Repository{
+		UserRepo: NewUserRepository(db),
+	}
+
 
 // InventoryRepository mendefinisikan interface untuk operasi data inventory
 type InventoryRepository interface {

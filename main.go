@@ -1,12 +1,16 @@
 package main
 
 import (
-	"fmt"
-	"log"
+  "fmt"
+  "log"
+	"aplikasi-pos-team-boolean/cmd"
+	"aplikasi-pos-team-boolean/internal/data/repository"
+	
 
 	"aplikasi-pos-team-boolean/internal/wire"
 	"aplikasi-pos-team-boolean/pkg/database"
 	"aplikasi-pos-team-boolean/pkg/utils"
+
 )
 
 func main() {
