@@ -1,0 +1,134 @@
+{
+  "info": {
+    "name": "Inventory API",
+    "description": "Collection untuk testing 5 endpoint Inventory",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "1. List Produk Inventaris (GetAll)",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "http://localhost:8080/api/v1/inventory?page=1&limit=10&search=&stock=&unit=&sort_by=&sort_dir=",
+          "protocol": "http",
+          "host": ["localhost"],
+          "port": "8080",
+          "path": ["api", "v1", "inventory"],
+          "query": [
+            {
+              "key": "page",
+              "value": "1",
+              "description": "Nomor halaman"
+            },
+            {
+              "key": "limit",
+              "value": "10",
+              "description": "Jumlah item per halaman"
+            },
+            {
+              "key": "search",
+              "value": "",
+              "description": "Cari berdasarkan nama produk"
+            },
+            {
+              "key": "stock",
+              "value": "",
+              "description": "Filter status stok (instock/lowstock/outofstock)"
+            },
+            {
+              "key": "unit",
+              "value": "",
+              "description": "Filter berdasarkan satuan"
+            },
+            {
+              "key": "sort_by",
+              "value": "",
+              "description": "Field untuk sorting (name/quantity/created_at)"
+            },
+            {
+              "key": "sort_dir",
+              "value": "",
+              "description": "Arah sorting (asc/desc)"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "2. Tambah Data Inventaris",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"name\": \"Chicken Parmesan\",\n  \"quantity\": 10,\n  \"unit\": \"pcs\",\n  \"min_stock\": 5\n}"
+        },
+        "url": {
+          "raw": "http://localhost:8080/api/v1/inventory",
+          "protocol": "http",
+          "host": ["localhost"],
+          "port": "8080",
+          "path": ["api", "v1", "inventory"]
+        }
+      }
+    },
+    {
+      "name": "3. Edit Data Inventaris",
+      "request": {
+        "method": "PUT",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"name\": \"Chicken Parmesan Updated\",\n  \"quantity\": 15,\n  \"unit\": \"pcs\",\n  \"min_stock\": 5\n}"
+        },
+        "url": {
+          "raw": "http://localhost:8080/api/v1/inventory/1",
+          "protocol": "http",
+          "host": ["localhost"],
+          "port": "8080",
+          "path": ["api", "v1", "inventory", "1"]
+        }
+      }
+    },
+    {
+      "name": "4. Hapus Data Inventaris",
+      "request": {
+        "method": "DELETE",
+        "header": [],
+        "url": {
+          "raw": "http://localhost:8080/api/v1/inventory/1",
+          "protocol": "http",
+          "host": ["localhost"],
+          "port": "8080",
+          "path": ["api", "v1", "inventory", "1"]
+        }
+      }
+    },
+    {
+      "name": "5. Filter Search by ID Product",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "http://localhost:8080/api/v1/inventory/1",
+          "protocol": "http",
+          "host": ["localhost"],
+          "port": "8080",
+          "path": ["api", "v1", "inventory", "1"]
+        }
+      }
+    }
+  ]
+}
