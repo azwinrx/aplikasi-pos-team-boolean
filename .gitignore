@@ -24,8 +24,4 @@ go.work.sum
 # env file
 .env
 
-# My files
-PROJECT_REQUIREMENTS.md
-.gitignore
-STAFF_MANAGEMENT_README.md
-TESTING_GUIDE.md
+
