@@ -14,11 +14,8 @@ import (
 
 // InitializeApp membuat dan mengkonfigurasi aplikasi dengan semua dependencies
 func InitializeApp(db *gorm.DB, logger *zap.Logger) *gin.Engine {
-	// Setup Gin (without default middleware)
-	router := gin.New()
-
-	// Add recovery middleware
-	router.Use(gin.Recovery())
+	// Setup Gin with default middleware
+	router := gin.Default()
 
 	// Add custom logging middleware with zap
 	router.Use(middleware.LoggingMiddleware(logger))
@@ -26,22 +23,20 @@ func InitializeApp(db *gorm.DB, logger *zap.Logger) *gin.Engine {
 	// Setup repositories
 	repo := repository.NewRepository(db, logger)
 
-	// Setup use cases with logger
-	inventoriesUsecase := usecase.NewInventoriesUsecase(repo.InventoriesRepo, logger)
-	staffUsecase := usecase.NewStaffUseCase(repo.StaffRepo, logger)
+	// Setup use cases with UseCase struct (embedding)
+	uc := usecase.NewUseCase(&repo, logger, db)
 
-	// Setup handlers with logger
-	inventoriesHandler := adaptor.NewInventoriesAdaptor(inventoriesUsecase, logger)
-	staffHandler := adaptor.NewStaffAdaptor(staffUsecase, logger)
+	// Setup adaptor
+	adaptorInstance := adaptor.NewAdaptor(uc, logger)
 
 	// Setup routes
-	setupRoutes(router, inventoriesHandler, staffHandler, logger)
+	setupRoutes(router, adaptorInstance.InventoriesAdaptor, adaptorInstance.StaffAdaptor, adaptorInstance.OrderAdaptor, logger)
 
 	return router
 }
 
 // setupRoutes mengatur semua routing untuk aplikasi
-func setupRoutes(router *gin.Engine, inventoriesHandler *adaptor.InventoriesAdaptor, staffHandler *adaptor.StaffAdaptor, logger *zap.Logger) {
+func setupRoutes(router *gin.Engine, inventoriesHandler *adaptor.InventoriesAdaptor, staffHandler *adaptor.StaffAdaptor, orderHandler *adaptor.OrderAdaptor, logger *zap.Logger) {
 	// Health check
 	router.GET("/health", func(c *gin.Context) {
 		utils.ResponseSuccess(c.Writer, 200, "Server is running", map[string]string{
@@ -92,6 +87,31 @@ func setupRoutes(router *gin.Engine, inventoriesHandler *adaptor.InventoriesAdap
 
 			// 6. DELETE staff
 			staff.DELETE("/:id", staffHandler.Delete)
+		}
+
+		// Order routes
+		order := v1.Group("/orders")
+		{
+			// 1. GET all orders
+			order.GET("", orderHandler.GetAllOrders)
+
+			// 2. POST Create order
+			order.POST("", orderHandler.CreateOrder)
+
+			// 3. PUT Update order
+			order.PUT("/:id", orderHandler.UpdateOrder)
+
+			// 4. DELETE order
+			order.DELETE("/:id", orderHandler.DeleteOrder)
+
+			// 5. GET all tables
+			order.GET("/tables", orderHandler.GetAllTables)
+
+			// 6. GET all payment methods
+			order.GET("/payment-methods", orderHandler.GetAllPaymentMethods)
+
+			// 7. GET available chairs
+			order.GET("/available-chairs", orderHandler.GetAvailableChairs)
 		}
 	}
 

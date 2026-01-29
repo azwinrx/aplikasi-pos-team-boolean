@@ -8,9 +8,21 @@ import (
 )
 
 type UseCase struct {
+	log  *zap.Logger
 	repo repository.Repository
+
+	OrderUseCase       *orderUseCase
+	InventoriesUsecase *inventoriesUsecase
+	StaffUseCase       *staffUseCase
 }
 
 func NewUseCase(repo *repository.Repository, logger *zap.Logger, tx *gorm.DB) *UseCase {
-	return &UseCase{}
+	return &UseCase{
+		log:  logger,
+		repo: *repo,
+
+		OrderUseCase:       NewOrderUseCase(repo.OrderRepo, logger),
+		InventoriesUsecase: NewInventoriesUsecase(repo.InventoriesRepo, logger),
+		StaffUseCase:       NewStaffUseCase(repo.StaffRepo, logger),
+	}
 }

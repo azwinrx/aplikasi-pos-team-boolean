@@ -29,7 +29,7 @@ type inventoriesUsecase struct {
 }
 
 // NewInventoriesUsecase membuat instance baru dari InventoriesUsecase
-func NewInventoriesUsecase(inventoriesRepo repository.InventoriesRepository, logger *zap.Logger) InventoriesUsecase {
+func NewInventoriesUsecase(inventoriesRepo repository.InventoriesRepository, logger *zap.Logger) *inventoriesUsecase {
 	return &inventoriesUsecase{
 		inventoriesRepo: inventoriesRepo,
 		logger:          logger,

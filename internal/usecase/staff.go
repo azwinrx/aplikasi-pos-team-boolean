@@ -29,7 +29,7 @@ type staffUseCase struct {
 	logger    *zap.Logger
 }
 
-func NewStaffUseCase(staffRepo repository.StaffRepository, logger *zap.Logger) StaffUseCase {
+func NewStaffUseCase(staffRepo repository.StaffRepository, logger *zap.Logger) *staffUseCase {
 	return &staffUseCase{
 		staffRepo: staffRepo,
 		logger:    logger,
