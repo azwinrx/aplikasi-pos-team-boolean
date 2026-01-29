@@ -1,7 +1,6 @@
 package main
 
 import (
-	"flag"
 	"fmt"
 	"log"
 
@@ -9,15 +8,16 @@ import (
 	"aplikasi-pos-team-boolean/pkg/database"
 	"aplikasi-pos-team-boolean/pkg/utils"
 
+	"github.com/spf13/pflag"
 	"go.uber.org/zap"
 )
 
 func main() {
 	// Parse command line flags
-	migrate := flag.Bool("migrate", true, "Run database migration on startup")
-	seed := flag.Bool("seed", false, "Seed database with initial data")
-	reset := flag.Bool("reset", false, "Reset database (drop and recreate tables - DEVELOPMENT ONLY!)")
-	flag.Parse()
+	migrate := pflag.Bool("migrate", true, "Run database migration on startup")
+	seed := pflag.Bool("seed", false, "Seed database with initial data")
+	reset := pflag.Bool("reset", false, "Reset database (drop and recreate tables - DEVELOPMENT ONLY!)")
+	pflag.Parse()
 
 	// Baca config dari .env
 	config, err := utils.ReadConfiguration()

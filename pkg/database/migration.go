@@ -16,6 +16,7 @@ func AutoMigrate(db *gorm.DB) error {
 	entities := []interface{}{
 		&entity.Staff{},
 		&entity.Inventories{},
+		&entity.Table{},
 	}
 
 	// Jalankan auto migration
@@ -152,6 +153,44 @@ func SeedData(db *gorm.DB) error {
 		log.Printf("   Seeded %d staff", len(seedStaff))
 	}
 
+	// Seed tables jika masih kosong
+	db.Model(&entity.Table{}).Count(&count)
+	if count == 0 {
+		log.Println("   Seeding tables data...")
+		seedTables := []entity.Table{
+			{
+				Number:   "T01",
+				Capacity: 4,
+				Status:   "available",
+			},
+			{
+				Number:   "T02",
+				Capacity: 2,
+				Status:   "available",
+			},
+			{
+				Number:   "T03",
+				Capacity: 6,
+				Status:   "available",
+			},
+			{
+				Number:   "T04",
+				Capacity: 4,
+				Status:   "available",
+			},
+			{
+				Number:   "T05",
+				Capacity: 2,
+				Status:   "available",
+			},
+		}
+
+		if err := db.Create(&seedTables).Error; err != nil {
+			return fmt.Errorf("failed to seed tables: %w", err)
+		}
+		log.Printf("   Seeded %d tables", len(seedTables))
+	}
+
 	return nil
 }
 
@@ -162,6 +201,7 @@ func DropAllTables(db *gorm.DB) error {
 	entities := []interface{}{
 		&entity.Staff{},
 		&entity.Inventories{},
+		&entity.Table{},
 	}
 
 	for _, e := range entities {

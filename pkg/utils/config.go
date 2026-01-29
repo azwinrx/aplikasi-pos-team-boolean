@@ -39,7 +39,6 @@ func ReadConfiguration() (Configuration, error) {
 
 	// get config from flag
 	pflag.Int("port-app", 0, "port for app golang")
-	pflag.Parse()
 	viper.BindPFlags(pflag.CommandLine)
 
 	return Configuration{
