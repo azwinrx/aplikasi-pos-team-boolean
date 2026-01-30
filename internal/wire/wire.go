@@ -30,13 +30,13 @@ func InitializeApp(db *gorm.DB, logger *zap.Logger) *gin.Engine {
 	adaptorInstance := adaptor.NewAdaptor(uc, logger)
 
 	// Setup routes
-	setupRoutes(router, adaptorInstance.InventoriesAdaptor, adaptorInstance.StaffAdaptor, adaptorInstance.OrderAdaptor, logger)
+	setupRoutes(router, adaptorInstance.AuthAdaptor, adaptorInstance.InventoriesAdaptor, adaptorInstance.StaffAdaptor, adaptorInstance.OrderAdaptor, logger)
 
 	return router
 }
 
 // setupRoutes mengatur semua routing untuk aplikasi
-func setupRoutes(router *gin.Engine, inventoriesHandler *adaptor.InventoriesAdaptor, staffHandler *adaptor.StaffAdaptor, orderHandler *adaptor.OrderAdaptor, logger *zap.Logger) {
+func setupRoutes(router *gin.Engine, authHandler *adaptor.AuthAdaptor, inventoriesHandler *adaptor.InventoriesAdaptor, staffHandler *adaptor.StaffAdaptor, orderHandler *adaptor.OrderAdaptor, logger *zap.Logger) {
 	// Health check
 	router.GET("/health", func(c *gin.Context) {
 		utils.ResponseSuccess(c.Writer, 200, "Server is running", map[string]string{
@@ -47,6 +47,25 @@ func setupRoutes(router *gin.Engine, inventoriesHandler *adaptor.InventoriesAdap
 	// API v1 group
 	v1 := router.Group("/api/v1")
 	{
+		// Auth routes
+		auth := v1.Group("/auth")
+		{
+			// 1. POST Login
+			auth.POST("/login", authHandler.Login)
+
+			// 2. POST Check Email
+			auth.POST("/check-email", authHandler.CheckEmail)
+
+			// 3. POST Send OTP
+			auth.POST("/send-otp", authHandler.SendOTP)
+
+			// 4. POST Validate OTP
+			auth.POST("/validate-otp", authHandler.ValidateOTP)
+
+			// 5. POST Reset Password
+			auth.POST("/reset-password", authHandler.ResetPassword)
+		}
+
 		// Inventories routes
 		inventories := v1.Group("/inventories")
 		{
