@@ -1,0 +1,323 @@
+{
+  "info": {
+    "name": "POS Application Notification API",
+    "description": "Notification API for POS Application - List, Update Status, Delete Notifications",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "Notification API",
+      "item": [
+        {
+          "name": "1. List All Notifications",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/v1/notifications?page=1&limit=10&status=&type=&sort_by=created_at&sort_order=desc",
+              "host": ["{{base_url}}"],
+              "path": ["api", "v1", "notifications"],
+              "query": [
+                {
+                  "key": "page",
+                  "value": "1"
+                },
+                {
+                  "key": "limit",
+                  "value": "10"
+                },
+                {
+                  "key": "status",
+                  "value": "",
+                  "disabled": true
+                },
+                {
+                  "key": "type",
+                  "value": "",
+                  "disabled": true
+                },
+                {
+                  "key": "sort_by",
+                  "value": "created_at"
+                },
+                {
+                  "key": "sort_order",
+                  "value": "desc"
+                }
+              ]
+            },
+            "description": "Get list of notifications with optional filters and pagination"
+          },
+          "response": []
+        },
+        {
+          "name": "2. List Unread Notifications Only",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/v1/notifications?page=1&limit=10&status=new",
+              "host": ["{{base_url}}"],
+              "path": ["api", "v1", "notifications"],
+              "query": [
+                {
+                  "key": "page",
+                  "value": "1"
+                },
+                {
+                  "key": "limit",
+                  "value": "10"
+                },
+                {
+                  "key": "status",
+                  "value": "new"
+                }
+              ]
+            },
+            "description": "Get only unread notifications (status=new)"
+          },
+          "response": []
+        },
+        {
+          "name": "3. List Order Notifications Only",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/v1/notifications?page=1&limit=10&type=order",
+              "host": ["{{base_url}}"],
+              "path": ["api", "v1", "notifications"],
+              "query": [
+                {
+                  "key": "page",
+                  "value": "1"
+                },
+                {
+                  "key": "limit",
+                  "value": "10"
+                },
+                {
+                  "key": "type",
+                  "value": "order"
+                }
+              ]
+            },
+            "description": "Get notifications filtered by type=order"
+          },
+          "response": []
+        },
+        {
+          "name": "4. List Payment Notifications",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/v1/notifications?page=1&limit=10&type=payment",
+              "host": ["{{base_url}}"],
+              "path": ["api", "v1", "notifications"],
+              "query": [
+                {
+                  "key": "page",
+                  "value": "1"
+                },
+                {
+                  "key": "limit",
+                  "value": "10"
+                },
+                {
+                  "key": "type",
+                  "value": "payment"
+                }
+              ]
+            },
+            "description": "Get notifications filtered by type=payment"
+          },
+          "response": []
+        },
+        {
+          "name": "5. List System Alerts",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/v1/notifications?page=1&limit=10&type=system",
+              "host": ["{{base_url}}"],
+              "path": ["api", "v1", "notifications"],
+              "query": [
+                {
+                  "key": "page",
+                  "value": "1"
+                },
+                {
+                  "key": "limit",
+                  "value": "10"
+                },
+                {
+                  "key": "type",
+                  "value": "system"
+                }
+              ]
+            },
+            "description": "Get notifications filtered by type=system"
+          },
+          "response": []
+        },
+        {
+          "name": "6. Update Notification Status to Readed",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}",
+                "type": "text"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"status\": \"readed\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/v1/notifications/1/status",
+              "host": ["{{base_url}}"],
+              "path": ["api", "v1", "notifications", "1", "status"]
+            },
+            "description": "Mark a notification as readed"
+          },
+          "response": []
+        },
+        {
+          "name": "7. Update Notification Status to New",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}",
+                "type": "text"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"status\": \"new\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/v1/notifications/1/status",
+              "host": ["{{base_url}}"],
+              "path": ["api", "v1", "notifications", "1", "status"]
+            },
+            "description": "Mark a notification back to new (unread)"
+          },
+          "response": []
+        },
+        {
+          "name": "8. Delete Notification",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/v1/notifications/1",
+              "host": ["{{base_url}}"],
+              "path": ["api", "v1", "notifications", "1"]
+            },
+            "description": "Delete a notification (soft delete)"
+          },
+          "response": []
+        },
+        {
+          "name": "9. Delete Multiple Notifications (Batch)",
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "exec": [
+                  "// Note: API doesn't support batch delete\n",
+                  "// This is a demonstration of how to delete multiple notifications\n",
+                  "// You need to call the delete endpoint multiple times\n",
+                  "console.log(\"Delete endpoint needs to be called for each notification ID\");"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/v1/notifications/1",
+              "host": ["{{base_url}}"],
+              "path": ["api", "v1", "notifications", "1"]
+            },
+            "description": "Delete notification with ID 1. Repeat for each notification ID."
+          },
+          "response": []
+        }
+      ]
+    }
+  ],
+  "variable": [
+    {
+      "key": "base_url",
+      "value": "http://localhost:8080",
+      "type": "string"
+    },
+    {
+      "key": "token",
+      "value": "",
+      "type": "string",
+      "description": "JWT Token from login endpoint"
+    }
+  ]
+}

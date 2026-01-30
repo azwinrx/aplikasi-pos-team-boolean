@@ -78,7 +78,7 @@ func (u *authUsecase) Login(ctx context.Context, req dto.LoginRequest) (*dto.Log
 	}
 
 	// Generate JWT token
-	token, expiresAt, err := utils.GenerateToken(user.ID, user.Email, user.Role)
+	token, expiresAt, err := utils.GenerateToken(user.ID, user.Email, user.Role, user.Name)
 	if err != nil {
 		u.logger.Error("Failed to generate token",
 			zap.String("email", req.Email),

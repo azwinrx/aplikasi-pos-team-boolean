@@ -33,6 +33,7 @@ func AutoMigrate(db *gorm.DB) error {
 		&entity.PaymentMethod{},
 		&entity.Order{},
 		&entity.OrderItem{},
+		&entity.Notification{},
 	}
 
 	// Jalankan auto migration
@@ -278,6 +279,7 @@ func DropAllTables(db *gorm.DB) error {
 		&entity.Table{},
 		&entity.Inventories{},
 		&entity.Staff{},
+		&entity.Notification{},
 		&entity.OTP{},
 		&entity.User{},
 	}

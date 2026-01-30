@@ -2,15 +2,6 @@ package usecase
 
 import (
 	"aplikasi-pos-team-boolean/internal/data/repository"
-
-	"go.uber.org/zap"
-	"gorm.io/gorm"
-)
-
-package usecase
-
-import (
-	"aplikasi-pos-team-boolean/internal/data/repository"
 	"aplikasi-pos-team-boolean/pkg/utils"
 
 	"go.uber.org/zap"
@@ -22,9 +13,11 @@ type UseCase struct {
 	repo repository.Repository
 
 	AuthUseCase        AuthUseCase
+	AdminUseCase       AdminUseCase
 	OrderUseCase       OrderUseCase
 	InventoriesUsecase InventoriesUsecase
 	StaffUseCase       StaffUseCase
+	NotificationUseCase NotificationUseCase
 }
 
 func NewUseCase(repo *repository.Repository, logger *zap.Logger, tx *gorm.DB) *UseCase {
@@ -35,8 +28,10 @@ func NewUseCase(repo *repository.Repository, logger *zap.Logger, tx *gorm.DB) *U
 		repo: *repo,
 
 		AuthUseCase:        NewAuthUseCase(repo.AuthRepo, logger, emailService),
+		AdminUseCase:       NewAdminUseCase(repo.AuthRepo, emailService, logger),
 		OrderUseCase:       NewOrderUseCase(repo.OrderRepo, logger),
 		InventoriesUsecase: NewInventoriesUsecase(repo.InventoriesRepo, logger),
 		StaffUseCase:       NewStaffUseCase(repo.StaffRepo, logger),
+		NotificationUseCase: NewNotificationUseCase(repo.NotificationRepo, logger),
 	}
 }
