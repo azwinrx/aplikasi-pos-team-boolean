@@ -2,11 +2,22 @@ package database
 
 import (
 	"aplikasi-pos-team-boolean/internal/data/entity"
+	"aplikasi-pos-team-boolean/pkg/utils"
 	"fmt"
 	"log"
 
 	"gorm.io/gorm"
 )
+
+// Helper function untuk hash password
+func hashPassword(password string) string {
+	hashedPass, err := utils.HashPassword(password)
+	if err != nil {
+		log.Printf("Failed to hash password: %v", err)
+		return password
+	}
+	return hashedPass
+}
 
 // AutoMigrate melakukan auto migration untuk semua entity/table
 func AutoMigrate(db *gorm.DB) error {
@@ -14,9 +25,14 @@ func AutoMigrate(db *gorm.DB) error {
 
 	// Daftar semua entity yang akan dimigrate
 	entities := []interface{}{
+		&entity.User{},
+		&entity.OTP{},
 		&entity.Staff{},
 		&entity.Inventories{},
 		&entity.Table{},
+		&entity.PaymentMethod{},
+		&entity.Order{},
+		&entity.OrderItem{},
 	}
 
 	// Jalankan auto migration
@@ -56,8 +72,65 @@ func MigrateWithSeed(db *gorm.DB, withSeed bool) error {
 
 // SeedData memasukkan data awal ke database (optional)
 func SeedData(db *gorm.DB) error {
-	// Contoh: Seed data inventories jika table masih kosong
+	// Import password hashing utility
 	var count int64
+
+	// Seed users jika masih kosong
+	db.Model(&entity.User{}).Count(&count)
+	if count == 0 {
+		log.Println("   Seeding users data...")
+		seedUsers := []entity.User{
+			{
+				Email:     "admin@pos.com",
+				Password:  hashPassword("admin123"),
+				Name:      "Admin User",
+				Role:      "admin",
+				Status:    "active",
+				IsDeleted: false,
+			},
+			{
+				Email:     "manager@pos.com",
+				Password:  hashPassword("manager123"),
+				Name:      "Manager User",
+				Role:      "manager",
+				Status:    "active",
+				IsDeleted: false,
+			},
+			{
+				Email:     "staff@pos.com",
+				Password:  hashPassword("staff123"),
+				Name:      "Staff User",
+				Role:      "staff",
+				Status:    "active",
+				IsDeleted: false,
+			},
+		}
+
+		if err := db.Create(&seedUsers).Error; err != nil {
+			return fmt.Errorf("failed to seed users: %w", err)
+		}
+		log.Printf("   Seeded %d users", len(seedUsers))
+	}
+
+	// Seed payment methods jika masih kosong
+	db.Model(&entity.PaymentMethod{}).Count(&count)
+	if count == 0 {
+		log.Println("   Seeding payment methods data...")
+		seedPaymentMethods := []entity.PaymentMethod{
+			{Name: "Cash"},
+			{Name: "Credit Card"},
+			{Name: "Debit Card"},
+			{Name: "E-Wallet"},
+			{Name: "Bank Transfer"},
+		}
+
+		if err := db.Create(&seedPaymentMethods).Error; err != nil {
+			return fmt.Errorf("failed to seed payment methods: %w", err)
+		}
+		log.Printf("   Seeded %d payment methods", len(seedPaymentMethods))
+	}
+
+	// Contoh: Seed data inventories jika table masih kosong
 	db.Model(&entity.Inventories{}).Count(&count)
 
 	if count == 0 {
@@ -199,9 +272,14 @@ func DropAllTables(db *gorm.DB) error {
 	log.Println("WARNING: Dropping all tables...")
 
 	entities := []interface{}{
-		&entity.Staff{},
-		&entity.Inventories{},
+		&entity.OrderItem{},
+		&entity.Order{},
+		&entity.PaymentMethod{},
 		&entity.Table{},
+		&entity.Inventories{},
+		&entity.Staff{},
+		&entity.OTP{},
+		&entity.User{},
 	}
 
 	for _, e := range entities {
