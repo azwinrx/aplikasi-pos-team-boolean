@@ -32,7 +32,9 @@ SET default_table_access_method = heap;
 
 CREATE TABLE public.categories (
     id bigint NOT NULL,
-    name character varying(100) NOT NULL,
+    icon_category character varying(255),
+    category_name character varying(100) NOT NULL,
+    description text,
     created_at timestamp with time zone DEFAULT CURRENT_TIMESTAMP,
     updated_at timestamp with time zone DEFAULT CURRENT_TIMESTAMP,
     deleted_at timestamp with time zone
@@ -292,12 +294,13 @@ ALTER SEQUENCE public.payment_methods_id_seq OWNED BY public.payment_methods.id;
 
 CREATE TABLE public.products (
     id bigint NOT NULL,
-    category_id bigint,
-    name character varying(150) NOT NULL,
-    description text,
-    price numeric(10,2) NOT NULL,
-    image_url text,
-    is_available boolean DEFAULT true,
+    product_image character varying(255),
+    product_name character varying(100) NOT NULL,
+    item_id character varying(50) NOT NULL,
+    stock integer DEFAULT 0 NOT NULL,
+    category_id bigint NOT NULL,
+    price numeric(15,2) DEFAULT 0 NOT NULL,
+    is_available boolean DEFAULT false NOT NULL,
     created_at timestamp with time zone DEFAULT CURRENT_TIMESTAMP,
     updated_at timestamp with time zone DEFAULT CURRENT_TIMESTAMP,
     deleted_at timestamp with time zone
@@ -604,11 +607,13 @@ ALTER TABLE ONLY public.users ALTER COLUMN id SET DEFAULT nextval('public.users_
 -- Data for Name: categories; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
-COPY public.categories (id, name, created_at, updated_at, deleted_at) FROM stdin;
-1	Makanan Berat	2026-01-25 19:40:13.097468+07	2026-01-25 19:40:13.097468+07	\N
-2	Minuman	2026-01-25 19:40:13.097468+07	2026-01-25 19:40:13.097468+07	\N
-3	Snack	2026-01-25 19:40:13.097468+07	2026-01-25 19:40:13.097468+07	\N
-4	Dessert	2026-01-25 19:40:13.097468+07	2026-01-25 19:40:13.097468+07	\N
+COPY public.categories (id, icon_category, category_name, description, created_at, updated_at, deleted_at) FROM stdin;
+1	🍕	Pizza	Delicious Italian pizzas with various toppings	2026-01-25 19:40:13.097468+07	2026-01-25 19:40:13.097468+07	\N
+2	🍔	Burger	Juicy burgers with fresh ingredients	2026-01-25 19:40:13.097468+07	2026-01-25 19:40:13.097468+07	\N
+3	🍗	Chicken	Crispy and tasty chicken dishes	2026-01-25 19:40:13.097468+07	2026-01-25 19:40:13.097468+07	\N
+4	🥐	Bakery	Freshly baked bread and pastries	2026-01-25 19:40:13.097468+07	2026-01-25 19:40:13.097468+07	\N
+5	🥤	Beverage	Refreshing drinks and beverages	2026-01-25 19:40:13.097468+07	2026-01-25 19:40:13.097468+07	\N
+6	🦐	Seafood	Fresh seafood dishes	2026-01-25 19:40:13.097468+07	2026-01-25 19:40:13.097468+07	\N
 \.
 
 
@@ -692,12 +697,14 @@ COPY public.payment_methods (id, name, created_at, updated_at, deleted_at) FROM 
 -- Data for Name: products; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
-COPY public.products (id, category_id, name, description, price, image_url, is_available, created_at, updated_at, deleted_at) FROM stdin;
-1	1	Nasi Goreng Spesial	Nasi goreng dengan telur dan ayam	25000.00	\N	t	2025-12-16 19:40:13.097468+07	2026-01-25 19:40:13.097468+07	\N
-2	1	Ayam Bakar Madu	Ayam bakar oles madu	30000.00	\N	t	2026-01-20 19:40:13.097468+07	2026-01-25 19:40:13.097468+07	\N
-3	2	Es Teh Manis	Teh manis dingin segar	5000.00	\N	t	2025-12-16 19:40:13.097468+07	2026-01-25 19:40:13.097468+07	\N
-4	2	Kopi Susu Gula Aren	Kopi kekinian	18000.00	\N	t	2026-01-23 19:40:13.097468+07	2026-01-25 19:40:13.097468+07	\N
-5	3	Kentang Goreng	French fries original	15000.00	\N	t	2025-12-16 19:40:13.097468+07	2026-01-25 19:40:13.097468+07	\N
+COPY public.products (id, product_image, product_name, item_id, stock, category_id, price, is_available, created_at, updated_at, deleted_at) FROM stdin;
+1		Margherita Pizza	#22314644	50	1	85000.00	t	2026-01-25 19:40:13.097468+07	2026-01-25 19:40:13.097468+07	\N
+2		Pepperoni Pizza	#22314645	30	1	95000.00	t	2026-01-25 19:40:13.097468+07	2026-01-25 19:40:13.097468+07	\N
+3		Classic Burger	#22314646	25	2	55000.00	t	2026-01-25 19:40:13.097468+07	2026-01-25 19:40:13.097468+07	\N
+4		Crispy Fried Chicken	#22314647	40	3	45000.00	t	2026-01-25 19:40:13.097468+07	2026-01-25 19:40:13.097468+07	\N
+5		Croissant	#22314648	20	4	25000.00	t	2026-01-25 19:40:13.097468+07	2026-01-25 19:40:13.097468+07	\N
+6		Iced Coffee	#22314649	100	5	18000.00	t	2026-01-25 19:40:13.097468+07	2026-01-25 19:40:13.097468+07	\N
+7		Grilled Salmon	#22314650	5	6	150000.00	t	2026-01-25 19:40:13.097468+07	2026-01-25 19:40:13.097468+07	\N
 \.
 
 
@@ -755,7 +762,7 @@ COPY public.users (id, name, email, password, role, otp, otp_expiration, created
 -- Name: categories_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
 
-SELECT pg_catalog.setval('public.categories_id_seq', 4, true);
+SELECT pg_catalog.setval('public.categories_id_seq', 6, true);
 
 
 --
@@ -809,7 +816,7 @@ SELECT pg_catalog.setval('public.payment_methods_id_seq', 3, true);
 -- Name: products_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
 
-SELECT pg_catalog.setval('public.products_id_seq', 5, true);
+SELECT pg_catalog.setval('public.products_id_seq', 7, true);
 
 
 --

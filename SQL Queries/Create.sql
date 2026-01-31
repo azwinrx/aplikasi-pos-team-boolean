@@ -18,7 +18,9 @@ CREATE TABLE users (
 -- 2. TABEL CATEGORIES (Untuk Menu)
 CREATE TABLE categories (
     id BIGSERIAL PRIMARY KEY,
-    name VARCHAR(100) NOT NULL,
+    icon_category VARCHAR(255), -- Icon atau emoji untuk category
+    category_name VARCHAR(100) UNIQUE NOT NULL,
+    description TEXT,
     created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
     deleted_at TIMESTAMP WITH TIME ZONE
@@ -27,16 +29,16 @@ CREATE TABLE categories (
 -- 3. TABEL PRODUCTS (Untuk Menu Makanan/Minuman)
 CREATE TABLE products (
     id BIGSERIAL PRIMARY KEY,
+    product_image VARCHAR(255), -- Path gambar
+    product_name VARCHAR(100) NOT NULL,
+    item_id VARCHAR(50) UNIQUE NOT NULL, -- Unique item ID like #22314644
+    stock INT NOT NULL DEFAULT 0,
     category_id BIGINT REFERENCES categories(id),
-    name VARCHAR(150) NOT NULL,
-    description TEXT,
-    price DECIMAL(10, 2) NOT NULL,
-    image_url TEXT, -- Path gambar
-    is_available BOOLEAN DEFAULT TRUE,
+    price DECIMAL(15, 2) NOT NULL DEFAULT 0,
+    is_available BOOLEAN DEFAULT false, -- true jika stock > 0, false jika stock = 0
     created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
     deleted_at TIMESTAMP WITH TIME ZONE
-    -- Catatan: Produk baru (<30 hari) nanti difilter via Query di Golang (created_at)
 );
 
 -- 4. TABEL TABLES (Untuk Data Meja)

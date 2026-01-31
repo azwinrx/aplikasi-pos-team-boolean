@@ -16,6 +16,9 @@ type UseCase struct {
 	OrderUseCase       OrderUseCase
 	InventoriesUsecase InventoriesUsecase
 	StaffUseCase       StaffUseCase
+	CategoryUseCase    CategoryUseCase
+	ProductUseCase     ProductUseCase
+	DashboardUseCase   DashboardUseCase
 }
 
 func NewUseCase(repo *repository.Repository, logger *zap.Logger, tx *gorm.DB) *UseCase {
@@ -29,5 +32,8 @@ func NewUseCase(repo *repository.Repository, logger *zap.Logger, tx *gorm.DB) *U
 		OrderUseCase:       NewOrderUseCase(repo.OrderRepo, logger),
 		InventoriesUsecase: NewInventoriesUsecase(repo.InventoriesRepo, logger),
 		StaffUseCase:       NewStaffUseCase(repo.StaffRepo, logger),
+		CategoryUseCase:    NewCategoryUseCase(repo.CategoryRepo, logger),
+		ProductUseCase:     NewProductUseCase(repo.ProductRepo, repo.CategoryRepo, logger),
+		DashboardUseCase:   NewDashboardUseCase(repo.DashboardRepo, logger),
 	}
 }

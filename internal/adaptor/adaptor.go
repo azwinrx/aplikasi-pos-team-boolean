@@ -12,6 +12,9 @@ type Adaptor struct {
 	InventoriesAdaptor *InventoriesAdaptor
 	StaffAdaptor       *StaffAdaptor
 	OrderAdaptor       *OrderAdaptor
+	CategoryAdaptor    *CategoryAdaptor
+	ProductAdaptor     *ProductAdaptor
+	DashboardAdaptor   DashboardHandler
 }
 
 // NewAdaptor creates a new instance of Adaptor with all handlers
@@ -21,5 +24,8 @@ func NewAdaptor(uc *usecase.UseCase, logger *zap.Logger) *Adaptor {
 		InventoriesAdaptor: NewInventoriesAdaptor(uc.InventoriesUsecase, logger),
 		StaffAdaptor:       NewStaffAdaptor(uc.StaffUseCase, logger),
 		OrderAdaptor:       NewOrderAdaptor(uc.OrderUseCase, logger),
+		CategoryAdaptor:    NewCategoryAdaptor(uc.CategoryUseCase, logger),
+		ProductAdaptor:     NewProductAdaptor(uc.ProductUseCase, logger),
+		DashboardAdaptor:   NewDashboardHandler(uc.DashboardUseCase, logger),
 	}
 }

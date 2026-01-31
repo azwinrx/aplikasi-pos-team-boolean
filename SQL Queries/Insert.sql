@@ -5,8 +5,13 @@ INSERT INTO users (name, email, password, role) VALUES
 ('Budi Staff', 'staff@pos.com', '$2a$10$wK/p.8f.0/..hashedpassword..', 'staff');
 
 -- 2. Insert Categories
-INSERT INTO categories (name) VALUES
-('Makanan Berat'), ('Minuman'), ('Snack'), ('Dessert');
+INSERT INTO categories (icon_category, category_name, description) VALUES
+('🍕', 'Pizza', 'Delicious pizza varieties'),
+('🍔', 'Burger', 'Juicy burgers and sandwiches'),
+('🍗', 'Chicken', 'Crispy fried chicken'),
+('🥐', 'Bakery', 'Fresh baked goods'),
+('🥤', 'Beverage', 'Refreshing drinks'),
+('🦐', 'Seafood', 'Fresh seafood dishes');
 
 -- 3. Insert Payment Methods
 INSERT INTO payment_methods (name) VALUES
@@ -20,13 +25,15 @@ INSERT INTO tables (number, capacity, status) VALUES
 ('T04', 4, 'available'),
 ('T05', 2, 'available');
 
--- 5. Insert Products (Campuran produk baru dan lama)
-INSERT INTO products (category_id, name, description, price, created_at) VALUES
-(1, 'Nasi Goreng Spesial', 'Nasi goreng dengan telur dan ayam', 25000, NOW() - INTERVAL '40 days'), -- Produk Lama
-(1, 'Ayam Bakar Madu', 'Ayam bakar oles madu', 30000, NOW() - INTERVAL '5 days'), -- Produk Baru
-(2, 'Es Teh Manis', 'Teh manis dingin segar', 5000, NOW() - INTERVAL '40 days'),
-(2, 'Kopi Susu Gula Aren', 'Kopi kekinian', 18000, NOW() - INTERVAL '2 days'), -- Produk Baru
-(3, 'Kentang Goreng', 'French fries original', 15000, NOW() - INTERVAL '40 days');
+-- 5. Insert Products (Menu Items)
+INSERT INTO products (product_image, product_name, item_id, stock, category_id, price, is_available) VALUES
+('/images/chicken-parmesan.jpg', 'Chicken Parmesan', '#22314644', 119, 3, 55.00, true),
+('/images/margherita-pizza.jpg', 'Margherita Pizza', '#22314645', 85, 1, 45.00, true),
+('/images/pepperoni-pizza.jpg', 'Pepperoni Pizza', '#22314646', 72, 1, 50.00, true),
+('/images/classic-burger.jpg', 'Classic Burger', '#22314647', 95, 2, 35.00, true),
+('/images/cheese-burger.jpg', 'Cheese Burger', '#22314648', 8, 2, 40.00, true),
+('/images/cola.jpg', 'Cola', '#22314649', 200, 5, 5.00, true),
+('/images/orange-juice.jpg', 'Orange Juice', '#22314650', 0, 5, 8.00, false);
 
 -- 6. Insert Inventory
 INSERT INTO inventories (name, quantity, unit, min_stock) VALUES

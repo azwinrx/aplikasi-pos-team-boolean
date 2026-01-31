@@ -30,13 +30,13 @@ func InitializeApp(db *gorm.DB, logger *zap.Logger) *gin.Engine {
 	adaptorInstance := adaptor.NewAdaptor(uc, logger)
 
 	// Setup routes
-	setupRoutes(router, adaptorInstance.AuthAdaptor, adaptorInstance.InventoriesAdaptor, adaptorInstance.StaffAdaptor, adaptorInstance.OrderAdaptor, logger)
+	setupRoutes(router, adaptorInstance.AuthAdaptor, adaptorInstance.InventoriesAdaptor, adaptorInstance.StaffAdaptor, adaptorInstance.OrderAdaptor, adaptorInstance.CategoryAdaptor, adaptorInstance.ProductAdaptor, adaptorInstance.DashboardAdaptor, logger)
 
 	return router
 }
 
 // setupRoutes mengatur semua routing untuk aplikasi
-func setupRoutes(router *gin.Engine, authHandler *adaptor.AuthAdaptor, inventoriesHandler *adaptor.InventoriesAdaptor, staffHandler *adaptor.StaffAdaptor, orderHandler *adaptor.OrderAdaptor, logger *zap.Logger) {
+func setupRoutes(router *gin.Engine, authHandler *adaptor.AuthAdaptor, inventoriesHandler *adaptor.InventoriesAdaptor, staffHandler *adaptor.StaffAdaptor, orderHandler *adaptor.OrderAdaptor, categoryHandler *adaptor.CategoryAdaptor, productHandler *adaptor.ProductAdaptor, dashboardHandler adaptor.DashboardHandler, logger *zap.Logger) {
 	// Health check
 	router.GET("/health", func(c *gin.Context) {
 		utils.ResponseSuccess(c.Writer, 200, "Server is running", map[string]string{
@@ -131,6 +131,60 @@ func setupRoutes(router *gin.Engine, authHandler *adaptor.AuthAdaptor, inventori
 
 			// 7. GET available chairs
 			order.GET("/available-chairs", orderHandler.GetAvailableChairs)
+		}
+
+		// Category routes (Menu)
+		categories := v1.Group("/categories")
+		{
+			// 1. GET all categories
+			categories.GET("", categoryHandler.GetList)
+
+			// 2. POST Create category
+			categories.POST("", categoryHandler.Create)
+
+			// 3. PUT Update category
+			categories.PUT("/:id", categoryHandler.Update)
+
+			// 4. GET category by ID
+			categories.GET("/:id", categoryHandler.GetByID)
+
+			// 5. DELETE category
+			categories.DELETE("/:id", categoryHandler.Delete)
+		}
+
+		// Product routes (Menu)
+		products := v1.Group("/products")
+		{
+			// 1. GET all products (with filter by category_id, is_available, price range)
+			products.GET("", productHandler.GetList)
+
+			// 2. GET products by category
+			products.GET("/category/:category_id", productHandler.GetByCategory)
+
+			// 3. POST Create product
+			products.POST("", productHandler.Create)
+
+			// 4. PUT Update product
+			products.PUT("/:id", productHandler.Update)
+
+			// 5. GET product by ID
+			products.GET("/:id", productHandler.GetByID)
+
+			// 6. DELETE product
+			products.DELETE("/:id", productHandler.Delete)
+		}
+
+		// Dashboard routes
+		dashboard := v1.Group("/dashboard")
+		{
+			// 1. GET dashboard summary (daily sales, monthly sales, table summary)
+			dashboard.GET("/summary", dashboardHandler.GetSummary)
+
+			// 2. GET popular products
+			dashboard.GET("/popular-products", dashboardHandler.GetPopularProducts)
+
+			// 3. GET new products (< 30 days)
+			dashboard.GET("/new-products", dashboardHandler.GetNewProducts)
 		}
 	}
 
