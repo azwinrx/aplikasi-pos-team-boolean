@@ -3,7 +3,6 @@ package adaptor
 import (
 	"aplikasi-pos-team-boolean/internal/dto"
 	"aplikasi-pos-team-boolean/internal/usecase"
-	"aplikasi-pos-team-boolean/pkg/utils"
 	"net/http"
 
 	"github.com/gin-gonic/gin"

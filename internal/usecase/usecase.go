@@ -2,15 +2,6 @@ package usecase
 
 import (
 	"aplikasi-pos-team-boolean/internal/data/repository"
-
-	"go.uber.org/zap"
-	"gorm.io/gorm"
-)
-
-package usecase
-
-import (
-	"aplikasi-pos-team-boolean/internal/data/repository"
 	"aplikasi-pos-team-boolean/pkg/utils"
 
 	"go.uber.org/zap"
