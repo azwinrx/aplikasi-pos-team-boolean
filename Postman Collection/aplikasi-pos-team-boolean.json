@@ -1,0 +1,1148 @@
+{
+	"info": {
+		"_postman_id": "f0e63ab8-e579-44ef-8248-d4dc96a55feb",
+		"name": "aplikasi-pos-team-boolean",
+		"description": "API Collection for POS Application - Team Boolean",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "50992172"
+	},
+	"item": [
+		{
+			"name": "Health Check",
+			"item": [
+				{
+					"name": "Health Check",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/health",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"health"
+							]
+						},
+						"description": "Check if server is running"
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Inventory",
+			"item": [
+				{
+					"name": "1. GET All Inventories",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/v1/inventories?page=1&limit=10",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"inventories"
+							],
+							"query": [
+								{
+									"key": "page",
+									"value": "1",
+									"description": "Page number"
+								},
+								{
+									"key": "limit",
+									"value": "10",
+									"description": "Items per page"
+								}
+							]
+						},
+						"description": "Get all inventories without filter"
+					},
+					"response": []
+				},
+				{
+					"name": "2. GET Inventories by Filter",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/v1/inventories/filter?search=cola&status=active&category=beverage&stock=instock&unit=litre&min_qty=50&max_qty=200&min_price=10&max_price=50&page=1&limit=10&sort_by=name&sort_dir=asc",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"inventories",
+								"filter"
+							],
+							"query": [
+								{
+									"key": "search",
+									"value": "cola",
+									"description": "Search by name"
+								},
+								{
+									"key": "status",
+									"value": "active",
+									"description": "Filter by status (active/inactive)"
+								},
+								{
+									"key": "category",
+									"value": "beverage",
+									"description": "Filter by category"
+								},
+								{
+									"key": "stock",
+									"value": "instock",
+									"description": "Filter by stock status (instock/lowstock/outofstock)"
+								},
+								{
+									"key": "unit",
+									"value": "litre",
+									"description": "Filter by unit"
+								},
+								{
+									"key": "min_qty",
+									"value": "50",
+									"description": "Minimum quantity"
+								},
+								{
+									"key": "max_qty",
+									"value": "200",
+									"description": "Maximum quantity"
+								},
+								{
+									"key": "min_price",
+									"value": "10",
+									"description": "Minimum price"
+								},
+								{
+									"key": "max_price",
+									"value": "50",
+									"description": "Maximum price"
+								},
+								{
+									"key": "page",
+									"value": "1",
+									"description": "Page number"
+								},
+								{
+									"key": "limit",
+									"value": "10",
+									"description": "Items per page"
+								},
+								{
+									"key": "sort_by",
+									"value": "name",
+									"description": "Sort by field (name/quantity/retail_price/created_at/category/status)"
+								},
+								{
+									"key": "sort_dir",
+									"value": "asc",
+									"description": "Sort direction (asc/desc)"
+								}
+							]
+						},
+						"description": "Get inventories with multiple filters"
+					},
+					"response": []
+				},
+				{
+					"name": "3. POST Create Inventory",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"image\": \"https://example.com/coca-cola.jpg\",\n  \"name\": \"Coca Cola 1L\",\n  \"category\": \"beverage\",\n  \"quantity\": 100,\n  \"status\": \"active\",\n  \"retail_price\": 15.50\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/v1/inventories",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"inventories"
+							]
+						},
+						"description": "Create new inventory item"
+					},
+					"response": []
+				},
+				{
+					"name": "4. PUT Update Inventory",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"image\": \"https://example.com/coca-cola-updated.jpg\",\n  \"name\": \"Coca Cola 1.5L\",\n  \"category\": \"beverage\",\n  \"quantity\": 150,\n  \"status\": \"active\",\n  \"retail_price\": 18.00\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/v1/inventories/:id",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"inventories",
+								":id"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "1",
+									"description": "Inventory ID"
+								}
+							]
+						},
+						"description": "Update existing inventory item"
+					},
+					"response": []
+				},
+				{
+					"name": "5. DELETE Inventory",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/v1/inventories/:id",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"inventories",
+								":id"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "1",
+									"description": "Inventory ID"
+								}
+							]
+						},
+						"description": "Delete inventory item (soft delete)"
+					},
+					"response": []
+				}
+			],
+			"description": "Inventory management endpoints"
+		},
+		{
+			"name": "Staff",
+			"item": [
+				{
+					"name": "1. GET All Staff",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/v1/staff?page=1&limit=10&sort_by=full_name&sort_order=asc",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"staff"
+							],
+							"query": [
+								{
+									"key": "page",
+									"value": "1",
+									"description": "Page number"
+								},
+								{
+									"key": "limit",
+									"value": "10",
+									"description": "Items per page"
+								},
+								{
+									"key": "sort_by",
+									"value": "full_name",
+									"description": "Sort by field (full_name/email/salary/date_of_birth/created_at)"
+								},
+								{
+									"key": "sort_order",
+									"value": "asc",
+									"description": "Sort order (asc/desc)"
+								}
+							]
+						},
+						"description": "Get list of all staff with pagination only (no filters)"
+					},
+					"response": [
+						{
+							"name": "Success Response",
+							"originalRequest": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{base_url}}/api/v1/staff?page=1&limit=10",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"api",
+										"v1",
+										"staff"
+									],
+									"query": [
+										{
+											"key": "page",
+											"value": "1"
+										},
+										{
+											"key": "limit",
+											"value": "10"
+										}
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								}
+							],
+							"cookie": [],
+							"body": "{\n  \"status\": true,\n  \"message\": \"success get data\",\n  \"data\": [\n    {\n      \"id\": 1,\n      \"name\": \"John Doe\",\n      \"email\": \"john.doe@example.com\",\n      \"phone\": \"081234567890\",\n      \"age\": 34,\n      \"salary\": 5000000,\n      \"timings\": \"8am to 5pm\"\n    },\n    {\n      \"id\": 2,\n      \"name\": \"Jane Smith\",\n      \"email\": \"jane.smith@example.com\",\n      \"phone\": \"081234567891\",\n      \"age\": 29,\n      \"salary\": 3500000,\n      \"timings\": \"9am to 6pm\"\n    },\n    {\n      \"id\": 3,\n      \"name\": \"Bob Wilson\",\n      \"email\": \"bob.wilson@example.com\",\n      \"phone\": \"081234567892\",\n      \"age\": 32,\n      \"salary\": 4000000,\n      \"timings\": \"10am to 7pm\"\n    }\n  ],\n  \"pagination\": {\n    \"page\": 1,\n    \"limit\": 10,\n    \"total_pages\": 1,\n    \"total_items\": 3\n  }\n}"
+						}
+					]
+				},
+				{
+					"name": "2. POST Create Staff",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"full_name\": \"Alice Johnson\",\n  \"email\": \"alice.johnson@example.com\",\n  \"role\": \"cashier\",\n  \"phone_number\": \"081234567893\",\n  \"salary\": 3500000,\n  \"date_of_birth\": \"1995-05-15\",\n  \"shift_start_timing\": \"08:00:00\",\n  \"shift_end_timing\": \"16:00:00\",\n  \"address\": \"Semarang, Indonesia\",\n  \"additional_details\": \"Experienced cashier with 2 years of experience\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/v1/staff",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"staff"
+							]
+						},
+						"description": "Create new staff member"
+					},
+					"response": []
+				},
+				{
+					"name": "3. PUT Update Staff",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"full_name\": \"Alice Johnson Updated\",\n  \"email\": \"alice.johnson@example.com\",\n  \"role\": \"supervisor\",\n  \"phone_number\": \"081234567893\",\n  \"salary\": 4000000,\n  \"date_of_birth\": \"1995-05-15\",\n  \"shift_start_timing\": \"09:00:00\",\n  \"shift_end_timing\": \"17:00:00\",\n  \"address\": \"Semarang, Indonesia\",\n  \"additional_details\": \"Promoted to supervisor\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/v1/staff/:id",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"staff",
+								":id"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "1",
+									"description": "Staff ID"
+								}
+							]
+						},
+						"description": "Update existing staff member"
+					},
+					"response": []
+				},
+				{
+					"name": "4. GET Staff by ID",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/v1/staff/:id",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"staff",
+								":id"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "1",
+									"description": "Staff ID"
+								}
+							]
+						},
+						"description": "Get staff detail by ID"
+					},
+					"response": []
+				},
+				{
+					"name": "5. DELETE Staff",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/v1/staff/:id",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"staff",
+								":id"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "1",
+									"description": "Staff ID"
+								}
+							]
+						},
+						"description": "Delete staff member (soft delete)"
+					},
+					"response": []
+				},
+				{
+					"name": "6. Staff by Email",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/v1/staff/email?email=rudi.hartono@pos.com",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"staff",
+								"email"
+							],
+							"query": [
+								{
+									"key": "email",
+									"value": "rudi.hartono@pos.com"
+								}
+							]
+						},
+						"description": "Get staff by email address using query parameter"
+					},
+					"response": []
+				}
+			],
+			"description": "Staff management endpoints"
+		},
+		{
+			"name": "Order",
+			"item": [
+				{
+					"name": "1. GET All Orders",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/v1/orders",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"orders"
+							]
+						},
+						"description": "Get all orders"
+					},
+					"response": []
+				},
+				{
+					"name": "2. POST Create Order",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"user_id\": 1,\n  \"table_id\": 1,\n  \"payment_method_id\": 1,\n  \"customer_name\": \"John Doe\",\n  \"items\": [\n    {\n      \"product_id\": 1,\n      \"quantity\": 2,\n      \"price\": 25000.00\n    },\n    {\n      \"product_id\": 2,\n      \"quantity\": 1,\n      \"price\": 30000.00\n    }\n  ],\n  \"tax\": 5500.00\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/v1/orders",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"orders"
+							]
+						},
+						"description": "Create new order"
+					},
+					"response": []
+				},
+				{
+					"name": "3. PUT Update Order",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"customer_name\": \"Jane Doe\",\n  \"payment_method_id\": 2,\n  \"items\": [\n    {\n      \"product_id\": 1,\n      \"quantity\": 4,\n      \"price\": 25000.00\n    }\n  ]\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/v1/orders/1",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"orders",
+								"1"
+							]
+						},
+						"description": "Update existing order"
+					},
+					"response": []
+				},
+				{
+					"name": "4. DELETE Order",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/v1/orders/:id",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"orders",
+								":id"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "1",
+									"description": "Order ID"
+								}
+							]
+						},
+						"description": "Delete order"
+					},
+					"response": []
+				},
+				{
+					"name": "5. GET All Tables",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/v1/orders/tables",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"orders",
+								"tables"
+							]
+						},
+						"description": "Get all tables"
+					},
+					"response": []
+				},
+				{
+					"name": "6. GET All Payment Methods",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/v1/orders/payment-methods",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"orders",
+								"payment-methods"
+							]
+						},
+						"description": "Get all payment methods"
+					},
+					"response": []
+				},
+				{
+					"name": "7. GET Available Chairs",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/v1/orders/available-chairs",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"orders",
+								"available-chairs"
+							]
+						},
+						"description": "Get available chairs"
+					},
+					"response": []
+				}
+			],
+			"description": "Order management endpoints"
+		},
+		{
+			"name": "Revenue",
+			"item": [
+				{
+					"name": "1. Get Revenue By Status",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/v1/revenue/by-status?status=paid",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"revenue",
+								"by-status"
+							],
+							"query": [
+								{
+									"key": "status",
+									"value": "paid",
+									"description": "Status order (wajib): paid atau pending"
+								}
+							]
+						},
+						"description": "Mendapatkan total revenue berdasarkan status tertentu (hanya satu status: paid atau pending).\n\nQuery Parameters:\n- status (required): Status order yang ingin diambil ('paid' atau 'pending')\n\nResponse akan berisi:\n- total_revenue: Total revenue dari status tersebut\n- breakdown: Array detail revenue untuk status tersebut"
+					},
+					"response": [
+						{
+							"name": "Success Response",
+							"originalRequest": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{base_url}}/api/v1/revenue/by-status?status=paid",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"api",
+										"v1",
+										"revenue",
+										"by-status"
+									],
+									"query": [
+										{
+											"key": "status",
+											"value": "paid"
+										}
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"status\": 200,\n    \"message\": \"Revenue berdasarkan status berhasil diambil\",\n    \"data\": {\n        \"total_revenue\": 130000.00,\n        \"breakdown\": [\n            {\n                \"status\": \"paid\",\n                \"total_revenue\": 130000.00,\n                \"order_count\": 2\n            }\n        ]\n    }\n}"
+						}
+					]
+				},
+				{
+					"name": "2. Get Revenue Per Month (Specific Month, Current Year)",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/v1/revenue/per-month?month=1",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"revenue",
+								"per-month"
+							],
+							"query": [
+								{
+									"key": "month",
+									"value": "1",
+									"description": "Bulan (wajib): 1-12"
+								}
+							]
+						},
+						"description": "Mendapatkan total revenue untuk bulan tertentu pada tahun saat ini.\n\nQuery Parameters:\n- month (required): Bulan (1-12)\n- year (optional): Tahun (default: tahun saat ini)\n\nResponse akan berisi:\n- year: Tahun yang ditampilkan\n- total_revenue: Total revenue untuk bulan tersebut\n- monthly: Array detail revenue untuk bulan tersebut"
+					},
+					"response": [
+						{
+							"name": "Success Response",
+							"originalRequest": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{base_url}}/api/v1/revenue/per-month?month=1",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"api",
+										"v1",
+										"revenue",
+										"per-month"
+									],
+									"query": [
+										{
+											"key": "month",
+											"value": "1"
+										}
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"status\": 200,\n    \"message\": \"Revenue per bulan berhasil diambil\",\n    \"data\": {\n        \"year\": 2026,\n        \"total_revenue\": 215500.00,\n        \"monthly\": [\n            {\n                \"month\": 1,\n                \"month_name\": \"January\",\n                \"total_revenue\": 215500.00,\n                \"order_count\": 3\n            }\n        ]\n    }\n}"
+						}
+					]
+				},
+				{
+					"name": "3. Get Revenue Per Month (Specific Month & Year)",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/v1/revenue/per-month?year=2026&month=1",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"revenue",
+								"per-month"
+							],
+							"query": [
+								{
+									"key": "year",
+									"value": "2026",
+									"description": "Tahun (opsional, default: tahun saat ini)"
+								},
+								{
+									"key": "month",
+									"value": "1",
+									"description": "Bulan (wajib): 1-12"
+								}
+							]
+						},
+						"description": "Mendapatkan total revenue untuk bulan tertentu pada tahun tertentu.\n\nQuery Parameters:\n- month (required): Bulan (1-12)\n- year (optional): Tahun (default: tahun saat ini)\n\nResponse akan berisi:\n- year: Tahun yang ditampilkan\n- total_revenue: Total revenue untuk bulan tersebut\n- monthly: Array detail revenue untuk bulan tersebut"
+					},
+					"response": [
+						{
+							"name": "Success Response",
+							"originalRequest": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{base_url}}/api/v1/revenue/per-month?year=2026&month=1",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"api",
+										"v1",
+										"revenue",
+										"per-month"
+									],
+									"query": [
+										{
+											"key": "year",
+											"value": "2026"
+										},
+										{
+											"key": "month",
+											"value": "1"
+										}
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"status\": 200,\n    \"message\": \"Revenue per bulan berhasil diambil\",\n    \"data\": {\n        \"year\": 2026,\n        \"total_revenue\": 215500.00,\n        \"monthly\": [\n            {\n                \"month\": 1,\n                \"month_name\": \"January\",\n                \"total_revenue\": 215500.00,\n                \"order_count\": 3\n            }\n        ]\n    }\n}"
+						},
+						{
+							"name": "Invalid Year Parameter",
+							"originalRequest": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{base_url}}/api/v1/revenue/per-month?year=invalid&month=1",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"api",
+										"v1",
+										"revenue",
+										"per-month"
+									],
+									"query": [
+										{
+											"key": "year",
+											"value": "invalid"
+										},
+										{
+											"key": "month",
+											"value": "1"
+										}
+									]
+								}
+							},
+							"status": "Bad Request",
+							"code": 400,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"status\": 400,\n    \"message\": \"Invalid year parameter\",\n    \"data\": null\n}"
+						},
+						{
+							"name": "Invalid Month Parameter",
+							"originalRequest": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{base_url}}/api/v1/revenue/per-month?year=2026&month=invalid",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"api",
+										"v1",
+										"revenue",
+										"per-month"
+									],
+									"query": [
+										{
+											"key": "year",
+											"value": "2026"
+										},
+										{
+											"key": "month",
+											"value": "invalid"
+										}
+									]
+								}
+							},
+							"status": "Bad Request",
+							"code": 400,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"status\": 400,\n    \"message\": \"Parameter 'month' harus berupa angka 1-12\",\n    \"data\": null\n}"
+						}
+					]
+				},
+				{
+					"name": "4. Get Product Revenue By ProductID",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/v1/revenue/products?productID=1",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"revenue",
+								"products"
+							],
+							"query": [
+								{
+									"key": "productID",
+									"value": "1",
+									"description": "ID produk (wajib)"
+								}
+							]
+						},
+						"description": "Mendapatkan detail revenue untuk satu produk tertentu berdasarkan productID.\n\nQuery Parameters:\n- productID (required): ID produk\n\nResponse akan berisi:\n- total_products: Selalu 1\n- products: Array dengan satu objek detail revenue produk"
+					},
+					"response": [
+						{
+							"name": "Success Response",
+							"originalRequest": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{base_url}}/api/v1/revenue/products?productID=1",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"api",
+										"v1",
+										"revenue",
+										"products"
+									],
+									"query": [
+										{
+											"key": "productID",
+											"value": "1"
+										}
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"status\": 200,\n    \"message\": \"Detail revenue produk berhasil diambil\",\n    \"data\": {\n        \"total_products\": 1,\n        \"products\": [\n            {\n                \"product_id\": 1,\n                \"product_name\": \"Nasi Goreng Spesial\",\n                \"price\": 25000.00,\n                \"total_revenue\": 150000.00,\n                \"total_sold\": 6,\n                \"order_count\": 2,\n                \"last_order_at\": \"2026-01-29T10:10:23.376Z\"\n            }\n        ]\n    }\n}"
+						}
+					]
+				}
+			]
+		},
+		{
+			"name": "Reservations",
+			"item": [
+				{
+					"name": "1. GET All Reservations",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/v1/reservations",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"reservations"
+							]
+						},
+						"description": "Get all reservations"
+					},
+					"response": []
+				},
+				{
+					"name": "2. POST Create Reservation",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"customer_name\": \"John Doe\",\n  \"customer_phone\": \"081234567890\",\n  \"table_number\": \"T01\",\n  \"pax_number\": 4,\n  \"reserve_date\": \"2026-01-30\",\n  \"reservation_time\": \"19:00\",\n  \"duration_minutes\": 120,\n  \"deposit_fee\": 50000.00,\n  \"status\": \"pending\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/v1/reservations",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"reservations"
+							]
+						},
+						"description": "Create new reservation"
+					},
+					"response": []
+				},
+				{
+					"name": "3. PUT Update Reservation",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"customer_name\": \"Jane Doe\",\n  \"customer_phone\": \"081234567891\",\n  \"table_number\": \"T02\",\n  \"pax_number\": 2,\n  \"reserve_date\": \"2026-01-30\",\n  \"reservation_time\": \"20:00\",\n  \"duration_minutes\": 90,\n  \"deposit_fee\": 25000.00,\n  \"status\": \"confirmed\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/v1/reservations/:id",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"reservations",
+								":id"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "1",
+									"description": "Reservation ID"
+								}
+							]
+						},
+						"description": "Update existing reservation"
+					},
+					"response": []
+				},
+				{
+					"name": "4. DELETE Reservation",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/v1/reservations/:id",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"reservations",
+								":id"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "1",
+									"description": "Reservation ID"
+								}
+							]
+						},
+						"description": "Delete reservation (soft delete)"
+					},
+					"response": []
+				}
+			],
+			"description": "Reservation management endpoints"
+		}
+	],
+	"variable": [
+		{
+			"key": "base_url",
+			"value": "http://localhost:8080",
+			"type": "string"
+		}
+	]
+}
