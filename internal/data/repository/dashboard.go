@@ -16,7 +16,7 @@ type DashboardRepository interface {
 	GetMonthlySalesSummary(ctx context.Context) (*dto.SalesSummary, error)
 	GetTableSummary(ctx context.Context) (*dto.TableSummary, error)
 	GetPopularProducts(ctx context.Context, limit int) ([]PopularProductResult, error)
-	GetNewProducts(ctx context.Context, days int, limit int) ([]entity.Product, error)
+	GetNewProducts(ctx context.Context, days int, limit int) ([]NewProductResult, error)
 }
 
 // PopularProductResult untuk hasil query produk populer
@@ -24,11 +24,11 @@ type PopularProductResult struct {
 	ProductID    uint
 	ProductImage string
 	ProductName  string
-	ItemID       string
-	CategoryName string
 	Price        float64
 	TotalSold    int
 	TotalRevenue float64
+	Stock        int
+	Availability string
 }
 
 type dashboardRepository struct {
@@ -184,20 +184,19 @@ func (r *dashboardRepository) GetPopularProducts(ctx context.Context, limit int)
 	err := r.db.WithContext(ctx).
 		Table("order_items oi").
 		Select(`
-			p.id as product_id,
-			p.product_image,
-			p.product_name,
-			p.item_id,
-			c.category_name,
-			p.price,
-			SUM(oi.quantity) as total_sold,
-			SUM(oi.subtotal) as total_revenue
-		`).
+		       p.id as product_id,
+		       p.product_image,
+		       p.product_name,
+		       p.price,
+		       SUM(oi.quantity) as total_sold,
+		       SUM(oi.subtotal) as total_revenue,
+		       p.stock,
+		       CASE WHEN p.stock > 0 THEN 'in_stock' ELSE 'out_of_stock' END as availability
+	       `).
 		Joins("JOIN products p ON oi.product_id = p.id").
-		Joins("LEFT JOIN categories c ON p.category_id = c.id").
 		Where("oi.deleted_at IS NULL").
 		Where("p.deleted_at IS NULL").
-		Group("p.id, p.product_image, p.product_name, p.item_id, c.category_name, p.price").
+		Group("p.id, p.product_image, p.product_name, p.price, p.stock").
 		Order("total_sold DESC").
 		Limit(limit).
 		Scan(&results).Error
@@ -211,19 +210,42 @@ func (r *dashboardRepository) GetPopularProducts(ctx context.Context, limit int)
 	return results, nil
 }
 
-func (r *dashboardRepository) GetNewProducts(ctx context.Context, days int, limit int) ([]entity.Product, error) {
+type NewProductResult struct {
+	ProductID    uint
+	ProductImage string
+	ProductName  string
+	Price        float64
+	Stock        int
+	Availability string
+	TotalSold    int
+	CreatedAt    time.Time
+}
+
+func (r *dashboardRepository) GetNewProducts(ctx context.Context, days int, limit int) ([]NewProductResult, error) {
 	r.logger.Info("Getting new products", zap.Int("days", days), zap.Int("limit", limit))
 
 	cutoffDate := time.Now().AddDate(0, 0, -days)
 
-	var products []entity.Product
+	var products []NewProductResult
 	err := r.db.WithContext(ctx).
-		Preload("Category").
-		Where("created_at >= ?", cutoffDate).
-		Where("deleted_at IS NULL").
-		Order("created_at DESC").
+		Table("products p").
+		Select(`
+		       p.id as product_id,
+		       p.product_image,
+		       p.product_name,
+		       p.price,
+		       p.stock,
+		       CASE WHEN p.stock > 0 THEN 'in_stock' ELSE 'out_of_stock' END as availability,
+		       COALESCE(SUM(oi.quantity), 0) as total_sold,
+		       p.created_at
+	       `).
+		Joins("LEFT JOIN order_items oi ON oi.product_id = p.id AND oi.deleted_at IS NULL").
+		Where("p.created_at >= ?", cutoffDate).
+		Where("p.deleted_at IS NULL").
+		Group("p.id, p.product_image, p.product_name, p.price, p.stock, p.created_at").
+		Order("p.created_at DESC").
 		Limit(limit).
-		Find(&products).Error
+		Scan(&products).Error
 
 	if err != nil {
 		r.logger.Error("Failed to get new products", zap.Error(err))
@@ -232,4 +254,9 @@ func (r *dashboardRepository) GetNewProducts(ctx context.Context, days int, limi
 
 	r.logger.Info("Successfully retrieved new products", zap.Int("count", len(products)))
 	return products, nil
+}
+
+// GetDB returns the *gorm.DB instance
+func (r *dashboardRepository) GetDB() *gorm.DB {
+	return r.db
 }

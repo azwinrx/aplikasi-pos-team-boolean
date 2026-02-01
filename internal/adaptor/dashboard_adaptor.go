@@ -14,6 +14,7 @@ type DashboardHandler interface {
 	GetSummary(c *gin.Context)
 	GetPopularProducts(c *gin.Context)
 	GetNewProducts(c *gin.Context)
+	ExportDashboard(c *gin.Context)
 }
 
 type dashboardHandler struct {
@@ -140,5 +141,35 @@ func (h *dashboardHandler) GetNewProducts(c *gin.Context) {
 		"status":  true,
 		"message": "New products retrieved successfully",
 		"data":    products,
+	})
+}
+
+// ExportDashboard godoc
+// @Summary Export Dashboard Data
+// @Description Export monthly dashboard data (bulan, jumlah order, sales, revenue)
+// @Tags Dashboard
+// @Accept json
+// @Produce json
+// @Security BearerAuth
+// @Success 200 {object} []dto.DashboardExportRow
+// @Router /dashboard/export [get]
+func (h *dashboardHandler) ExportDashboard(c *gin.Context) {
+	h.logger.Info("ExportDashboard request received")
+
+	rows, err := h.dashboardUC.ExportDashboard(c.Request.Context())
+	if err != nil {
+		h.logger.Error("Failed to export dashboard data", zap.Error(err))
+		c.JSON(http.StatusInternalServerError, gin.H{
+			"status":  false,
+			"message": "Failed to export dashboard data",
+			"data":    nil,
+		})
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{
+		"status":  true,
+		"message": "Export dashboard data success",
+		"data":    rows,
 	})
 }

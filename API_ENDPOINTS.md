@@ -405,8 +405,19 @@ GET /health
 | Orders Management    | 7              | ✅ Existing |
 | Menu - Categories    | 5              | ✅ NEW      |
 | Menu - Products      | 6              | ✅ NEW      |
+| Dashboard            | 5              | ✅ NEW      |
 | Health Check         | 1              | ✅ Existing |
-| **TOTAL**            | **35**         | ✅ READY    |
+| **TOTAL**            | **40**         | ✅ READY    |
+
+### Dashboard Endpoints Summary:
+
+| #   | Endpoint                    | Method | Description                                                      |
+| --- | --------------------------- | ------ | ---------------------------------------------------------------- |
+| 1   | /dashboard/summary          | GET    | Daily/Monthly sales & table summary                              |
+| 2   | /dashboard/popular-products | GET    | Popular products (name, photo, order count, stock status, price) |
+| 3   | /dashboard/new-products     | GET    | New products (name, photo, order count, stock status, price)     |
+| 4   | /dashboard/export           | GET    | Export monthly data (month, orders, sales, revenue)              |
+| 5   | /dashboard/ws               | WS     | Realtime websocket (sales & revenue updates)                     |
 
 ---
 
@@ -879,28 +890,40 @@ GET /dashboard/popular-products?limit=10
   "message": "Popular products retrieved successfully",
   "data": [
     {
-      "product_id": 5,
+      "id": 5,
       "product_image": "/images/nasi-goreng.jpg",
       "product_name": "Nasi Goreng Spesial",
-      "item_id": "#12345678",
-      "category_name": "Main Course",
       "price": 35000.0,
       "total_sold": 150,
-      "total_revenue": 5250000.0
+      "total_revenue": 5250000.0,
+      "stock": 25,
+      "availability": "in_stock"
     },
     {
-      "product_id": 3,
+      "id": 3,
       "product_image": "/images/ayam-bakar.jpg",
       "product_name": "Ayam Bakar",
-      "item_id": "#87654321",
-      "category_name": "Chicken",
       "price": 45000.0,
       "total_sold": 120,
-      "total_revenue": 5400000.0
+      "total_revenue": 5400000.0,
+      "stock": 0,
+      "availability": "out_of_stock"
     }
   ]
 }
 ```
+
+**Response Fields:**
+| Field | Type | Description |
+|-------|------|-------------|
+| id | int | Product ID |
+| product_image | string | Product photo URL |
+| product_name | string | Product name |
+| price | float | Product price |
+| total_sold | int | Total orders/quantity sold |
+| total_revenue | float | Total revenue from this product |
+| stock | int | Current stock quantity |
+| availability | string | Stock status: "in_stock" or "out_of_stock" |
 
 ---
 
@@ -925,32 +948,148 @@ GET /dashboard/new-products?limit=10
   "message": "New products retrieved successfully",
   "data": [
     {
-      "product_id": 10,
+      "id": 10,
       "product_image": "/images/new-menu.jpg",
       "product_name": "Sate Kambing Premium",
-      "item_id": "#11223344",
-      "category_name": "Grilled",
       "price": 65000.0,
       "stock": 30,
       "availability": "in_stock",
-      "created_at": "2026-01-28T10:30:00Z",
+      "total_sold": 15,
+      "created_at": "2026-01-28 10:30:00",
       "days_ago": 3
     },
     {
-      "product_id": 9,
+      "id": 9,
       "product_image": "/images/smoothie.jpg",
       "product_name": "Tropical Smoothie",
-      "item_id": "#55667788",
-      "category_name": "Beverages",
       "price": 28000.0,
       "stock": 0,
       "availability": "out_of_stock",
-      "created_at": "2026-01-20T14:00:00Z",
+      "total_sold": 8,
+      "created_at": "2026-01-20 14:00:00",
       "days_ago": 11
     }
   ]
 }
 ```
+
+**Response Fields:**
+| Field | Type | Description |
+|-------|------|-------------|
+| id | int | Product ID |
+| product_image | string | Product photo URL |
+| product_name | string | Product name |
+| price | float | Product price |
+| stock | int | Current stock quantity |
+| availability | string | Stock status: "in_stock" or "out_of_stock" |
+| total_sold | int | Total orders/quantity sold |
+| created_at | string | Product creation date |
+| days_ago | int | Number of days since product was created |
+
+---
+
+### 4. Export Dashboard Data
+
+```
+GET /dashboard/export
+```
+
+**Description:** Export monthly dashboard data for reports (last 12 months).
+
+**Response (200):**
+
+```json
+{
+  "status": true,
+  "message": "Export dashboard data success",
+  "data": [
+    {
+      "month": "2026-01",
+      "total_orders": 350,
+      "sales": 300,
+      "revenue": 21000000.0
+    },
+    {
+      "month": "2025-12",
+      "total_orders": 280,
+      "sales": 250,
+      "revenue": 16800000.0
+    }
+  ]
+}
+```
+
+**Export Template Fields:**
+| Field | Type | Description |
+|-------|------|-------------|
+| month | string | Month in YYYY-MM format |
+| total_orders | int | Total number of orders in the month |
+| sales | int | Number of paid/completed orders |
+| revenue | float | Total revenue for the month |
+
+---
+
+### 5. Websocket Realtime Dashboard
+
+```
+WS /dashboard/ws
+```
+
+**Description:** Websocket endpoint for real-time dashboard data (sales & revenue updates every 3 seconds).
+
+**Connection URL:**
+
+```
+ws://localhost:8080/api/v1/dashboard/ws
+```
+
+**Realtime Message Format (every 3 seconds):**
+
+```json
+{
+  "daily_sales": 1500000.0,
+  "monthly_sales": 21000000.0,
+  "daily_orders": 25,
+  "monthly_orders": 350
+}
+```
+
+**Websocket Response Fields:**
+| Field | Type | Description |
+|-------|------|-------------|
+| daily_sales | float | Today's total revenue |
+| monthly_sales | float | This month's total revenue |
+| daily_orders | int | Today's total orders |
+| monthly_orders | int | This month's total orders |
+
+**Usage Example (JavaScript):**
+
+```javascript
+const ws = new WebSocket("ws://localhost:8080/api/v1/dashboard/ws");
+
+ws.onopen = () => {
+  console.log("Connected to dashboard websocket");
+};
+
+ws.onmessage = (event) => {
+  const data = JSON.parse(event.data);
+  console.log("Realtime data:", data);
+  // Update UI with data.daily_sales, data.monthly_sales, etc.
+};
+
+ws.onclose = () => {
+  console.log("Disconnected from dashboard websocket");
+};
+```
+
+**Testing WebSocket:**
+
+> ⚠️ **Note:** WebSocket tidak bisa ditest dengan HTTP request biasa di Postman. Gunakan salah satu cara berikut:
+
+1. **Postman WebSocket:** Klik **New** → **WebSocket** → Masukkan URL → **Connect**
+2. **wscat (CLI):** `npx wscat -c ws://localhost:8080/api/v1/dashboard/ws`
+3. **Browser Console:** Buka F12 → Console → Paste kode JavaScript di atas
+4. **Online Tester:** https://websocketking.com/
 
 ---
 
@@ -996,9 +1135,12 @@ GET /dashboard/new-products?limit=10
 - Sorting: sort_by=name, sort_order=asc/desc
 - Product status otomatis berdasarkan stock level
 - Category dengan products tidak bisa dihapus
+- Dashboard websocket update setiap 3 detik
+- Export data menggunakan format bulanan (YYYY-MM)
+- Availability status: "in_stock" (stock > 0) atau "out_of_stock" (stock = 0)
 
 ---
 
-**Last Updated: 31 January 2026**
-**Total API Endpoints: 37**
+**Last Updated: 1 February 2026**
+**Total API Endpoints: 40**
 **Status: ✅ READY FOR TESTING**

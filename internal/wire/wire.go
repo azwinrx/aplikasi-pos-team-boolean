@@ -30,19 +30,22 @@ func InitializeApp(db *gorm.DB, logger *zap.Logger) *gin.Engine {
 	adaptorInstance := adaptor.NewAdaptor(uc, logger)
 
 	// Setup routes
-	setupRoutes(router, adaptorInstance.AuthAdaptor, adaptorInstance.InventoriesAdaptor, adaptorInstance.StaffAdaptor, adaptorInstance.OrderAdaptor, adaptorInstance.CategoryAdaptor, adaptorInstance.ProductAdaptor, adaptorInstance.DashboardAdaptor, logger)
+	setupRoutes(router, adaptorInstance.AuthAdaptor, adaptorInstance.InventoriesAdaptor, adaptorInstance.StaffAdaptor, adaptorInstance.OrderAdaptor, adaptorInstance.CategoryAdaptor, adaptorInstance.ProductAdaptor, adaptorInstance.DashboardAdaptor, uc.DashboardUseCase, logger)
 
 	return router
 }
 
 // setupRoutes mengatur semua routing untuk aplikasi
-func setupRoutes(router *gin.Engine, authHandler *adaptor.AuthAdaptor, inventoriesHandler *adaptor.InventoriesAdaptor, staffHandler *adaptor.StaffAdaptor, orderHandler *adaptor.OrderAdaptor, categoryHandler *adaptor.CategoryAdaptor, productHandler *adaptor.ProductAdaptor, dashboardHandler adaptor.DashboardHandler, logger *zap.Logger) {
+func setupRoutes(router *gin.Engine, authHandler *adaptor.AuthAdaptor, inventoriesHandler *adaptor.InventoriesAdaptor, staffHandler *adaptor.StaffAdaptor, orderHandler *adaptor.OrderAdaptor, categoryHandler *adaptor.CategoryAdaptor, productHandler *adaptor.ProductAdaptor, dashboardHandler adaptor.DashboardHandler, dashboardUC usecase.DashboardUseCase, logger *zap.Logger) {
 	// Health check
 	router.GET("/health", func(c *gin.Context) {
 		utils.ResponseSuccess(c.Writer, 200, "Server is running", map[string]string{
 			"status": "healthy",
 		})
 	})
+
+	// Inisialisasi websocket dashboard handler
+	dashboardWsHandler := adaptor.NewDashboardWebsocketHandler(dashboardUC, logger)
 
 	// API v1 group
 	v1 := router.Group("/api/v1")
@@ -185,6 +188,12 @@ func setupRoutes(router *gin.Engine, authHandler *adaptor.AuthAdaptor, inventori
 
 			// 3. GET new products (< 30 days)
 			dashboard.GET("/new-products", dashboardHandler.GetNewProducts)
+
+			// 4. Export dashboard data (bulan, jumlah order, sales, revenue)
+			dashboard.GET("/export", dashboardHandler.ExportDashboard)
+
+			// 5. Websocket realtime dashboard (revenue & sales)
+			dashboard.GET("/ws", dashboardWsHandler.ServeWs)
 		}
 	}
 

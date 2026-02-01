@@ -27,28 +27,45 @@ type TableSummary struct {
 }
 
 // PopularProductResponse untuk daftar produk populer
+// Fields: product name, order count (total_sold), photo, stock status, price
 type PopularProductResponse struct {
 	ID           uint    `json:"id"`
 	ProductImage string  `json:"product_image"`
 	ProductName  string  `json:"product_name"`
-	ItemID       string  `json:"item_id"`
-	CategoryName string  `json:"category_name"`
 	Price        float64 `json:"price"`
 	TotalSold    int     `json:"total_sold"`
 	TotalRevenue float64 `json:"total_revenue"`
+	Stock        int     `json:"stock"`
+	Availability string  `json:"availability"` // "in_stock" or "out_of_stock"
 }
 
 // NewProductResponse untuk daftar produk baru (< 30 hari)
+// Fields: product name, order count (total_sold), photo, stock status, price
 type NewProductResponse struct {
 	ID           uint    `json:"id"`
 	ProductImage string  `json:"product_image"`
 	ProductName  string  `json:"product_name"`
-	ItemID       string  `json:"item_id"`
-	CategoryName string  `json:"category_name"`
-	Stock        int     `json:"stock"`
 	Price        float64 `json:"price"`
-	IsAvailable  bool    `json:"is_available"`
-	Availability string  `json:"availability"`
+	Stock        int     `json:"stock"`
+	Availability string  `json:"availability"` // "in_stock" or "out_of_stock"
+	TotalSold    int     `json:"total_sold"`
 	CreatedAt    string  `json:"created_at"`
 	DaysAgo      int     `json:"days_ago"`
+}
+
+// DashboardExportRow untuk export bulanan
+// Template: bulan, jumlah order, sales, revenue
+type DashboardExportRow struct {
+	Month       string  `json:"month"`        // Format: YYYY-MM
+	TotalOrders int     `json:"total_orders"` // Jumlah order
+	Sales       int     `json:"sales"`        // Jumlah order paid/completed
+	Revenue     float64 `json:"revenue"`      // Total revenue
+}
+
+// DashboardWebsocketMessage untuk realtime websocket data
+type DashboardWebsocketMessage struct {
+	DailySales    float64 `json:"daily_sales"`    // Today's revenue
+	MonthlySales  float64 `json:"monthly_sales"`  // This month's revenue
+	DailyOrders   int     `json:"daily_orders"`   // Today's order count
+	MonthlyOrders int     `json:"monthly_orders"` // This month's order count
 }
