@@ -1,10 +1,12 @@
 package adaptor
 
 import (
-	"aplikasi-pos-team-boolean/internal/dto"
-	"aplikasi-pos-team-boolean/internal/usecase"
 	"net/http"
 	"strconv"
+
+	"aplikasi-pos-team-boolean/internal/dto"
+	"aplikasi-pos-team-boolean/internal/usecase"
+	"aplikasi-pos-team-boolean/pkg/utils"
 
 	"github.com/gin-gonic/gin"
 	"go.uber.org/zap"
@@ -24,184 +26,130 @@ func NewReservationsAdaptor(reservationsUsecase usecase.ReservationsUseCase, log
 	}
 }
 
-// GetAllReservations menangani request GET /reservations
+// GetAllReservations menangani request untuk mengambil semua reservasi
 func (h *ReservationsAdaptor) GetAllReservations(c *gin.Context) {
-	h.logger.Debug("GetAllReservations handler called", zap.String("client_ip", c.ClientIP()))
+	h.logger.Debug("GetAllReservations handler called")
 
-	// Call usecase
-	reservations, err := h.reservationsUsecase.GetAllReservations(c.Request.Context())
+	response, err := h.reservationsUsecase.GetAllReservations(c.Request.Context())
 	if err != nil {
-		h.logger.Error("Failed to get reservations",
+		h.logger.Error("Failed to get all reservations",
 			zap.Error(err),
+			zap.String("client_ip", c.ClientIP()),
 		)
-		c.JSON(http.StatusInternalServerError, gin.H{
-			"status":  false,
-			"message": "Failed to get reservations: " + err.Error(),
-			"data":    nil,
-		})
+		utils.ResponseError(c.Writer, http.StatusInternalServerError, "Gagal mengambil data reservasi: "+err.Error())
 		return
 	}
 
-	h.logger.Info("Reservations retrieved successfully",
-		zap.Int("count", len(reservations)),
+	h.logger.Info("GetAllReservations completed successfully",
+		zap.Int("total_reservations", len(response)),
 	)
 
-	c.JSON(http.StatusOK, gin.H{
-		"status":  true,
-		"message": "Reservations retrieved successfully",
-		"data":    reservations,
-	})
+	utils.ResponseSuccess(c.Writer, http.StatusOK, "Data reservasi berhasil diambil", response)
 }
 
-// CreateReservation menangani request POST /reservations
+// CreateReservation menangani request untuk membuat reservasi baru
 func (h *ReservationsAdaptor) CreateReservation(c *gin.Context) {
 	h.logger.Debug("CreateReservation handler called", zap.String("client_ip", c.ClientIP()))
 
 	var req dto.ReservationCreateRequest
 
-	// Bind JSON request
 	if err := c.ShouldBindJSON(&req); err != nil {
 		h.logger.Warn("Invalid request body for create reservation",
 			zap.Error(err),
 			zap.String("client_ip", c.ClientIP()),
 		)
-		c.JSON(http.StatusBadRequest, gin.H{
-			"status":  false,
-			"message": "Invalid request body: " + err.Error(),
-			"data":    nil,
-		})
+		utils.ResponseError(c.Writer, http.StatusBadRequest, "Invalid request body: "+err.Error())
 		return
 	}
 
-	// Call usecase
-	reservation, err := h.reservationsUsecase.CreateReservation(c.Request.Context(), req)
+	response, err := h.reservationsUsecase.CreateReservation(c.Request.Context(), req)
 	if err != nil {
 		h.logger.Error("Failed to create reservation",
-			zap.String("customer_name", req.CustomerName),
 			zap.Error(err),
+			zap.String("client_ip", c.ClientIP()),
 		)
-		c.JSON(http.StatusBadRequest, gin.H{
-			"status":  false,
-			"message": err.Error(),
-			"data":    nil,
-		})
+		utils.ResponseError(c.Writer, http.StatusInternalServerError, "Gagal membuat reservasi: "+err.Error())
 		return
 	}
 
 	h.logger.Info("Reservation created successfully",
-		zap.Int64("id", reservation.ID),
-		zap.String("customer_name", req.CustomerName),
+		zap.Int64("id", response.ID),
 	)
 
-	c.JSON(http.StatusCreated, gin.H{
-		"status":  true,
-		"message": "Reservation created successfully",
-		"data":    reservation,
-	})
+	utils.ResponseSuccess(c.Writer, http.StatusCreated, "Reservasi berhasil dibuat", response)
 }
 
-// UpdateReservation menangani request PUT /reservations/:id
+// UpdateReservation menangani request untuk update reservasi yang sudah ada
 func (h *ReservationsAdaptor) UpdateReservation(c *gin.Context) {
 	h.logger.Debug("UpdateReservation handler called", zap.String("client_ip", c.ClientIP()))
 
-	// Get ID from URL parameter
 	idStr := c.Param("id")
-	id, err := strconv.ParseUint(idStr, 10, 64)
+	id, err := strconv.ParseUint(idStr, 10, 32)
 	if err != nil {
-		h.logger.Warn("Invalid reservation ID",
-			zap.String("id", idStr),
+		h.logger.Warn("Invalid ID parameter",
 			zap.Error(err),
+			zap.String("id", idStr),
+			zap.String("client_ip", c.ClientIP()),
 		)
-		c.JSON(http.StatusBadRequest, gin.H{
-			"status":  false,
-			"message": "Invalid reservation ID",
-			"data":    nil,
-		})
+		utils.ResponseError(c.Writer, http.StatusBadRequest, "Invalid ID parameter")
 		return
 	}
 
 	var req dto.ReservationUpdateRequest
 
-	// Bind JSON request
 	if err := c.ShouldBindJSON(&req); err != nil {
 		h.logger.Warn("Invalid request body for update reservation",
 			zap.Error(err),
 			zap.String("client_ip", c.ClientIP()),
 		)
-		c.JSON(http.StatusBadRequest, gin.H{
-			"status":  false,
-			"message": "Invalid request body: " + err.Error(),
-			"data":    nil,
-		})
+		utils.ResponseError(c.Writer, http.StatusBadRequest, "Invalid request body: "+err.Error())
 		return
 	}
 
-	// Call usecase
-	if err := h.reservationsUsecase.UpdateReservation(c.Request.Context(), uint(id), req); err != nil {
+	err = h.reservationsUsecase.UpdateReservation(c.Request.Context(), uint(id), req)
+	if err != nil {
 		h.logger.Error("Failed to update reservation",
-			zap.Uint64("id", id),
 			zap.Error(err),
+			zap.Uint("id", uint(id)),
+			zap.String("client_ip", c.ClientIP()),
 		)
-		c.JSON(http.StatusBadRequest, gin.H{
-			"status":  false,
-			"message": err.Error(),
-			"data":    nil,
-		})
+		utils.ResponseError(c.Writer, http.StatusInternalServerError, "Gagal memperbarui reservasi: "+err.Error())
 		return
 	}
 
-	h.logger.Info("Reservation updated successfully",
-		zap.Uint64("id", id),
-	)
+	h.logger.Info("Reservation updated successfully", zap.Uint("id", uint(id)))
 
-	c.JSON(http.StatusOK, gin.H{
-		"status":  true,
-		"message": "Reservation updated successfully",
-		"data":    nil,
-	})
+	utils.ResponseSuccess(c.Writer, http.StatusOK, "Reservasi berhasil diperbarui", nil)
 }
 
-// DeleteReservation menangani request DELETE /reservations/:id
+// DeleteReservation menangani request untuk menghapus reservasi
 func (h *ReservationsAdaptor) DeleteReservation(c *gin.Context) {
 	h.logger.Debug("DeleteReservation handler called", zap.String("client_ip", c.ClientIP()))
 
-	// Get ID from URL parameter
 	idStr := c.Param("id")
-	id, err := strconv.ParseUint(idStr, 10, 64)
+	id, err := strconv.ParseUint(idStr, 10, 32)
 	if err != nil {
-		h.logger.Warn("Invalid reservation ID",
+		h.logger.Warn("Invalid ID parameter",
+			zap.Error(err),
 			zap.String("id", idStr),
-			zap.Error(err),
+			zap.String("client_ip", c.ClientIP()),
 		)
-		c.JSON(http.StatusBadRequest, gin.H{
-			"status":  false,
-			"message": "Invalid reservation ID",
-			"data":    nil,
-		})
+		utils.ResponseError(c.Writer, http.StatusBadRequest, "Invalid ID parameter")
 		return
 	}
 
-	// Call usecase
-	if err := h.reservationsUsecase.DeleteReservation(c.Request.Context(), uint(id)); err != nil {
+	err = h.reservationsUsecase.DeleteReservation(c.Request.Context(), uint(id))
+	if err != nil {
 		h.logger.Error("Failed to delete reservation",
-			zap.Uint64("id", id),
 			zap.Error(err),
+			zap.Uint("id", uint(id)),
+			zap.String("client_ip", c.ClientIP()),
 		)
-		c.JSON(http.StatusBadRequest, gin.H{
-			"status":  false,
-			"message": err.Error(),
-			"data":    nil,
-		})
+		utils.ResponseError(c.Writer, http.StatusInternalServerError, "Gagal menghapus reservasi: "+err.Error())
 		return
 	}
 
-	h.logger.Info("Reservation deleted successfully",
-		zap.Uint64("id", id),
-	)
+	h.logger.Info("Reservation deleted successfully", zap.Uint("id", uint(id)))
 
-	c.JSON(http.StatusOK, gin.H{
-		"status":  true,
-		"message": "Reservation deleted successfully",
-		"data":    nil,
-	})
+	utils.ResponseSuccess(c.Writer, http.StatusOK, "Reservasi berhasil dihapus", nil)
 }
