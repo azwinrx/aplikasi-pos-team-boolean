@@ -15,7 +15,7 @@ import (
 func main() {
 	// Parse command line flags
 	migrate := pflag.Bool("migrate", true, "Run database migration on startup")
-	seed := pflag.Bool("seed", false, "Seed database with initial data")
+	seed := pflag.Bool("seed", true, "Seed database with initial data")
 	reset := pflag.Bool("reset", false, "Reset database (drop and recreate tables - DEVELOPMENT ONLY!)")
 	pflag.Parse()
 

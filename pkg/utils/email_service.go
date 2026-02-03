@@ -3,7 +3,6 @@ package utils
 import (
 	"fmt"
 	"net/smtp"
-	"os"
 
 	"go.uber.org/zap"
 )
@@ -18,13 +17,13 @@ type EmailService struct {
 }
 
 // NewEmailService membuat instance baru EmailService
-func NewEmailService(logger *zap.Logger) *EmailService {
+func NewEmailService(logger *zap.Logger, smtpConfig SMTPConfig) *EmailService {
 	return &EmailService{
 		logger: logger,
-		host:   os.Getenv("SMTP_HOST"),
-		port:   os.Getenv("SMTP_PORT"),
-		sender: os.Getenv("SMTP_EMAIL"),
-		pass:   os.Getenv("SMTP_PASSWORD"),
+		host:   smtpConfig.Host,
+		port:   smtpConfig.Port,
+		sender: smtpConfig.Email,
+		pass:   smtpConfig.Password,
 	}
 }
 

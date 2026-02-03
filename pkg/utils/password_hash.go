@@ -7,7 +7,14 @@ func CheckPassword(inputPassword, storedPassword string) bool {
 	return err == nil
 }
 
-func HashPassword(password string) string {
-	bytes, _ := bcrypt.GenerateFromPassword([]byte(password), bcrypt.DefaultCost)
-	return string(bytes)
+func HashPassword(password string) (string, error) {
+	bytes, err := bcrypt.GenerateFromPassword([]byte(password), bcrypt.DefaultCost)
+	if err != nil {
+		return "", err
+	}
+	return string(bytes), nil
+}
+
+func VerifyPassword(storedPassword, inputPassword string) bool {
+	return CheckPassword(inputPassword, storedPassword)
 }

@@ -450,3 +450,164 @@
 {"L":"INFO","timestamp":"2026-01-29T17:38:01.616+0700","caller":"usecase/order.go:141","M":"Successfully retrieved all tables","count":5}
 {"L":"INFO","timestamp":"2026-01-29T17:38:01.616+0700","caller":"adaptor/order_adaptor.go:204","M":"GetAllTables completed successfully","total_tables":5}
 {"L":"INFO","timestamp":"2026-01-29T17:38:01.616+0700","caller":"middleware/logging.go:72","M":"request completed","method":"GET","path":"/api/v1/orders/tables","query":"","status":200,"duration":"2.3272ms","response_size":354}
+{"L":"INFO","timestamp":"2026-01-29T17:56:53.497+0700","caller":"utils/logger.go:71","M":"Logger initialized","log_file":"logs\\app-2026-01-29.log","debug_mode":true}
+{"L":"INFO","timestamp":"2026-01-29T17:56:53.498+0700","caller":"aplikasi-pos-team-boolean/main.go:35","M":"Application starting","environment":"","debug":true}
+{"L":"INFO","timestamp":"2026-01-29T17:56:53.557+0700","caller":"aplikasi-pos-team-boolean/main.go:46","M":"Database connection successful"}
+{"L":"INFO","timestamp":"2026-01-29T17:56:53.557+0700","caller":"aplikasi-pos-team-boolean/main.go:57","M":"Running database migration","seed":false}
+{"L":"INFO","timestamp":"2026-01-29T17:56:53.721+0700","caller":"wire/wire.go:131","M":"Routes registered successfully"}
+{"L":"INFO","timestamp":"2026-01-29T17:56:53.721+0700","caller":"aplikasi-pos-team-boolean/main.go:72","M":"Server starting","port":"8080"}
+{"L":"INFO","timestamp":"2026-01-29T18:03:06.427+0700","caller":"utils/logger.go:71","M":"Logger initialized","log_file":"logs\\app-2026-01-29.log","debug_mode":true}
+{"L":"INFO","timestamp":"2026-01-29T18:03:06.427+0700","caller":"aplikasi-pos-team-boolean/main.go:35","M":"Application starting","environment":"","debug":true}
+{"L":"INFO","timestamp":"2026-01-29T18:03:06.483+0700","caller":"aplikasi-pos-team-boolean/main.go:46","M":"Database connection successful"}
+{"L":"INFO","timestamp":"2026-01-29T18:03:06.483+0700","caller":"aplikasi-pos-team-boolean/main.go:57","M":"Running database migration","seed":false}
+{"L":"INFO","timestamp":"2026-01-29T18:03:06.648+0700","caller":"wire/wire.go:131","M":"Routes registered successfully"}
+{"L":"INFO","timestamp":"2026-01-29T18:03:06.648+0700","caller":"aplikasi-pos-team-boolean/main.go:72","M":"Server starting","port":"8080"}
+{"L":"INFO","timestamp":"2026-01-29T18:03:12.915+0700","caller":"middleware/logging.go:28","M":"incoming request","method":"GET","path":"/api/v1/revenue/by-status","query":"","remote_addr":"::1","user_agent":"PostmanRuntime/7.37.3","referer":"","body_size":0,"content_type":""}
+{"L":"DEBUG","timestamp":"2026-01-29T18:03:12.916+0700","caller":"adaptor/revenue_adaptor.go:30","M":"GetRevenueByStatus handler called"}
+{"L":"INFO","timestamp":"2026-01-29T18:03:12.916+0700","caller":"usecase/revenue.go:32","M":"Getting revenue by status"}
+{"L":"INFO","timestamp":"2026-01-29T18:03:12.916+0700","caller":"repository/revenue.go:29","M":"Getting revenue by status"}
+{"L":"INFO","timestamp":"2026-01-29T18:03:12.920+0700","caller":"repository/revenue.go:62","M":"Successfully got revenue by status","total_revenue":215500,"status_count":2}
+{"L":"INFO","timestamp":"2026-01-29T18:03:12.920+0700","caller":"usecase/revenue.go:40","M":"Successfully retrieved revenue by status","total_revenue":215500,"status_count":2}
+{"L":"INFO","timestamp":"2026-01-29T18:03:12.920+0700","caller":"adaptor/revenue_adaptor.go:43","M":"GetRevenueByStatus completed successfully","total_revenue":215500,"status_count":2}
+{"L":"INFO","timestamp":"2026-01-29T18:03:12.920+0700","caller":"middleware/logging.go:72","M":"request completed","method":"GET","path":"/api/v1/revenue/by-status","query":"","status":200,"duration":"5.0725ms","response_size":234}
+{"L":"INFO","timestamp":"2026-01-29T18:05:19.273+0700","caller":"utils/logger.go:71","M":"Logger initialized","log_file":"logs\\app-2026-01-29.log","debug_mode":true}
+{"L":"INFO","timestamp":"2026-01-29T18:05:19.273+0700","caller":"aplikasi-pos-team-boolean/main.go:35","M":"Application starting","environment":"","debug":true}
+{"L":"INFO","timestamp":"2026-01-29T18:05:19.329+0700","caller":"aplikasi-pos-team-boolean/main.go:46","M":"Database connection successful"}
+{"L":"INFO","timestamp":"2026-01-29T18:05:19.329+0700","caller":"aplikasi-pos-team-boolean/main.go:57","M":"Running database migration","seed":false}
+{"L":"INFO","timestamp":"2026-01-29T18:05:19.506+0700","caller":"wire/wire.go:131","M":"Routes registered successfully"}
+{"L":"INFO","timestamp":"2026-01-29T18:05:19.506+0700","caller":"aplikasi-pos-team-boolean/main.go:72","M":"Server starting","port":"8080"}
+{"L":"INFO","timestamp":"2026-01-29T18:05:25.430+0700","caller":"middleware/logging.go:28","M":"incoming request","method":"GET","path":"/api/v1/revenue/by-status","query":"","remote_addr":"::1","user_agent":"PostmanRuntime/7.37.3","referer":"","body_size":0,"content_type":""}
+{"L":"DEBUG","timestamp":"2026-01-29T18:05:25.431+0700","caller":"adaptor/revenue_adaptor.go:30","M":"GetRevenueByStatus handler called"}
+{"L":"INFO","timestamp":"2026-01-29T18:05:25.431+0700","caller":"usecase/revenue.go:32","M":"Getting revenue by status"}
+{"L":"INFO","timestamp":"2026-01-29T18:05:25.431+0700","caller":"repository/revenue.go:29","M":"Getting revenue by status"}
+{"L":"INFO","timestamp":"2026-01-29T18:05:25.435+0700","caller":"repository/revenue.go:62","M":"Successfully got revenue by status","total_revenue":215500,"status_count":2}
+{"L":"INFO","timestamp":"2026-01-29T18:05:25.435+0700","caller":"usecase/revenue.go:40","M":"Successfully retrieved revenue by status","total_revenue":215500,"status_count":2}
+{"L":"INFO","timestamp":"2026-01-29T18:05:25.435+0700","caller":"adaptor/revenue_adaptor.go:43","M":"GetRevenueByStatus completed successfully","total_revenue":215500,"status_count":2}
+{"L":"INFO","timestamp":"2026-01-29T18:05:25.436+0700","caller":"middleware/logging.go:72","M":"request completed","method":"GET","path":"/api/v1/revenue/by-status","query":"","status":200,"duration":"5.9635ms","response_size":234}
+{"L":"INFO","timestamp":"2026-01-29T18:07:16.115+0700","caller":"middleware/logging.go:28","M":"incoming request","method":"GET","path":"/api/v1/revenue/per-month","query":"","remote_addr":"::1","user_agent":"PostmanRuntime/7.37.3","referer":"","body_size":0,"content_type":""}
+{"L":"DEBUG","timestamp":"2026-01-29T18:07:16.115+0700","caller":"adaptor/revenue_adaptor.go:54","M":"GetRevenuePerMonth handler called"}
+{"L":"DEBUG","timestamp":"2026-01-29T18:07:16.115+0700","caller":"adaptor/revenue_adaptor.go:73","M":"Year parameter processed","year":0}
+{"L":"INFO","timestamp":"2026-01-29T18:07:16.115+0700","caller":"usecase/revenue.go:48","M":"Getting revenue per month","year":0}
+{"L":"INFO","timestamp":"2026-01-29T18:07:16.115+0700","caller":"usecase/revenue.go:53","M":"Year not provided, using current year","year":2026}
+{"L":"INFO","timestamp":"2026-01-29T18:07:16.115+0700","caller":"repository/revenue.go:70","M":"Getting revenue per month","year":2026}
+{"L":"INFO","timestamp":"2026-01-29T18:07:16.118+0700","caller":"repository/revenue.go:118","M":"Successfully got revenue per month","year":2026,"total_revenue":215500,"month_count":1}
+{"L":"INFO","timestamp":"2026-01-29T18:07:16.118+0700","caller":"usecase/revenue.go:62","M":"Successfully retrieved revenue per month","year":2026,"total_revenue":215500,"month_count":1}
+{"L":"INFO","timestamp":"2026-01-29T18:07:16.118+0700","caller":"adaptor/revenue_adaptor.go:87","M":"GetRevenuePerMonth completed successfully","year":2026,"total_revenue":215500,"month_count":1}
+{"L":"INFO","timestamp":"2026-01-29T18:07:16.118+0700","caller":"middleware/logging.go:72","M":"request completed","method":"GET","path":"/api/v1/revenue/per-month","query":"","status":200,"duration":"3.5409ms","response_size":193}
+{"L":"INFO","timestamp":"2026-01-29T18:07:50.211+0700","caller":"middleware/logging.go:28","M":"incoming request","method":"GET","path":"/api/v1/revenue/products","query":"","remote_addr":"::1","user_agent":"PostmanRuntime/7.37.3","referer":"","body_size":0,"content_type":""}
+{"L":"DEBUG","timestamp":"2026-01-29T18:07:50.211+0700","caller":"adaptor/revenue_adaptor.go:99","M":"GetProductRevenueList handler called"}
+{"L":"INFO","timestamp":"2026-01-29T18:07:50.212+0700","caller":"usecase/revenue.go:71","M":"Getting product revenue list"}
+{"L":"INFO","timestamp":"2026-01-29T18:07:50.212+0700","caller":"repository/revenue.go:127","M":"Getting product revenue list"}
+{"L":"INFO","timestamp":"2026-01-29T18:07:50.228+0700","caller":"repository/revenue.go:160","M":"Successfully got product revenue list","total_products":5}
+{"L":"INFO","timestamp":"2026-01-29T18:07:50.228+0700","caller":"usecase/revenue.go:79","M":"Successfully retrieved product revenue list","total_products":5}
+{"L":"INFO","timestamp":"2026-01-29T18:07:50.228+0700","caller":"adaptor/revenue_adaptor.go:112","M":"GetProductRevenueList completed successfully","total_products":5}
+{"L":"INFO","timestamp":"2026-01-29T18:07:50.228+0700","caller":"middleware/logging.go:72","M":"request completed","method":"GET","path":"/api/v1/revenue/products","query":"","status":200,"duration":"18.0263ms","response_size":902}
+{"L":"INFO","timestamp":"2026-01-29T22:34:21.827+0700","caller":"utils/logger.go:71","M":"Logger initialized","log_file":"logs\\app-2026-01-29.log","debug_mode":true}
+{"L":"INFO","timestamp":"2026-01-29T22:34:21.828+0700","caller":"aplikasi-pos-team-boolean/main.go:35","M":"Application starting","environment":"","debug":true}
+{"L":"INFO","timestamp":"2026-01-29T22:34:21.892+0700","caller":"aplikasi-pos-team-boolean/main.go:46","M":"Database connection successful"}
+{"L":"INFO","timestamp":"2026-01-29T22:34:21.893+0700","caller":"aplikasi-pos-team-boolean/main.go:57","M":"Running database migration","seed":false}
+{"L":"INFO","timestamp":"2026-01-29T22:34:22.113+0700","caller":"wire/wire.go:131","M":"Routes registered successfully"}
+{"L":"INFO","timestamp":"2026-01-29T22:34:22.113+0700","caller":"aplikasi-pos-team-boolean/main.go:72","M":"Server starting","port":"8080"}
+{"L":"INFO","timestamp":"2026-01-29T22:34:54.733+0700","caller":"middleware/logging.go:28","M":"incoming request","method":"GET","path":"/api/v1/revenue/per-month","query":"","remote_addr":"::1","user_agent":"PostmanRuntime/7.37.3","referer":"","body_size":0,"content_type":""}
+{"L":"DEBUG","timestamp":"2026-01-29T22:34:54.735+0700","caller":"adaptor/revenue_adaptor.go:54","M":"GetRevenuePerMonth handler called"}
+{"L":"DEBUG","timestamp":"2026-01-29T22:34:54.735+0700","caller":"adaptor/revenue_adaptor.go:73","M":"Year parameter processed","year":0}
+{"L":"INFO","timestamp":"2026-01-29T22:34:54.735+0700","caller":"usecase/revenue.go:48","M":"Getting revenue per month","year":0}
+{"L":"INFO","timestamp":"2026-01-29T22:34:54.736+0700","caller":"usecase/revenue.go:53","M":"Year not provided, using current year","year":2026}
+{"L":"INFO","timestamp":"2026-01-29T22:34:54.736+0700","caller":"repository/revenue.go:70","M":"Getting revenue per month","year":2026}
+{"L":"INFO","timestamp":"2026-01-29T22:34:54.747+0700","caller":"repository/revenue.go:118","M":"Successfully got revenue per month","year":2026,"total_revenue":215500,"month_count":1}
+{"L":"INFO","timestamp":"2026-01-29T22:34:54.747+0700","caller":"usecase/revenue.go:62","M":"Successfully retrieved revenue per month","year":2026,"total_revenue":215500,"month_count":1}
+{"L":"INFO","timestamp":"2026-01-29T22:34:54.747+0700","caller":"adaptor/revenue_adaptor.go:87","M":"GetRevenuePerMonth completed successfully","year":2026,"total_revenue":215500,"month_count":1}
+{"L":"INFO","timestamp":"2026-01-29T22:34:54.748+0700","caller":"middleware/logging.go:72","M":"request completed","method":"GET","path":"/api/v1/revenue/per-month","query":"","status":200,"duration":"14.0765ms","response_size":193}
+{"L":"INFO","timestamp":"2026-01-29T22:35:01.354+0700","caller":"middleware/logging.go:28","M":"incoming request","method":"GET","path":"/api/v1/revenue/per-month","query":"year=2026","remote_addr":"::1","user_agent":"PostmanRuntime/7.37.3","referer":"","body_size":0,"content_type":""}
+{"L":"DEBUG","timestamp":"2026-01-29T22:35:01.354+0700","caller":"adaptor/revenue_adaptor.go:54","M":"GetRevenuePerMonth handler called"}
+{"L":"DEBUG","timestamp":"2026-01-29T22:35:01.362+0700","caller":"adaptor/revenue_adaptor.go:73","M":"Year parameter processed","year":2026}
+{"L":"INFO","timestamp":"2026-01-29T22:35:01.362+0700","caller":"usecase/revenue.go:48","M":"Getting revenue per month","year":2026}
+{"L":"INFO","timestamp":"2026-01-29T22:35:01.362+0700","caller":"repository/revenue.go:70","M":"Getting revenue per month","year":2026}
+{"L":"INFO","timestamp":"2026-01-29T22:35:01.363+0700","caller":"repository/revenue.go:118","M":"Successfully got revenue per month","year":2026,"total_revenue":215500,"month_count":1}
+{"L":"INFO","timestamp":"2026-01-29T22:35:01.363+0700","caller":"usecase/revenue.go:62","M":"Successfully retrieved revenue per month","year":2026,"total_revenue":215500,"month_count":1}
+{"L":"INFO","timestamp":"2026-01-29T22:35:01.363+0700","caller":"adaptor/revenue_adaptor.go:87","M":"GetRevenuePerMonth completed successfully","year":2026,"total_revenue":215500,"month_count":1}
+{"L":"INFO","timestamp":"2026-01-29T22:35:01.363+0700","caller":"middleware/logging.go:72","M":"request completed","method":"GET","path":"/api/v1/revenue/per-month","query":"year=2026","status":200,"duration":"8.6011ms","response_size":193}
+{"L":"INFO","timestamp":"2026-01-29T22:35:47.186+0700","caller":"middleware/logging.go:28","M":"incoming request","method":"GET","path":"/api/v1/revenue/products","query":"","remote_addr":"::1","user_agent":"PostmanRuntime/7.37.3","referer":"","body_size":0,"content_type":""}
+{"L":"DEBUG","timestamp":"2026-01-29T22:35:47.187+0700","caller":"adaptor/revenue_adaptor.go:99","M":"GetProductRevenueList handler called"}
+{"L":"INFO","timestamp":"2026-01-29T22:35:47.187+0700","caller":"usecase/revenue.go:71","M":"Getting product revenue list"}
+{"L":"INFO","timestamp":"2026-01-29T22:35:47.187+0700","caller":"repository/revenue.go:127","M":"Getting product revenue list"}
+{"L":"INFO","timestamp":"2026-01-29T22:35:47.194+0700","caller":"repository/revenue.go:160","M":"Successfully got product revenue list","total_products":5}
+{"L":"INFO","timestamp":"2026-01-29T22:35:47.194+0700","caller":"usecase/revenue.go:79","M":"Successfully retrieved product revenue list","total_products":5}
+{"L":"INFO","timestamp":"2026-01-29T22:35:47.194+0700","caller":"adaptor/revenue_adaptor.go:112","M":"GetProductRevenueList completed successfully","total_products":5}
+{"L":"INFO","timestamp":"2026-01-29T22:35:47.195+0700","caller":"middleware/logging.go:72","M":"request completed","method":"GET","path":"/api/v1/revenue/products","query":"","status":200,"duration":"9.239ms","response_size":902}
+{"L":"INFO","timestamp":"2026-01-29T23:06:55.860+0700","caller":"middleware/logging.go:28","M":"incoming request","method":"GET","path":"/api/v1/revenue/by-status","query":"","remote_addr":"::1","user_agent":"PostmanRuntime/7.37.3","referer":"","body_size":0,"content_type":""}
+{"L":"DEBUG","timestamp":"2026-01-29T23:06:55.860+0700","caller":"adaptor/revenue_adaptor.go:30","M":"GetRevenueByStatus handler called"}
+{"L":"INFO","timestamp":"2026-01-29T23:06:55.861+0700","caller":"usecase/revenue.go:32","M":"Getting revenue by status"}
+{"L":"INFO","timestamp":"2026-01-29T23:06:55.861+0700","caller":"repository/revenue.go:29","M":"Getting revenue by status"}
+{"L":"INFO","timestamp":"2026-01-29T23:06:55.909+0700","caller":"repository/revenue.go:62","M":"Successfully got revenue by status","total_revenue":215500,"status_count":2}
+{"L":"INFO","timestamp":"2026-01-29T23:06:55.910+0700","caller":"usecase/revenue.go:40","M":"Successfully retrieved revenue by status","total_revenue":215500,"status_count":2}
+{"L":"INFO","timestamp":"2026-01-29T23:06:55.910+0700","caller":"adaptor/revenue_adaptor.go:43","M":"GetRevenueByStatus completed successfully","total_revenue":215500,"status_count":2}
+{"L":"INFO","timestamp":"2026-01-29T23:06:55.910+0700","caller":"middleware/logging.go:72","M":"request completed","method":"GET","path":"/api/v1/revenue/by-status","query":"","status":200,"duration":"65.8688ms","response_size":234}
+{"L":"INFO","timestamp":"2026-01-29T23:34:52.590+0700","caller":"middleware/logging.go:28","M":"incoming request","method":"GET","path":"/api/v1/orders","query":"","remote_addr":"::1","user_agent":"PostmanRuntime/7.37.3","referer":"","body_size":0,"content_type":""}
+{"L":"DEBUG","timestamp":"2026-01-29T23:34:52.600+0700","caller":"adaptor/order_adaptor.go:31","M":"GetAllOrders handler called"}
+{"L":"INFO","timestamp":"2026-01-29T23:34:52.602+0700","caller":"usecase/order.go:36","M":"Getting all orders"}
+{"L":"INFO","timestamp":"2026-01-29T23:34:52.604+0700","caller":"repository/order.go:34","M":"Finding all orders"}
+{"L":"INFO","timestamp":"2026-01-29T23:34:52.700+0700","caller":"repository/order.go:43","M":"Successfully found all orders","count":3}
+{"L":"INFO","timestamp":"2026-01-29T23:34:52.700+0700","caller":"usecase/order.go:56","M":"Successfully retrieved all orders","count":3}
+{"L":"INFO","timestamp":"2026-01-29T23:34:52.700+0700","caller":"adaptor/order_adaptor.go:44","M":"GetAllOrders completed successfully","total_orders":3}
+{"L":"INFO","timestamp":"2026-01-29T23:34:52.700+0700","caller":"middleware/logging.go:72","M":"request completed","method":"GET","path":"/api/v1/orders","query":"","status":200,"duration":"109.7201ms","response_size":497}
+{"L":"INFO","timestamp":"2026-01-29T23:35:06.848+0700","caller":"middleware/logging.go:28","M":"incoming request","method":"POST","path":"/api/v1/orders","query":"","remote_addr":"::1","user_agent":"PostmanRuntime/7.37.3","referer":"","body_size":289,"content_type":"application/json"}
+{"L":"DEBUG","timestamp":"2026-01-29T23:35:06.849+0700","caller":"adaptor/order_adaptor.go:54","M":"CreateOrder handler called","client_ip":"::1"}
+{"L":"DEBUG","timestamp":"2026-01-29T23:35:06.855+0700","caller":"adaptor/order_adaptor.go:68","M":"Request body bound successfully","customer_name":"John Doe","table_id":1,"items_count":2}
+{"L":"INFO","timestamp":"2026-01-29T23:35:06.855+0700","caller":"usecase/order.go:61","M":"Creating order","customer_name":"John Doe","table_id":1}
+{"L":"INFO","timestamp":"2026-01-29T23:35:06.855+0700","caller":"repository/order.go:62","M":"Creating new order","customer_name":"John Doe","table_id":1}
+{"L":"INFO","timestamp":"2026-01-29T23:35:06.950+0700","caller":"repository/order.go:106","M":"Successfully created order","id":4,"customer_name":"John Doe"}
+{"L":"INFO","timestamp":"2026-01-29T23:35:06.950+0700","caller":"repository/order.go:48","M":"Finding order by ID","id":4}
+{"L":"INFO","timestamp":"2026-01-29T23:35:06.953+0700","caller":"repository/order.go:57","M":"Successfully found order by ID","id":4}
+{"L":"INFO","timestamp":"2026-01-29T23:35:06.953+0700","caller":"usecase/order.go:84","M":"Successfully created order","id":4,"customer_name":"John Doe"}
+{"L":"INFO","timestamp":"2026-01-29T23:35:06.953+0700","caller":"adaptor/order_adaptor.go:86","M":"Order created successfully","id":4,"customer_name":"John Doe","total_amount":85500}
+{"L":"INFO","timestamp":"2026-01-29T23:35:06.953+0700","caller":"middleware/logging.go:72","M":"request completed","method":"POST","path":"/api/v1/orders","query":"","status":201,"duration":"104.6743ms","response_size":461}
+{"L":"INFO","timestamp":"2026-01-29T23:36:24.629+0700","caller":"middleware/logging.go:28","M":"incoming request","method":"GET","path":"/api/v1/revenue/by-status","query":"","remote_addr":"::1","user_agent":"PostmanRuntime/7.37.3","referer":"","body_size":0,"content_type":""}
+{"L":"DEBUG","timestamp":"2026-01-29T23:36:24.629+0700","caller":"adaptor/revenue_adaptor.go:30","M":"GetRevenueByStatus handler called"}
+{"L":"INFO","timestamp":"2026-01-29T23:36:24.629+0700","caller":"usecase/revenue.go:32","M":"Getting revenue by status"}
+{"L":"INFO","timestamp":"2026-01-29T23:36:24.629+0700","caller":"repository/revenue.go:29","M":"Getting revenue by status"}
+{"L":"INFO","timestamp":"2026-01-29T23:36:24.632+0700","caller":"repository/revenue.go:62","M":"Successfully got revenue by status","total_revenue":301000,"status_count":2}
+{"L":"INFO","timestamp":"2026-01-29T23:36:24.632+0700","caller":"usecase/revenue.go:40","M":"Successfully retrieved revenue by status","total_revenue":301000,"status_count":2}
+{"L":"INFO","timestamp":"2026-01-29T23:36:24.632+0700","caller":"adaptor/revenue_adaptor.go:43","M":"GetRevenueByStatus completed successfully","total_revenue":301000,"status_count":2}
+{"L":"INFO","timestamp":"2026-01-29T23:36:24.632+0700","caller":"middleware/logging.go:72","M":"request completed","method":"GET","path":"/api/v1/revenue/by-status","query":"","status":200,"duration":"3.4846ms","response_size":235}
+{"L":"INFO","timestamp":"2026-01-29T23:36:54.167+0700","caller":"middleware/logging.go:28","M":"incoming request","method":"GET","path":"/api/v1/revenue/per-month","query":"year=2026","remote_addr":"::1","user_agent":"PostmanRuntime/7.37.3","referer":"","body_size":0,"content_type":""}
+{"L":"DEBUG","timestamp":"2026-01-29T23:36:54.167+0700","caller":"adaptor/revenue_adaptor.go:54","M":"GetRevenuePerMonth handler called"}
+{"L":"DEBUG","timestamp":"2026-01-29T23:36:54.167+0700","caller":"adaptor/revenue_adaptor.go:73","M":"Year parameter processed","year":2026}
+{"L":"INFO","timestamp":"2026-01-29T23:36:54.167+0700","caller":"usecase/revenue.go:48","M":"Getting revenue per month","year":2026}
+{"L":"INFO","timestamp":"2026-01-29T23:36:54.168+0700","caller":"repository/revenue.go:70","M":"Getting revenue per month","year":2026}
+{"L":"INFO","timestamp":"2026-01-29T23:36:54.182+0700","caller":"repository/revenue.go:118","M":"Successfully got revenue per month","year":2026,"total_revenue":301000,"month_count":1}
+{"L":"INFO","timestamp":"2026-01-29T23:36:54.182+0700","caller":"usecase/revenue.go:62","M":"Successfully retrieved revenue per month","year":2026,"total_revenue":301000,"month_count":1}
+{"L":"INFO","timestamp":"2026-01-29T23:36:54.182+0700","caller":"adaptor/revenue_adaptor.go:87","M":"GetRevenuePerMonth completed successfully","year":2026,"total_revenue":301000,"month_count":1}
+{"L":"INFO","timestamp":"2026-01-29T23:36:54.182+0700","caller":"middleware/logging.go:72","M":"request completed","method":"GET","path":"/api/v1/revenue/per-month","query":"year=2026","status":200,"duration":"14.4308ms","response_size":193}
+{"L":"INFO","timestamp":"2026-01-29T23:57:33.872+0700","caller":"utils/logger.go:71","M":"Logger initialized","log_file":"logs\\app-2026-01-29.log","debug_mode":true}
+{"L":"INFO","timestamp":"2026-01-29T23:57:33.872+0700","caller":"aplikasi-pos-team-boolean/main.go:35","M":"Application starting","environment":"","debug":true}
+{"L":"INFO","timestamp":"2026-01-29T23:57:33.929+0700","caller":"aplikasi-pos-team-boolean/main.go:46","M":"Database connection successful"}
+{"L":"INFO","timestamp":"2026-01-29T23:57:33.929+0700","caller":"aplikasi-pos-team-boolean/main.go:57","M":"Running database migration","seed":false}
+{"L":"INFO","timestamp":"2026-01-29T23:57:34.115+0700","caller":"wire/wire.go:131","M":"Routes registered successfully"}
+{"L":"INFO","timestamp":"2026-01-29T23:57:34.115+0700","caller":"aplikasi-pos-team-boolean/main.go:72","M":"Server starting","port":"8080"}
+{"L":"INFO","timestamp":"2026-01-29T23:57:46.990+0700","caller":"middleware/logging.go:28","M":"incoming request","method":"GET","path":"/api/v1/revenue/by-status","query":"status=paid","remote_addr":"::1","user_agent":"PostmanRuntime/7.37.3","referer":"","body_size":0,"content_type":""}
+{"L":"DEBUG","timestamp":"2026-01-29T23:57:46.991+0700","caller":"adaptor/revenue_adaptor.go:30","M":"GetRevenueByStatus handler called"}
+{"L":"INFO","timestamp":"2026-01-29T23:57:46.991+0700","caller":"usecase/revenue.go:32","M":"Getting revenue by status","status":"paid"}
+{"L":"INFO","timestamp":"2026-01-29T23:57:46.991+0700","caller":"repository/revenue.go:29","M":"Getting revenue by status","status":"paid"}
+{"L":"INFO","timestamp":"2026-01-29T23:57:46.994+0700","caller":"repository/revenue.go:54","M":"Successfully got revenue by status","total_revenue":130000,"status":"paid"}
+{"L":"INFO","timestamp":"2026-01-29T23:57:46.994+0700","caller":"usecase/revenue.go:40","M":"Successfully retrieved revenue by status","total_revenue":130000,"status":"paid","status_count":1}
+{"L":"INFO","timestamp":"2026-01-29T23:57:46.994+0700","caller":"adaptor/revenue_adaptor.go:51","M":"GetRevenueByStatus completed successfully","status":"paid","total_revenue":130000,"status_count":1}
+{"L":"INFO","timestamp":"2026-01-29T23:57:46.994+0700","caller":"middleware/logging.go:72","M":"request completed","method":"GET","path":"/api/v1/revenue/by-status","query":"status=paid","status":200,"duration":"3.9019ms","response_size":175}
+{"L":"INFO","timestamp":"2026-01-29T23:57:57.024+0700","caller":"middleware/logging.go:28","M":"incoming request","method":"GET","path":"/api/v1/revenue/per-month","query":"month=1","remote_addr":"::1","user_agent":"PostmanRuntime/7.37.3","referer":"","body_size":0,"content_type":""}
+{"L":"DEBUG","timestamp":"2026-01-29T23:57:57.024+0700","caller":"adaptor/revenue_adaptor.go:63","M":"GetRevenuePerMonth handler called"}
+{"L":"DEBUG","timestamp":"2026-01-29T23:57:57.024+0700","caller":"adaptor/revenue_adaptor.go:94","M":"Year and month parameter processed","year":0,"month":1}
+{"L":"INFO","timestamp":"2026-01-29T23:57:57.024+0700","caller":"usecase/revenue.go:49","M":"Getting revenue for specific month","year":0,"month":1}
+{"L":"INFO","timestamp":"2026-01-29T23:57:57.024+0700","caller":"usecase/revenue.go:53","M":"Year not provided, using current year","year":2026}
+{"L":"INFO","timestamp":"2026-01-29T23:57:57.024+0700","caller":"repository/revenue.go:62","M":"Getting revenue for specific month","year":2026,"month":1}
+{"L":"INFO","timestamp":"2026-01-29T23:57:57.027+0700","caller":"repository/revenue.go:102","M":"Successfully got revenue for month","year":2026,"month":1,"total_revenue":301000}
+{"L":"INFO","timestamp":"2026-01-29T23:57:57.027+0700","caller":"usecase/revenue.go:62","M":"Successfully retrieved revenue for month","year":2026,"month":1,"total_revenue":301000,"month_count":1}
+{"L":"INFO","timestamp":"2026-01-29T23:57:57.027+0700","caller":"adaptor/revenue_adaptor.go:109","M":"GetRevenuePerMonth completed successfully","year":2026,"month":1,"total_revenue":301000,"month_count":1}
+{"L":"INFO","timestamp":"2026-01-29T23:57:57.028+0700","caller":"middleware/logging.go:72","M":"request completed","method":"GET","path":"/api/v1/revenue/per-month","query":"month=1","status":200,"duration":"3.8742ms","response_size":193}
+{"L":"INFO","timestamp":"2026-01-29T23:59:42.781+0700","caller":"middleware/logging.go:28","M":"incoming request","method":"GET","path":"/api/v1/revenue/products","query":"productID=1","remote_addr":"::1","user_agent":"PostmanRuntime/7.37.3","referer":"","body_size":0,"content_type":""}
+{"L":"DEBUG","timestamp":"2026-01-29T23:59:42.781+0700","caller":"adaptor/revenue_adaptor.go:122","M":"GetProductRevenueList handler called"}
+{"L":"INFO","timestamp":"2026-01-29T23:59:42.782+0700","caller":"usecase/revenue.go:72","M":"Getting product revenue for product","product_id":1}
+{"L":"INFO","timestamp":"2026-01-29T23:59:42.782+0700","caller":"repository/revenue.go:112","M":"Getting product revenue for product","product_id":1}
+{"L":"INFO","timestamp":"2026-01-29T23:59:42.788+0700","caller":"repository/revenue.go:143","M":"Successfully got product revenue","product_id":1}
+{"L":"INFO","timestamp":"2026-01-29T23:59:42.788+0700","caller":"usecase/revenue.go:80","M":"Successfully retrieved product revenue","product_id":1,"total_products":1}
+{"L":"INFO","timestamp":"2026-01-29T23:59:42.788+0700","caller":"adaptor/revenue_adaptor.go:148","M":"GetProductRevenueList completed successfully","product_id":1,"total_products":1}
+{"L":"INFO","timestamp":"2026-01-29T23:59:42.788+0700","caller":"middleware/logging.go:72","M":"request completed","method":"GET","path":"/api/v1/revenue/products","query":"productID=1","status":200,"duration":"7.7858ms","response_size":281}

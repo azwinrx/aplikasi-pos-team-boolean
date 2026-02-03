@@ -30,13 +30,13 @@ func InitializeApp(db *gorm.DB, logger *zap.Logger) *gin.Engine {
 	adaptorInstance := adaptor.NewAdaptor(uc, logger)
 
 	// Setup routes
-	setupRoutes(router, adaptorInstance.AuthAdaptor, adaptorInstance.InventoriesAdaptor, adaptorInstance.StaffAdaptor, adaptorInstance.OrderAdaptor, adaptorInstance.CategoryAdaptor, adaptorInstance.ProductAdaptor, adaptorInstance.DashboardAdaptor, uc.DashboardUseCase, logger)
+	setupRoutes(router, adaptorInstance.AuthAdaptor, adaptorInstance.InventoriesAdaptor, adaptorInstance.StaffAdaptor, adaptorInstance.OrderAdaptor, adaptorInstance.CategoryAdaptor, adaptorInstance.ProductAdaptor, adaptorInstance.RevenueAdaptor, adaptorInstance.ReservationsAdaptor, adaptorInstance.DashboardAdaptor, uc.DashboardUseCase, logger)
 
 	return router
 }
 
 // setupRoutes mengatur semua routing untuk aplikasi
-func setupRoutes(router *gin.Engine, authHandler *adaptor.AuthAdaptor, inventoriesHandler *adaptor.InventoriesAdaptor, staffHandler *adaptor.StaffAdaptor, orderHandler *adaptor.OrderAdaptor, categoryHandler *adaptor.CategoryAdaptor, productHandler *adaptor.ProductAdaptor, dashboardHandler adaptor.DashboardHandler, dashboardUC usecase.DashboardUseCase, logger *zap.Logger) {
+func setupRoutes(router *gin.Engine, authHandler *adaptor.AuthAdaptor, inventoriesHandler *adaptor.InventoriesAdaptor, staffHandler *adaptor.StaffAdaptor, orderHandler *adaptor.OrderAdaptor, categoryHandler *adaptor.CategoryAdaptor, productHandler *adaptor.ProductAdaptor, revenueHandler *adaptor.RevenueAdaptor, reservationsHandler *adaptor.ReservationsAdaptor, dashboardHandler adaptor.DashboardHandler, dashboardUC usecase.DashboardUseCase, logger *zap.Logger) {
 	// Health check
 	router.GET("/health", func(c *gin.Context) {
 		utils.ResponseSuccess(c.Writer, 200, "Server is running", map[string]string{
@@ -53,20 +53,29 @@ func setupRoutes(router *gin.Engine, authHandler *adaptor.AuthAdaptor, inventori
 		// Auth routes
 		auth := v1.Group("/auth")
 		{
-			// 1. POST Login
+			// 1. POST Register
+			auth.POST("/register", authHandler.Register)
+
+			// 2. POST Login
 			auth.POST("/login", authHandler.Login)
 
-			// 2. POST Check Email
+			// 3. POST Check Email
 			auth.POST("/check-email", authHandler.CheckEmail)
 
-			// 3. POST Send OTP
+			// 4. POST Send OTP
 			auth.POST("/send-otp", authHandler.SendOTP)
 
-			// 4. POST Validate OTP
+			// 5. POST Validate OTP
 			auth.POST("/validate-otp", authHandler.ValidateOTP)
 
-			// 5. POST Reset Password
+			// 6. POST Reset Password
 			auth.POST("/reset-password", authHandler.ResetPassword)
+
+			// 7. GET User by ID
+			auth.GET("/user/:id", authHandler.GetUserByID)
+
+			// 8. DELETE User
+			auth.DELETE("/user/:id", authHandler.DeleteUser)
 		}
 
 		// Inventories routes
@@ -195,7 +204,35 @@ func setupRoutes(router *gin.Engine, authHandler *adaptor.AuthAdaptor, inventori
 			// 5. Websocket realtime dashboard (revenue & sales)
 			dashboard.GET("/ws", dashboardWsHandler.ServeWs)
 		}
+		// Revenue Report routes
+		revenue := v1.Group("/revenue")
+		{
+			// 1. GET total revenue dan breakdown berdasarkan status
+			revenue.GET("/by-status", revenueHandler.GetRevenueByStatus)
+
+			// 2. GET total revenue per bulan (optional query param: year)
+			revenue.GET("/per-month", revenueHandler.GetRevenuePerMonth)
+
+			// 3. GET list produk beserta detail revenue
+			revenue.GET("/products", revenueHandler.GetProductRevenueList)
+		}
+
+		// Reservations routes
+		reservations := v1.Group("/reservations")
+		{
+			// 1. GET all reservations
+			reservations.GET("", reservationsHandler.GetAllReservations)
+
+			// 2. POST Create reservation
+			reservations.POST("", reservationsHandler.CreateReservation)
+
+			// 3. PUT Update reservation
+			reservations.PUT("/:id", reservationsHandler.UpdateReservation)
+
+			// 4. DELETE reservation
+			reservations.DELETE("/:id", reservationsHandler.DeleteReservation)
 	}
 
 	logger.Info("Routes registered successfully")
+}
 }

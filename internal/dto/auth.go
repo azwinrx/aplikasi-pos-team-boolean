@@ -67,3 +67,38 @@ type ResetPasswordResponse struct {
 	Email   string `json:"email"`
 	Message string `json:"message"`
 }
+
+// RegisterRequest merepresentasikan request untuk registrasi user baru
+type RegisterRequest struct {
+	Email    string `json:"email" binding:"required,email"`
+	Password string `json:"password" binding:"required,min=6"`
+	Name     string `json:"name" binding:"required,min=3"`
+	Role     string `json:"role" binding:"omitempty,oneof=customer"` // Optional, auto-set to customer
+}
+
+// RegisterResponse merepresentasikan response dari registrasi
+type RegisterResponse struct {
+	ID      uint   `json:"id"`
+	Email   string `json:"email"`
+	Name    string `json:"name"`
+	Role    string `json:"role"`
+	Message string `json:"message"`
+}
+
+// GetUserResponse merepresentasikan response dari get user by ID
+type GetUserResponse struct {
+	ID        uint   `json:"id"`
+	Email     string `json:"email"`
+	Name      string `json:"name"`
+	Role      string `json:"role"`
+	Status    string `json:"status"`
+	CreatedAt int64  `json:"created_at"`
+	UpdatedAt int64  `json:"updated_at"`
+}
+
+// DeleteUserResponse merepresentasikan response dari delete user
+type DeleteUserResponse struct {
+	ID      uint   `json:"id"`
+	Email   string `json:"email"`
+	Message string `json:"message"`
+}
