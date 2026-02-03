@@ -1,6 +1,8 @@
 package adaptor
 
 import (
+	"bytes"
+	"io/ioutil"
 	"net/http"
 	"strconv"
 
@@ -95,6 +97,13 @@ func (h *ReservationsAdaptor) UpdateReservation(c *gin.Context) {
 		return
 	}
 
+	// Read raw body first for debugging
+	bodyBytes, _ := c.GetRawData()
+	h.logger.Info("Raw request body", zap.String("body", string(bodyBytes)))
+
+	// Re-set the body for binding
+	c.Request.Body = ioutil.NopCloser(bytes.NewBuffer(bodyBytes))
+
 	var req dto.ReservationUpdateRequest
 
 	if err := c.ShouldBindJSON(&req); err != nil {
@@ -105,6 +114,17 @@ func (h *ReservationsAdaptor) UpdateReservation(c *gin.Context) {
 		utils.ResponseError(c.Writer, http.StatusBadRequest, "Invalid request body: "+err.Error())
 		return
 	}
+
+	// Debug log the request
+	h.logger.Info("Update reservation request received",
+		zap.Uint("id", uint(id)),
+		zap.String("customer_name", req.CustomerName),
+		zap.String("customer_phone", req.CustomerPhone),
+		zap.String("table_number", req.TableNumber),
+		zap.String("reserve_date", req.ReserveDate),
+		zap.String("reservation_time", req.ReservationTime),
+		zap.String("status", req.Status),
+	)
 
 	err = h.reservationsUsecase.UpdateReservation(c.Request.Context(), uint(id), req)
 	if err != nil {

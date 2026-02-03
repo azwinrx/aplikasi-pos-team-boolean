@@ -16,6 +16,7 @@ type ReservationsRepository interface {
 	GetById(ctx context.Context, id int64) (*entity.Reservations, error)
 	Create(ctx context.Context, reservation *entity.Reservations) (*entity.Reservations, error)
 	Update(ctx context.Context, id int64, newTableID int64, cancelStatus string) error
+	UpdateFull(ctx context.Context, reservation *entity.Reservations) (*entity.Reservations, error)
 	Delete(ctx context.Context, id int64) error
 	GetTableIDByNumber(ctx context.Context, tableNumber string) (int64, error)
 }
@@ -126,6 +127,44 @@ func (r *reservationsRepository) Update(ctx context.Context, id int64, newTableI
 		return err
 	}
 	return nil
+}
+
+// UpdateFull: update all fields of reservation
+func (r *reservationsRepository) UpdateFull(ctx context.Context, reservation *entity.Reservations) (*entity.Reservations, error) {
+	if reservation == nil {
+		return nil, errors.New("reservation is nil")
+	}
+	if reservation.ID == 0 {
+		return nil, errors.New("reservation id is required")
+	}
+
+	// Use Select to force update specific fields
+	if err := r.db.WithContext(ctx).
+		Model(&entity.Reservations{}).
+		Where("id = ? AND deleted_at IS NULL", reservation.ID).
+		Select("customer_name", "customer_phone", "table_id", "reservation_time", "status", "updated_at").
+		Updates(map[string]interface{}{
+			"customer_name":    reservation.CustomerName,
+			"customer_phone":   reservation.CustomerPhone,
+			"table_id":         reservation.TableID,
+			"reservation_time": reservation.ReservationTime,
+			"status":           reservation.Status,
+			"updated_at":       time.Now(),
+		}).Error; err != nil {
+		r.logger.Error("failed to update reservation", zap.Error(err))
+		return nil, err
+	}
+
+	// Get updated reservation
+	var updated entity.Reservations
+	if err := r.db.WithContext(ctx).
+		Where("id = ? AND deleted_at IS NULL", reservation.ID).
+		First(&updated).Error; err != nil {
+		r.logger.Error("failed to get updated reservation", zap.Error(err))
+		return nil, err
+	}
+
+	return &updated, nil
 }
 
 // Delete: soft delete reservation by setting deleted_at

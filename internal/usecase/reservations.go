@@ -130,15 +130,82 @@ func (uc *ReservationUseCase) CreateReservation(ctx context.Context, req dto.Res
 
 // UpdateReservation updates reservation from DTO
 func (uc *ReservationUseCase) UpdateReservation(ctx context.Context, id uint, req dto.ReservationUpdateRequest) error {
-	// Mapping TableNumber to TableID - assuming TableNumber is the table number string, need to lookup ID
-	// For now, placeholder: assume TableNumber is actually ID as string or something
-	// TODO: implement table lookup by number
-	var tableID int64 = 0 // placeholder
-	if req.TableNumber != "" {
-		// lookup tableID by req.TableNumber
-		// tableID = getTableIDByNumber(req.TableNumber)
+	uc.logger.Info("Updating reservation", zap.Uint("id", id), zap.String("customer_name", req.CustomerName))
+
+	// Get existing reservation first
+	existing, err := uc.repo.GetById(ctx, int64(id))
+	if err != nil {
+		uc.logger.Error("Failed to get existing reservation", zap.Uint("id", id), zap.Error(err))
+		return err
 	}
-	return uc.repo.Update(ctx, int64(id), tableID, req.Status)
+	if existing == nil {
+		return errors.New("reservation not found")
+	}
+
+	// Start with existing values
+	customerName := existing.CustomerName
+	customerPhone := existing.CustomerPhone
+	tableID := existing.TableID
+	resTime := existing.ReservationTime
+	status := existing.Status
+
+	// Update only if new values are provided
+	if req.CustomerName != "" {
+		customerName = req.CustomerName
+		uc.logger.Info("Updating customer name", zap.String("new_name", customerName))
+	}
+
+	if req.CustomerPhone != "" {
+		customerPhone = req.CustomerPhone
+		uc.logger.Info("Updating customer phone", zap.String("new_phone", customerPhone))
+	}
+
+	// Lookup TableID from TableNumber if provided
+	if req.TableNumber != "" {
+		newTableID, err := uc.repo.GetTableIDByNumber(ctx, req.TableNumber)
+		if err != nil {
+			uc.logger.Error("Failed to lookup table ID", zap.String("table_number", req.TableNumber), zap.Error(err))
+			return err
+		}
+		tableID = newTableID
+		uc.logger.Info("Table ID found", zap.Int64("table_id", tableID))
+	}
+
+	// Parse reservation time if provided
+	if req.ReserveDate != "" && req.ReservationTime != "" {
+		parsedTime, err := time.Parse("2006-01-02 15:04", req.ReserveDate+" "+req.ReservationTime)
+		if err != nil {
+			uc.logger.Error("Failed to parse reservation time", zap.String("reserve_date", req.ReserveDate), zap.String("reservation_time", req.ReservationTime), zap.Error(err))
+			return err
+		}
+		resTime = &parsedTime
+		uc.logger.Info("Updating reservation time", zap.Time("new_time", parsedTime))
+	}
+
+	if req.Status != "" {
+		status = req.Status
+		uc.logger.Info("Updating status", zap.String("new_status", status))
+	}
+
+	// Update entity with new values
+	entityUpdate := &entity.Reservations{
+		ID:              existing.ID,
+		CustomerName:    customerName,
+		CustomerPhone:   customerPhone,
+		TableID:         tableID,
+		ReservationTime: resTime,
+		Status:          status,
+	}
+
+	// Use repository's update with full entity
+	_, err = uc.repo.UpdateFull(ctx, entityUpdate)
+	if err != nil {
+		uc.logger.Error("Failed to update reservation", zap.Uint("id", id), zap.Error(err))
+		return err
+	}
+
+	uc.logger.Info("Reservation updated successfully", zap.Uint("id", id))
+	return nil
 }
 
 // DeleteReservation soft deletes a reservation

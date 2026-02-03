@@ -13,7 +13,7 @@ type Adaptor struct {
 	OrderAdaptor        *OrderAdaptor
 	RevenueAdaptor      *RevenueAdaptor
 	ReservationsAdaptor *ReservationsAdaptor
-	AuthAdaptor        *AuthAdaptor
+	AuthAdaptor         *AuthAdaptor
 }
 
 // NewAdaptor creates a new instance of Adaptor with all handlers
@@ -23,7 +23,7 @@ func NewAdaptor(uc *usecase.UseCase, logger *zap.Logger) *Adaptor {
 		StaffAdaptor:        NewStaffAdaptor(uc.StaffUseCase, logger),
 		OrderAdaptor:        NewOrderAdaptor(uc.OrderUseCase, logger),
 		RevenueAdaptor:      NewRevenueAdaptor(uc.RevenueUseCase, logger),
-		ReservationsAdaptor: NewReservationsAdaptor(uc.ReservationUseCase, logger),
-		AuthAdaptor:        NewAuthAdaptor(uc.AuthUseCase, logger),
+		ReservationsAdaptor: NewReservationsAdaptor(uc.ReservationsUseCase, logger),
+		AuthAdaptor:         NewAuthAdaptor(uc.AuthUseCase, logger),
 	}
 }
