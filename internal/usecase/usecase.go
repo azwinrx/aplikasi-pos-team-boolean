@@ -12,10 +12,13 @@ type UseCase struct {
 	log  *zap.Logger
 	repo repository.Repository
 
-	AuthUseCase         AuthUseCase
-	OrderUseCase        OrderUseCase
-	InventoriesUsecase  InventoriesUsecase
-	StaffUseCase        StaffUseCase
+	AuthUseCase        AuthUseCase
+	OrderUseCase       OrderUseCase
+	InventoriesUsecase InventoriesUsecase
+	StaffUseCase       StaffUseCase
+	CategoryUseCase    CategoryUseCase
+	ProductUseCase     ProductUseCase
+	DashboardUseCase   DashboardUseCase
 	ReservationsUseCase ReservationsUseCase
 	RevenueUseCase      RevenueUseCase
 }
@@ -27,10 +30,13 @@ func NewUseCase(repo *repository.Repository, logger *zap.Logger, tx *gorm.DB) *U
 		log:  logger,
 		repo: *repo,
 
-		AuthUseCase:         NewAuthUseCase(repo.AuthRepo, logger, emailService),
-		OrderUseCase:        NewOrderUseCase(repo.OrderRepo, logger),
-		InventoriesUsecase:  NewInventoriesUsecase(repo.InventoriesRepo, logger),
-		StaffUseCase:        NewStaffUseCase(repo.StaffRepo, logger),
+		AuthUseCase:        NewAuthUseCase(repo.AuthRepo, logger, emailService),
+		OrderUseCase:       NewOrderUseCase(repo.OrderRepo, logger),
+		InventoriesUsecase: NewInventoriesUsecase(repo.InventoriesRepo, logger),
+		StaffUseCase:       NewStaffUseCase(repo.StaffRepo, logger),
+		CategoryUseCase:    NewCategoryUseCase(repo.CategoryRepo, logger),
+		ProductUseCase:     NewProductUseCase(repo.ProductRepo, repo.CategoryRepo, logger),
+		DashboardUseCase:   NewDashboardUseCase(repo.DashboardRepo, logger),
 		ReservationsUseCase: NewReservationUseCase(repo.ReservationRepo, logger),
 		RevenueUseCase:      NewRevenueUseCase(repo.RevenueRepo, logger),
 	}

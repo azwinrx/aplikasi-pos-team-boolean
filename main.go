@@ -1,8 +1,14 @@
 package main
 
 import (
+	"context"
 	"fmt"
 	"log"
+	"net/http"
+	"os"
+	"os/signal"
+	"syscall"
+	"time"
 
 	"aplikasi-pos-team-boolean/internal/wire"
 	"aplikasi-pos-team-boolean/pkg/database"
@@ -63,18 +69,48 @@ func main() {
 	// Initialize app dengan dependency injection
 	router := wire.InitializeApp(db, logger)
 
-	// Jalankan server
+	// Setup HTTP Server
 	port := config.Port
 	if port == "" {
 		port = "8080"
 	}
 
-	logger.Info("Server starting", zap.String("port", port))
-	fmt.Println("========================================")
-	fmt.Printf("🚀 Server running on http://localhost:%s\n", port)
-	fmt.Println("========================================")
-
-	if err := router.Run(":" + port); err != nil {
-		logger.Fatal("Failed to start server", zap.Error(err))
+	srv := &http.Server{
+		Addr:    ":" + port,
+		Handler: router,
 	}
+
+	// Channel untuk signal interrupt
+	quit := make(chan os.Signal, 1)
+	signal.Notify(quit, syscall.SIGINT, syscall.SIGTERM)
+
+	// Jalankan server di goroutine
+	go func() {
+		logger.Info("Server starting", zap.String("port", port))
+		fmt.Println("========================================")
+		fmt.Printf("Server running on http://localhost:%s\n", port)
+		fmt.Println("Press Ctrl+C to shutdown gracefully")
+		fmt.Println("========================================")
+
+		if err := srv.ListenAndServe(); err != nil && err != http.ErrServerClosed {
+			logger.Fatal("Failed to start server", zap.Error(err))
+		}
+	}()
+
+	// Tunggu signal interrupt (Ctrl+C)
+	<-quit
+	logger.Info("Shutting down server...")
+	fmt.Println("\nGraceful shutdown initiated...")
+
+	// Timeout 5 detik untuk graceful shutdown
+	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+	defer cancel()
+
+	// Shutdown server dengan graceful
+	if err := srv.Shutdown(ctx); err != nil {
+		logger.Fatal("Server forced to shutdown", zap.Error(err))
+	}
+
+	logger.Info("Server exited successfully")
+	fmt.Println("Server stopped gracefully")
 }

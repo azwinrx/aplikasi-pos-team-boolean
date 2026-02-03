@@ -11,13 +11,8 @@ import (
 )
 
 // Helper function untuk hash password
-func hashPassword(password string) string {
-	hashedPass, err := utils.HashPassword(password)
-	if err != nil {
-		log.Printf("Failed to hash password: %v", err)
-		return password
-	}
-	return hashedPass
+func hashPassword(password string) (string, error) {
+	return utils.HashPassword(password)
 }
 
 // AutoMigrate melakukan auto migration untuk semua entity/table
@@ -34,6 +29,8 @@ func AutoMigrate(db *gorm.DB) error {
 		&entity.Reservations{},
 		&entity.Order{},
 		&entity.OrderItem{},
+		&entity.Category{},
+		&entity.Product{},
 		// Tambahkan entity lain jika ada
 	}
 
@@ -69,10 +66,16 @@ func SeedData(db *gorm.DB) error {
 	db.Model(&entity.User{}).Count(&count)
 	if count == 0 {
 		log.Println("   Seeding users data...")
+
+		hashedPassword, err := hashPassword("customer123")
+		if err != nil {
+			return fmt.Errorf("failed to hash password: %w", err)
+		}
+
 		seedUsers := []entity.User{
 			{
 				Email:     "john.customer@pos.com",
-				Password:  hashPassword("customer123"),
+				Password:  hashedPassword,
 				Name:      "John Customer",
 				Role:      "customer",
 				Status:    "active",
@@ -80,7 +83,7 @@ func SeedData(db *gorm.DB) error {
 			},
 			{
 				Email:     "jane.customer@pos.com",
-				Password:  hashPassword("customer123"),
+				Password:  hashedPassword,
 				Name:      "Jane Customer",
 				Role:      "customer",
 				Status:    "active",
@@ -88,7 +91,7 @@ func SeedData(db *gorm.DB) error {
 			},
 			{
 				Email:     "bob.customer@pos.com",
-				Password:  hashPassword("customer123"),
+				Password:  hashedPassword,
 				Name:      "Bob Customer",
 				Role:      "customer",
 				Status:    "active",
@@ -250,6 +253,133 @@ func SeedData(db *gorm.DB) error {
 		}
 	}
 
+	// Seed categories jika masih kosong
+	db.Model(&entity.Category{}).Count(&count)
+	if count == 0 {
+		log.Println("   Seeding categories data...")
+		seedCategories := []entity.Category{
+			{
+				IconCategory: "🍕",
+				CategoryName: "Pizza",
+				Description:  "Delicious pizza varieties",
+			},
+			{
+				IconCategory: "🍔",
+				CategoryName: "Burger",
+				Description:  "Juicy burgers and sandwiches",
+			},
+			{
+				IconCategory: "🍗",
+				CategoryName: "Chicken",
+				Description:  "Crispy fried chicken",
+			},
+			{
+				IconCategory: "🥐",
+				CategoryName: "Bakery",
+				Description:  "Fresh baked goods",
+			},
+			{
+				IconCategory: "🥤",
+				CategoryName: "Beverage",
+				Description:  "Refreshing drinks",
+			},
+			{
+				IconCategory: "🦐",
+				CategoryName: "Seafood",
+				Description:  "Fresh seafood dishes",
+			},
+		}
+
+		if err := db.Create(&seedCategories).Error; err != nil {
+			return fmt.Errorf("failed to seed categories: %w", err)
+		}
+		log.Printf("   Seeded %d categories", len(seedCategories))
+	}
+
+	// Seed products jika masih kosong
+	db.Model(&entity.Product{}).Count(&count)
+	if count == 0 {
+		log.Println("   Seeding products data...")
+
+		// Get category IDs
+		var pizzaCategory, burgerCategory, chickenCategory, beverageCategory entity.Category
+		db.Where("category_name = ?", "Pizza").First(&pizzaCategory)
+		db.Where("category_name = ?", "Burger").First(&burgerCategory)
+		db.Where("category_name = ?", "Chicken").First(&chickenCategory)
+		db.Where("category_name = ?", "Beverage").First(&beverageCategory)
+
+		seedProducts := []entity.Product{
+			{
+				ProductImage: "/images/chicken-parmesan.jpg",
+				ProductName:  "Chicken Parmesan",
+				ItemID:       "#22314644",
+				Stock:        119,
+				CategoryID:   chickenCategory.ID,
+				Price:        55.00,
+				IsAvailable:  true,
+			},
+			{
+				ProductImage: "/images/margherita-pizza.jpg",
+				ProductName:  "Margherita Pizza",
+				ItemID:       "#22314645",
+				Stock:        85,
+				CategoryID:   pizzaCategory.ID,
+				Price:        45.00,
+				IsAvailable:  true,
+			},
+			{
+				ProductImage: "/images/pepperoni-pizza.jpg",
+				ProductName:  "Pepperoni Pizza",
+				ItemID:       "#22314646",
+				Stock:        72,
+				CategoryID:   pizzaCategory.ID,
+				Price:        50.00,
+				IsAvailable:  true,
+			},
+			{
+				ProductImage: "/images/classic-burger.jpg",
+				ProductName:  "Classic Burger",
+				ItemID:       "#22314647",
+				Stock:        95,
+				CategoryID:   burgerCategory.ID,
+				Price:        35.00,
+				IsAvailable:  true,
+			},
+			{
+				ProductImage: "/images/cheese-burger.jpg",
+				ProductName:  "Cheese Burger",
+				ItemID:       "#22314648",
+				Stock:        8,
+				CategoryID:   burgerCategory.ID,
+				Price:        40.00,
+				IsAvailable:  true,
+			},
+			{
+				ProductImage: "/images/cola.jpg",
+				ProductName:  "Cola",
+				ItemID:       "#22314649",
+				Stock:        200,
+				CategoryID:   beverageCategory.ID,
+				Price:        5.00,
+				IsAvailable:  true,
+			},
+			{
+				ProductImage: "/images/orange-juice.jpg",
+				ProductName:  "Orange Juice",
+				ItemID:       "#22314650",
+				Stock:        0,
+				CategoryID:   beverageCategory.ID,
+				Price:        8.00,
+				IsAvailable:  false,
+			},
+		}
+
+		if err := db.Create(&seedProducts).Error; err != nil {
+			return fmt.Errorf("failed to seed products: %w", err)
+		}
+		log.Printf("   Seeded %d products", len(seedProducts))
+	}
+
 	return nil
 }
 
@@ -258,6 +388,8 @@ func DropAllTables(db *gorm.DB) error {
 	log.Println("WARNING: Dropping all tables...")
 
 	entities := []interface{}{
+		&entity.Product{},
+		&entity.Category{},
 		&entity.OrderItem{},
 		&entity.Order{},
 		&entity.PaymentMethod{},
