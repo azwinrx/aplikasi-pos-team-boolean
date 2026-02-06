@@ -30,13 +30,13 @@ func InitializeApp(db *gorm.DB, logger *zap.Logger) *gin.Engine {
 	adaptorInstance := adaptor.NewAdaptor(uc, logger)
 
 	// Setup routes
-	setupRoutes(router, adaptorInstance.AuthAdaptor, adaptorInstance.AdminAdaptor, adaptorInstance.InventoriesAdaptor, adaptorInstance.StaffAdaptor, adaptorInstance.OrderAdaptor, adaptorInstance.NotificationAdaptor, logger)
+	setupRoutes(router, adaptorInstance.AuthAdaptor, adaptorInstance.AdminAdaptor, adaptorInstance.InventoriesAdaptor, adaptorInstance.StaffAdaptor, adaptorInstance.OrderAdaptor, adaptorInstance.CategoryAdaptor, adaptorInstance.ProductAdaptor, adaptorInstance.RevenueAdaptor, adaptorInstance.ReservationsAdaptor, adaptorInstance.DashboardAdaptor, uc.DashboardUseCase, adaptorInstance.NotificationAdaptor, logger)
 
 	return router
 }
 
 // setupRoutes mengatur semua routing untuk aplikasi
-func setupRoutes(router *gin.Engine, authHandler *adaptor.AuthAdaptor, adminHandler *adaptor.AdminAdaptor, inventoriesHandler *adaptor.InventoriesAdaptor, staffHandler *adaptor.StaffAdaptor, orderHandler *adaptor.OrderAdaptor, notificationHandler *adaptor.NotificationAdaptor, logger *zap.Logger) {
+func setupRoutes(router *gin.Engine, authHandler *adaptor.AuthAdaptor, adminHandler *adaptor.AdminAdaptor, inventoriesHandler *adaptor.InventoriesAdaptor, staffHandler *adaptor.StaffAdaptor, orderHandler *adaptor.OrderAdaptor, categoryHandler *adaptor.CategoryAdaptor, productHandler *adaptor.ProductAdaptor, revenueHandler *adaptor.RevenueAdaptor, reservationsHandler *adaptor.ReservationsAdaptor, dashboardHandler adaptor.DashboardHandler, dashboardUC usecase.DashboardUseCase, notificationHandler *adaptor.NotificationAdaptor, logger *zap.Logger) {
 	// Health check
 	router.GET("/health", func(c *gin.Context) {
 		utils.ResponseSuccess(c.Writer, 200, "Server is running", map[string]string{
@@ -44,54 +44,55 @@ func setupRoutes(router *gin.Engine, authHandler *adaptor.AuthAdaptor, adminHand
 		})
 	})
 
+	// Inisialisasi websocket dashboard handler
+	dashboardWsHandler := adaptor.NewDashboardWebsocketHandler(dashboardUC, logger)
+
 	// API v1 group
 	v1 := router.Group("/api/v1")
 	{
 		// Auth routes (public)
 		auth := v1.Group("/auth")
 		{
-			// 1. POST Login
+			// 1. POST Register
+			auth.POST("/register", authHandler.Register)
+
+			// 2. POST Login
 			auth.POST("/login", authHandler.Login)
 
-			// 2. POST Check Email
+			// 3. POST Check Email
 			auth.POST("/check-email", authHandler.CheckEmail)
 
-			// 3. POST Send OTP
+			// 4. POST Send OTP
 			auth.POST("/send-otp", authHandler.SendOTP)
 
-			// 4. POST Validate OTP
+			// 5. POST Validate OTP
 			auth.POST("/validate-otp", authHandler.ValidateOTP)
 
-			// 5. POST Reset Password
+			// 6. POST Reset Password
 			auth.POST("/reset-password", authHandler.ResetPassword)
 
-			// 6. POST Logout (protected)
-			auth.POST("/logout", middleware.AuthMiddleware(logger), adminHandler.Logout)
+			// 7. GET User by ID
+			auth.GET("/user/:id", authHandler.GetUserByID)
+
+			// 8. DELETE User
+			auth.DELETE("/user/:id", authHandler.DeleteUser)
 		}
 
-		// User Profile routes (protected)
-		profile := v1.Group("/profile")
-		profile.Use(middleware.AuthMiddleware(logger))
-		{
-			// 1. GET user profile
-			profile.GET("", adminHandler.GetUserProfile)
-
-			// 2. PUT update user profile
-			profile.PUT("", adminHandler.UpdateUserProfile)
-		}
-
-		// Admin routes (protected, superadmin only)
+		// Admin routes (protected)
 		admin := v1.Group("/admin")
 		admin.Use(middleware.AuthMiddleware(logger))
 		{
-			// 1. GET list admins (superadmin only)
-			admin.GET("/list", adminHandler.ListAdmins)
+			// 1. GET List all admins (with pagination)
+			admin.GET("", adminHandler.ListAdmins)
 
-			// 2. PUT edit admin access (superadmin only)
-			admin.PUT("/:id/access", adminHandler.EditAdminAccess)
+			// 2. POST Create admin with auto-generated password sent via email
+			admin.POST("", adminHandler.CreateAdminWithEmail)
 
-			// 3. POST create admin (superadmin only)
-			admin.POST("/create", adminHandler.CreateAdmin)
+			// 3. PUT Update user profile
+			admin.PUT("/profile", adminHandler.UpdateUserProfile)
+
+			// 4. GET User profile
+			admin.GET("/profile", adminHandler.GetUserProfile)
 		}
 
 		// Inventories routes
@@ -173,57 +174,97 @@ func setupRoutes(router *gin.Engine, authHandler *adaptor.AuthAdaptor, adminHand
 			// 3. DELETE notification
 			notifications.DELETE("/:id", notificationHandler.DeleteNotification)
 		}
-	}
 
-	logger.Info("Routes registered successfully")
-}
+		// Category routes (Menu)
+		categories := v1.Group("/categories")
+		{
+			// 1. GET all categories
+			categories.GET("", categoryHandler.GetList)
 
-			// 4. GET staff by email (query param: ?email=xxx) - MUST BE BEFORE /:id
-			staff.GET("/email", staffHandler.GetByEmail)
+			// 2. POST Create category
+			categories.POST("", categoryHandler.Create)
 
-			// 5. GET staff by ID
-			staff.GET("/:id", staffHandler.GetByID)
+			// 3. PUT Update category
+			categories.PUT("/:id", categoryHandler.Update)
 
-			// 6. DELETE staff
-			staff.DELETE("/:id", staffHandler.Delete)
+			// 4. GET category by ID
+			categories.GET("/:id", categoryHandler.GetByID)
+
+			// 5. DELETE category
+			categories.DELETE("/:id", categoryHandler.Delete)
 		}
 
-		// Order routes
-		order := v1.Group("/orders")
+		// Product routes (Menu)
+		products := v1.Group("/products")
 		{
-			// 1. GET all orders
-			order.GET("", orderHandler.GetAllOrders)
+			// 1. GET all products (with filter by category_id, is_available, price range)
+			products.GET("", productHandler.GetList)
 
-			// 2. POST Create order
-			order.POST("", orderHandler.CreateOrder)
+			// 2. GET products by category
+			products.GET("/category/:category_id", productHandler.GetByCategory)
 
-			// 3. PUT Update order
-			order.PUT("/:id", orderHandler.UpdateOrder)
+			// 3. POST Create product
+			products.POST("", productHandler.Create)
 
-			// 4. DELETE order
-			order.DELETE("/:id", orderHandler.DeleteOrder)
+			// 4. PUT Update product
+			products.PUT("/:id", productHandler.Update)
 
-			// 5. GET all tables
-			order.GET("/tables", orderHandler.GetAllTables)
+			// 5. GET product by ID
+			products.GET("/:id", productHandler.GetByID)
 
-			// 6. GET all payment methods
-			order.GET("/payment-methods", orderHandler.GetAllPaymentMethods)
-
-			// 7. GET available chairs
-			order.GET("/available-chairs", orderHandler.GetAvailableChairs)
+			// 6. DELETE product
+			products.DELETE("/:id", productHandler.Delete)
 		}
 
-		// Notification routes
-		notifications := v1.Group("/notifications")
+		// Dashboard routes
+		dashboard := v1.Group("/dashboard")
 		{
-			// 1. GET all notifications with filters and pagination
-			notifications.GET("", notificationHandler.ListNotifications)
+			// 1. GET dashboard summary (daily sales, monthly sales, table summary)
+			dashboard.GET("/summary", dashboardHandler.GetSummary)
 
-			// 2. PUT Update notification status
-			notifications.PUT("/:id/status", notificationHandler.UpdateNotificationStatus)
+			// 2. GET popular products
+			dashboard.GET("/popular-products", dashboardHandler.GetPopularProducts)
 
-			// 3. DELETE notification
-			notifications.DELETE("/:id", notificationHandler.DeleteNotification)
+			// 3. GET new products (< 30 days)
+			dashboard.GET("/new-products", dashboardHandler.GetNewProducts)
+
+			// 4. Export dashboard data (bulan, jumlah order, sales, revenue)
+			dashboard.GET("/export", dashboardHandler.ExportDashboard)
+
+			// 5. Websocket realtime dashboard (revenue & sales)
+			dashboard.GET("/ws", dashboardWsHandler.ServeWs)
+		}
+
+		// Revenue Report routes
+		revenue := v1.Group("/revenue")
+		{
+			// 1. GET total revenue dan breakdown berdasarkan status
+			revenue.GET("/by-status", revenueHandler.GetRevenueByStatus)
+
+			// 2. GET total revenue per bulan (optional query param: year)
+			revenue.GET("/per-month", revenueHandler.GetRevenuePerMonth)
+
+			// 3. GET list produk beserta detail revenue
+			revenue.GET("/products", revenueHandler.GetProductRevenueList)
+		}
+
+		// Reservations routes
+		reservations := v1.Group("/reservations")
+		{
+			// 1. GET all reservations
+			reservations.GET("", reservationsHandler.GetAllReservations)
+
+			// 2. GET reservation by ID
+			reservations.GET("/:id", reservationsHandler.GetReservationByID)
+
+			// 3. POST Create reservation
+			reservations.POST("", reservationsHandler.CreateReservation)
+
+			// 4. PUT Update reservation
+			reservations.PUT("/:id", reservationsHandler.UpdateReservation)
+
+			// 5. DELETE reservation
+			reservations.DELETE("/:id", reservationsHandler.DeleteReservation)
 		}
 	}
 

@@ -5,25 +5,26 @@ import (
 	"aplikasi-pos-team-boolean/pkg/utils"
 	"fmt"
 	"log"
+	"time"
 
 	"gorm.io/gorm"
 )
 
 // Helper function untuk hash password
-func hashPassword(password string) string {
-	hashedPass, err := utils.HashPassword(password)
-	if err != nil {
-		log.Printf("Failed to hash password: %v", err)
-		return password
-	}
-	return hashedPass
+func hashPassword(password string) (string, error) {
+	return utils.HashPassword(password)
 }
 
 // AutoMigrate melakukan auto migration untuk semua entity/table
 func AutoMigrate(db *gorm.DB) error {
 	log.Println("Starting database auto migration...")
 
-	// Daftar semua entity yang akan dimigrate
+	// Fix notifications table user_id column before migration
+	if err := fixNotificationsUserID(db); err != nil {
+		log.Printf("Warning: Failed to fix notifications user_id: %v", err)
+		// Continue with migration anyway
+	}
+
 	entities := []interface{}{
 		&entity.User{},
 		&entity.OTP{},
@@ -31,22 +32,105 @@ func AutoMigrate(db *gorm.DB) error {
 		&entity.Inventories{},
 		&entity.Table{},
 		&entity.PaymentMethod{},
+		&entity.Reservations{},
 		&entity.Order{},
 		&entity.OrderItem{},
 		&entity.Notification{},
+		&entity.Category{},
+		&entity.Product{},
+		// Tambahkan entity lain jika ada
 	}
 
-	// Jalankan auto migration
 	if err := db.AutoMigrate(entities...); err != nil {
 		return fmt.Errorf("failed to auto migrate: %w", err)
 	}
 
 	log.Println("Database auto migration completed successfully!")
+	return nil
+}
 
-	// Log semua tabel yang berhasil dimigrate
-	for _, e := range entities {
-		tableName := db.NamingStrategy.TableName(fmt.Sprintf("%T", e))
-		log.Printf("   Table migrated: %s", tableName)
+// fixNotificationsUserID handles the migration fix for user_id column in notifications table
+func fixNotificationsUserID(db *gorm.DB) error {
+	log.Println("   Checking notifications table for user_id issues...")
+
+	// Check if notifications table exists using raw SQL
+	var tableExists bool
+	err := db.Raw("SELECT EXISTS (SELECT FROM information_schema.tables WHERE table_schema = CURRENT_SCHEMA() AND table_name = 'notifications')").Scan(&tableExists).Error
+	if err != nil {
+		log.Printf("   Warning: Failed to check if notifications table exists: %v", err)
+		return nil
+	}
+
+	if !tableExists {
+		log.Println("   ✓ Notifications table doesn't exist yet, skipping user_id fix")
+		return nil
+	}
+
+	// Try to delete any notifications with null user_id
+	// This is safe because we're in development and notifications are not critical data
+	result := db.Exec("DELETE FROM notifications WHERE user_id IS NULL")
+	if result.Error != nil {
+		// If the column doesn't exist yet, this will fail - that's OK
+		log.Printf("   Note: Could not delete null user_id notifications (column may not exist yet): %v", result.Error)
+		return nil
+	}
+
+	if result.RowsAffected > 0 {
+		log.Printf("   ✓ Deleted %d notifications with null user_id", result.RowsAffected)
+	} else {
+		log.Println("   ✓ No null user_id values found in notifications table")
+	}
+
+	return nil
+}
+
+// fixNotificationsUserIDAlternative provides alternative strategies for fixing null user_id
+// Strategy options: "update", "delete"
+func fixNotificationsUserIDAlternative(db *gorm.DB, strategy string) error {
+	// Check if notifications table exists
+	if !db.Migrator().HasTable(&entity.Notification{}) {
+		log.Println("   Notifications table doesn't exist yet, skipping user_id fix")
+		return nil
+	}
+
+	// Check if user_id column exists
+	if !db.Migrator().HasColumn(&entity.Notification{}, "user_id") {
+		log.Println("   user_id column doesn't exist yet, skipping fix")
+		return nil
+	}
+
+	log.Printf("   Fixing notifications user_id column using strategy: %s", strategy)
+
+	switch strategy {
+	case "delete":
+		// Delete all notifications with null user_id
+		result := db.Exec("DELETE FROM notifications WHERE user_id IS NULL")
+		if result.Error != nil {
+			return fmt.Errorf("failed to delete notifications with null user_id: %w", result.Error)
+		}
+		if result.RowsAffected > 0 {
+			log.Printf("   Deleted %d notifications with null user_id", result.RowsAffected)
+		} else {
+			log.Println("   No notifications with null user_id found")
+		}
+
+	case "update":
+		// Update all null user_id to first available user
+		var firstUserID uint
+		if err := db.Model(&entity.User{}).Select("id").Order("id ASC").Limit(1).Scan(&firstUserID).Error; err != nil {
+			return fmt.Errorf("no users found to assign notifications: %w", err)
+		}
+
+		result := db.Exec("UPDATE notifications SET user_id = ? WHERE user_id IS NULL", firstUserID)
+		if result.Error != nil {
+			return fmt.Errorf("failed to update null user_id: %w", result.Error)
+		}
+		if result.RowsAffected > 0 {
+			log.Printf("   Updated %d notifications with null user_id to user_id = %d", result.RowsAffected, firstUserID)
+		}
+
+	default:
+		return fmt.Errorf("unknown strategy: %s (use 'update' or 'delete')", strategy)
 	}
 
 	return nil
@@ -54,12 +138,9 @@ func AutoMigrate(db *gorm.DB) error {
 
 // MigrateWithSeed melakukan migration dan seeding data (jika diperlukan)
 func MigrateWithSeed(db *gorm.DB, withSeed bool) error {
-	// Auto migrate
 	if err := AutoMigrate(db); err != nil {
 		return err
 	}
-
-	// Seeding (optional)
 	if withSeed {
 		log.Println("Starting database seeding...")
 		if err := SeedData(db); err != nil {
@@ -67,7 +148,6 @@ func MigrateWithSeed(db *gorm.DB, withSeed bool) error {
 		}
 		log.Println("Database seeding completed!")
 	}
-
 	return nil
 }
 
@@ -80,28 +160,34 @@ func SeedData(db *gorm.DB) error {
 	db.Model(&entity.User{}).Count(&count)
 	if count == 0 {
 		log.Println("   Seeding users data...")
+
+		hashedPassword, err := hashPassword("customer123")
+		if err != nil {
+			return fmt.Errorf("failed to hash password: %w", err)
+		}
+
 		seedUsers := []entity.User{
 			{
-				Email:     "admin@pos.com",
-				Password:  hashPassword("admin123"),
-				Name:      "Admin User",
-				Role:      "admin",
+				Email:     "john.customer@pos.com",
+				Password:  hashedPassword,
+				Name:      "John Customer",
+				Role:      "customer",
 				Status:    "active",
 				IsDeleted: false,
 			},
 			{
-				Email:     "manager@pos.com",
-				Password:  hashPassword("manager123"),
-				Name:      "Manager User",
-				Role:      "manager",
+				Email:     "jane.customer@pos.com",
+				Password:  hashedPassword,
+				Name:      "Jane Customer",
+				Role:      "customer",
 				Status:    "active",
 				IsDeleted: false,
 			},
 			{
-				Email:     "staff@pos.com",
-				Password:  hashPassword("staff123"),
-				Name:      "Staff User",
-				Role:      "staff",
+				Email:     "bob.customer@pos.com",
+				Password:  hashedPassword,
+				Name:      "Bob Customer",
+				Role:      "customer",
 				Status:    "active",
 				IsDeleted: false,
 			},
@@ -134,135 +220,258 @@ func SeedData(db *gorm.DB) error {
 	// Contoh: Seed data inventories jika table masih kosong
 	db.Model(&entity.Inventories{}).Count(&count)
 
+	// Seed Payment Methods
+	db.Model(&entity.PaymentMethod{}).Count(&count)
 	if count == 0 {
-		log.Println("   Seeding inventories data...")
-		seedInventories := []entity.Inventories{
-			{
-				Name:        "Coca Cola 1L",
-				Category:    "beverage",
-				Quantity:    150,
-				Unit:        "litre",
-				MinStock:    50,
-				RetailPrice: 15.50,
-				Status:      "active",
-			},
-			{
-				Name:        "Sprite 1L",
-				Category:    "beverage",
-				Quantity:    120,
-				Unit:        "litre",
-				MinStock:    50,
-				RetailPrice: 14.00,
-				Status:      "active",
-			},
-			{
-				Name:        "Pepsi 1L",
-				Category:    "beverage",
-				Quantity:    45,
-				Unit:        "litre",
-				MinStock:    50,
-				RetailPrice: 15.00,
-				Status:      "active",
-			},
-			{
-				Name:        "Mineral Water 1.5L",
-				Category:    "beverage",
-				Quantity:    200,
-				Unit:        "litre",
-				MinStock:    100,
-				RetailPrice: 5.00,
-				Status:      "active",
-			},
-			{
-				Name:        "Orange Juice 1L",
-				Category:    "beverage",
-				Quantity:    30,
-				Unit:        "litre",
-				MinStock:    40,
-				RetailPrice: 25.00,
-				Status:      "active",
-			},
+		log.Println("   Seeding payment_methods data...")
+		paymentMethods := []entity.PaymentMethod{
+			{Name: "Cash"},
+			{Name: "QRIS"},
+			{Name: "Debit"},
 		}
-
-		if err := db.Create(&seedInventories).Error; err != nil {
-			return fmt.Errorf("failed to seed inventories: %w", err)
+		if err := db.Create(&paymentMethods).Error; err != nil {
+			return fmt.Errorf("failed to seed payment_methods: %w", err)
 		}
-		log.Printf("   Seeded %d inventories", len(seedInventories))
 	}
 
-	// Seed staff jika masih kosong
+	// Seed Staff
 	db.Model(&entity.Staff{}).Count(&count)
 	if count == 0 {
 		log.Println("   Seeding staff data...")
-		seedStaff := []entity.Staff{
-			{
-				FullName:    "John Doe",
-				Email:       "john.doe@example.com",
-				Role:        "manager",
-				PhoneNumber: "081234567890",
-				Salary:      5000000,
-				Address:     "Jakarta, Indonesia",
-			},
-			{
-				FullName:    "Jane Smith",
-				Email:       "jane.smith@example.com",
-				Role:        "cashier",
-				PhoneNumber: "081234567891",
-				Salary:      3500000,
-				Address:     "Bandung, Indonesia",
-			},
-			{
-				FullName:    "Bob Wilson",
-				Email:       "bob.wilson@example.com",
-				Role:        "staff",
-				PhoneNumber: "081234567892",
-				Salary:      4000000,
-				Address:     "Surabaya, Indonesia",
-			},
+		staff := []entity.Staff{
+			{FullName: "John Doe", Email: "john.doe@example.com", Role: "manager", PhoneNumber: "081234567890", Salary: 5000000, Address: "Jakarta, Indonesia"},
+			{FullName: "Jane Smith", Email: "jane.smith@example.com", Role: "cashier", PhoneNumber: "081234567891", Salary: 3500000, Address: "Bandung, Indonesia"},
+			{FullName: "Bob Wilson", Email: "bob.wilson@example.com", Role: "staff", PhoneNumber: "081234567892", Salary: 4000000, Address: "Surabaya, Indonesia"},
 		}
-
-		if err := db.Create(&seedStaff).Error; err != nil {
+		if err := db.Create(&staff).Error; err != nil {
 			return fmt.Errorf("failed to seed staff: %w", err)
 		}
-		log.Printf("   Seeded %d staff", len(seedStaff))
 	}
 
-	// Seed tables jika masih kosong
+	// Seed Tables
 	db.Model(&entity.Table{}).Count(&count)
 	if count == 0 {
 		log.Println("   Seeding tables data...")
-		seedTables := []entity.Table{
+		tables := []entity.Table{
+			{Number: "T01", Capacity: 4, Status: "available"},
+			{Number: "T02", Capacity: 2, Status: "available"},
+			{Number: "T03", Capacity: 6, Status: "available"},
+			{Number: "T04", Capacity: 4, Status: "available"},
+			{Number: "T05", Capacity: 2, Status: "available"},
+		}
+		if err := db.Create(&tables).Error; err != nil {
+			return fmt.Errorf("failed to seed tables: %w", err)
+		}
+	}
+
+	// Seed Inventories
+	db.Model(&entity.Inventories{}).Count(&count)
+	if count == 0 {
+		log.Println("   Seeding inventories data...")
+		inventories := []entity.Inventories{
+			{Name: "Coca Cola 1L", Category: "beverage", Quantity: 150, Unit: "litre", MinStock: 50, RetailPrice: 15.50, Status: "active"},
+			{Name: "Sprite 1L", Category: "beverage", Quantity: 120, Unit: "litre", MinStock: 50, RetailPrice: 14.00, Status: "active"},
+			{Name: "Pepsi 1L", Category: "beverage", Quantity: 45, Unit: "litre", MinStock: 50, RetailPrice: 15.00, Status: "active"},
+			{Name: "Mineral Water 1.5L", Category: "beverage", Quantity: 200, Unit: "litre", MinStock: 100, RetailPrice: 5.00, Status: "active"},
+			{Name: "Orange Juice 1L", Category: "beverage", Quantity: 30, Unit: "litre", MinStock: 40, RetailPrice: 25.00, Status: "active"},
+		}
+		if err := db.Create(&inventories).Error; err != nil {
+			return fmt.Errorf("failed to seed inventories: %w", err)
+		}
+	}
+
+	// Seed Reservations
+	db.Model(&entity.Reservations{}).Count(&count)
+	if count == 0 {
+		log.Println("   Seeding reservations data...")
+		now := time.Now()
+		reservations := []entity.Reservations{
+			{CustomerName: "Jane Smith", CustomerPhone: "081234567891", TableID: 1, ReservationTime: &now, Status: "pending"},
+			{CustomerName: "Bob Wilson", CustomerPhone: "081234567892", TableID: 2, ReservationTime: &now, Status: "confirmed"},
+		}
+		if err := db.Create(&reservations).Error; err != nil {
+			return fmt.Errorf("failed to seed reservations: %w", err)
+		}
+	}
+
+	// Seed PaymentMethod, Order, OrderItem jika ingin contoh order
+	db.Model(&entity.Order{}).Count(&count)
+	if count == 0 {
+		log.Println("   Seeding orders data...")
+		orders := []entity.Order{
 			{
-				Number:   "T01",
-				Capacity: 4,
-				Status:   "available",
+				UserID:          1,
+				TableID:         1,
+				PaymentMethodID: 1,
+				CustomerName:    "John Doe",
+				TotalAmount:     85500,
+				Tax:             5500,
+				Status:          "pending",
 			},
 			{
-				Number:   "T02",
-				Capacity: 2,
-				Status:   "available",
+				UserID:          2,
+				TableID:         2,
+				PaymentMethodID: 2,
+				CustomerName:    "Jane Smith",
+				TotalAmount:     30000,
+				Tax:             3000,
+				Status:          "paid",
+			},
+		}
+		if err := db.Create(&orders).Error; err != nil {
+			return fmt.Errorf("failed to seed orders: %w", err)
+		}
+	}
+
+	db.Model(&entity.OrderItem{}).Count(&count)
+	if count == 0 {
+		log.Println("   Seeding order_items data...")
+		orderItems := []entity.OrderItem{
+			{
+				OrderID:   1,
+				ProductID: 1,
+				Quantity:  2,
+				Price:     25000,
+				Subtotal:  50000,
 			},
 			{
-				Number:   "T03",
-				Capacity: 6,
-				Status:   "available",
+				OrderID:   2,
+				ProductID: 2,
+				Quantity:  1,
+				Price:     30000,
+				Subtotal:  30000,
+			},
+		}
+		if err := db.Create(&orderItems).Error; err != nil {
+			return fmt.Errorf("failed to seed order_items: %w", err)
+		}
+	}
+
+	// Seed categories jika masih kosong
+	db.Model(&entity.Category{}).Count(&count)
+	if count == 0 {
+		log.Println("   Seeding categories data...")
+		seedCategories := []entity.Category{
+			{
+				IconCategory: "🍕",
+				CategoryName: "Pizza",
+				Description:  "Delicious pizza varieties",
 			},
 			{
-				Number:   "T04",
-				Capacity: 4,
-				Status:   "available",
+				IconCategory: "🍔",
+				CategoryName: "Burger",
+				Description:  "Juicy burgers and sandwiches",
 			},
 			{
-				Number:   "T05",
-				Capacity: 2,
-				Status:   "available",
+				IconCategory: "🍗",
+				CategoryName: "Chicken",
+				Description:  "Crispy fried chicken",
+			},
+			{
+				IconCategory: "🥐",
+				CategoryName: "Bakery",
+				Description:  "Fresh baked goods",
+			},
+			{
+				IconCategory: "🥤",
+				CategoryName: "Beverage",
+				Description:  "Refreshing drinks",
+			},
+			{
+				IconCategory: "🦐",
+				CategoryName: "Seafood",
+				Description:  "Fresh seafood dishes",
 			},
 		}
 
-		if err := db.Create(&seedTables).Error; err != nil {
-			return fmt.Errorf("failed to seed tables: %w", err)
+		if err := db.Create(&seedCategories).Error; err != nil {
+			return fmt.Errorf("failed to seed categories: %w", err)
 		}
-		log.Printf("   Seeded %d tables", len(seedTables))
+		log.Printf("   Seeded %d categories", len(seedCategories))
+	}
+
+	// Seed products jika masih kosong
+	db.Model(&entity.Product{}).Count(&count)
+	if count == 0 {
+		log.Println("   Seeding products data...")
+
+		// Get category IDs
+		var pizzaCategory, burgerCategory, chickenCategory, beverageCategory entity.Category
+		db.Where("category_name = ?", "Pizza").First(&pizzaCategory)
+		db.Where("category_name = ?", "Burger").First(&burgerCategory)
+		db.Where("category_name = ?", "Chicken").First(&chickenCategory)
+		db.Where("category_name = ?", "Beverage").First(&beverageCategory)
+
+		seedProducts := []entity.Product{
+			{
+				ProductImage: "/images/chicken-parmesan.jpg",
+				ProductName:  "Chicken Parmesan",
+				ItemID:       "#22314644",
+				Stock:        119,
+				CategoryID:   chickenCategory.ID,
+				Price:        55.00,
+				IsAvailable:  true,
+			},
+			{
+				ProductImage: "/images/margherita-pizza.jpg",
+				ProductName:  "Margherita Pizza",
+				ItemID:       "#22314645",
+				Stock:        85,
+				CategoryID:   pizzaCategory.ID,
+				Price:        45.00,
+				IsAvailable:  true,
+			},
+			{
+				ProductImage: "/images/pepperoni-pizza.jpg",
+				ProductName:  "Pepperoni Pizza",
+				ItemID:       "#22314646",
+				Stock:        72,
+				CategoryID:   pizzaCategory.ID,
+				Price:        50.00,
+				IsAvailable:  true,
+			},
+			{
+				ProductImage: "/images/classic-burger.jpg",
+				ProductName:  "Classic Burger",
+				ItemID:       "#22314647",
+				Stock:        95,
+				CategoryID:   burgerCategory.ID,
+				Price:        35.00,
+				IsAvailable:  true,
+			},
+			{
+				ProductImage: "/images/cheese-burger.jpg",
+				ProductName:  "Cheese Burger",
+				ItemID:       "#22314648",
+				Stock:        8,
+				CategoryID:   burgerCategory.ID,
+				Price:        40.00,
+				IsAvailable:  true,
+			},
+			{
+				ProductImage: "/images/cola.jpg",
+				ProductName:  "Cola",
+				ItemID:       "#22314649",
+				Stock:        200,
+				CategoryID:   beverageCategory.ID,
+				Price:        5.00,
+				IsAvailable:  true,
+			},
+			{
+				ProductImage: "/images/orange-juice.jpg",
+				ProductName:  "Orange Juice",
+				ItemID:       "#22314650",
+				Stock:        0,
+				CategoryID:   beverageCategory.ID,
+				Price:        8.00,
+				IsAvailable:  false,
+			},
+		}
+
+		if err := db.Create(&seedProducts).Error; err != nil {
+			return fmt.Errorf("failed to seed products: %w", err)
+		}
+		log.Printf("   Seeded %d products", len(seedProducts))
 	}
 
 	return nil
@@ -273,10 +482,13 @@ func DropAllTables(db *gorm.DB) error {
 	log.Println("WARNING: Dropping all tables...")
 
 	entities := []interface{}{
+		&entity.Product{},
+		&entity.Category{},
 		&entity.OrderItem{},
 		&entity.Order{},
 		&entity.PaymentMethod{},
 		&entity.Table{},
+		&entity.Reservations{},
 		&entity.Inventories{},
 		&entity.Staff{},
 		&entity.Notification{},

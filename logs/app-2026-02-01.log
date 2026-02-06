@@ -1,0 +1,44 @@
+{"L":"INFO","timestamp":"2026-02-01T09:35:44.498+0700","caller":"utils/logger.go:71","M":"Logger initialized","log_file":"logs\\app-2026-02-01.log","debug_mode":true}
+{"L":"INFO","timestamp":"2026-02-01T09:35:44.498+0700","caller":"aplikasi-pos-team-boolean/main.go:35","M":"Application starting","environment":"","debug":true}
+{"L":"INFO","timestamp":"2026-02-01T09:35:44.569+0700","caller":"aplikasi-pos-team-boolean/main.go:46","M":"Database connection successful"}
+{"L":"INFO","timestamp":"2026-02-01T09:35:44.569+0700","caller":"aplikasi-pos-team-boolean/main.go:57","M":"Running database migration","seed":false}
+{"L":"INFO","timestamp":"2026-02-01T09:35:45.142+0700","caller":"wire/wire.go:137","M":"Routes registered successfully"}
+{"L":"INFO","timestamp":"2026-02-01T09:35:45.142+0700","caller":"aplikasi-pos-team-boolean/main.go:72","M":"Server starting","port":"8080"}
+{"L":"INFO","timestamp":"2026-02-01T09:36:04.312+0700","caller":"middleware/logging.go:28","M":"incoming request","method":"POST","path":"/api/v1/auth/login","query":"","remote_addr":"::1","user_agent":"PostmanRuntime/7.37.3","referer":"","body_size":56,"content_type":"application/json"}
+{"L":"DEBUG","timestamp":"2026-02-01T09:36:04.312+0700","caller":"adaptor/auth_adaptor.go:28","M":"Login handler called","client_ip":"::1"}
+{"L":"DEBUG","timestamp":"2026-02-01T09:36:04.312+0700","caller":"usecase/auth.go:44","M":"Login attempt","email":"admin@pos.com"}
+{"L":"DEBUG","timestamp":"2026-02-01T09:36:04.318+0700","caller":"repository/auth.go:68","M":"User not found","email":"admin@pos.com"}
+{"L":"WARN","timestamp":"2026-02-01T09:36:04.318+0700","caller":"usecase/auth.go:57","M":"Login failed - user not found","email":"admin@pos.com"}
+{"L":"WARN","timestamp":"2026-02-01T09:36:04.318+0700","caller":"adaptor/auth_adaptor.go:49","M":"Login failed","email":"admin@pos.com","error":"invalid email or password","client_ip":"::1"}
+{"L":"WARN","timestamp":"2026-02-01T09:36:04.319+0700","caller":"middleware/logging.go:61","M":"request completed with client error","method":"POST","path":"/api/v1/auth/login","query":"","status":401,"duration":"6.8794ms","response_size":66,"remote_addr":"::1"}
+{"L":"INFO","timestamp":"2026-02-01T10:03:13.221+0700","caller":"utils/logger.go:71","M":"Logger initialized","log_file":"logs\\app-2026-02-01.log","debug_mode":true}
+{"L":"INFO","timestamp":"2026-02-01T10:03:13.221+0700","caller":"aplikasi-pos-team-boolean/main.go:35","M":"Application starting","environment":"","debug":true}
+{"L":"INFO","timestamp":"2026-02-01T10:03:13.277+0700","caller":"aplikasi-pos-team-boolean/main.go:46","M":"Database connection successful"}
+{"L":"INFO","timestamp":"2026-02-01T10:03:13.277+0700","caller":"aplikasi-pos-team-boolean/main.go:57","M":"Running database migration","seed":false}
+{"L":"INFO","timestamp":"2026-02-01T10:03:13.579+0700","caller":"wire/wire.go:137","M":"Routes registered successfully"}
+{"L":"INFO","timestamp":"2026-02-01T10:03:13.579+0700","caller":"aplikasi-pos-team-boolean/main.go:72","M":"Server starting","port":"8080"}
+{"L":"INFO","timestamp":"2026-02-01T10:09:18.387+0700","caller":"utils/logger.go:71","M":"Logger initialized","log_file":"logs\\app-2026-02-01.log","debug_mode":true}
+{"L":"INFO","timestamp":"2026-02-01T10:09:18.387+0700","caller":"aplikasi-pos-team-boolean/main.go:35","M":"Application starting","environment":"","debug":true}
+{"L":"INFO","timestamp":"2026-02-01T10:09:18.442+0700","caller":"aplikasi-pos-team-boolean/main.go:46","M":"Database connection successful"}
+{"L":"INFO","timestamp":"2026-02-01T10:09:18.442+0700","caller":"aplikasi-pos-team-boolean/main.go:57","M":"Running database migration","seed":true}
+{"L":"INFO","timestamp":"2026-02-01T10:09:19.030+0700","caller":"wire/wire.go:137","M":"Routes registered successfully"}
+{"L":"INFO","timestamp":"2026-02-01T10:09:19.030+0700","caller":"aplikasi-pos-team-boolean/main.go:72","M":"Server starting","port":"8080"}
+{"L":"INFO","timestamp":"2026-02-01T10:13:22.112+0700","caller":"middleware/logging.go:28","M":"incoming request","method":"POST","path":"/api/v1/auth/login","query":"","remote_addr":"::1","user_agent":"PostmanRuntime/7.37.3","referer":"","body_size":67,"content_type":"application/json"}
+{"L":"DEBUG","timestamp":"2026-02-01T10:13:22.112+0700","caller":"adaptor/auth_adaptor.go:28","M":"Login handler called","client_ip":"::1"}
+{"L":"DEBUG","timestamp":"2026-02-01T10:13:22.113+0700","caller":"usecase/auth.go:44","M":"Login attempt","email":"john.customer@pos.com"}
+{"L":"INFO","timestamp":"2026-02-01T10:13:22.221+0700","caller":"usecase/auth.go:90","M":"Login successful","email":"john.customer@pos.com","user_id":1}
+{"L":"INFO","timestamp":"2026-02-01T10:13:22.221+0700","caller":"adaptor/auth_adaptor.go:62","M":"Login successful","email":"john.customer@pos.com","user_id":1}
+{"L":"INFO","timestamp":"2026-02-01T10:13:22.221+0700","caller":"middleware/logging.go:72","M":"request completed","method":"POST","path":"/api/v1/auth/login","query":"","status":200,"duration":"109.3805ms","response_size":372}
+{"L":"INFO","timestamp":"2026-02-01T10:13:30.414+0700","caller":"middleware/logging.go:28","M":"incoming request","method":"POST","path":"/api/v1/auth/check-email","query":"","remote_addr":"::1","user_agent":"PostmanRuntime/7.37.3","referer":"","body_size":38,"content_type":"application/json"}
+{"L":"DEBUG","timestamp":"2026-02-01T10:13:30.414+0700","caller":"adaptor/auth_adaptor.go:76","M":"CheckEmail handler called","client_ip":"::1"}
+{"L":"DEBUG","timestamp":"2026-02-01T10:13:30.414+0700","caller":"usecase/auth.go:107","M":"Checking email","email":"john.customer@pos.com"}
+{"L":"INFO","timestamp":"2026-02-01T10:13:30.416+0700","caller":"adaptor/auth_adaptor.go:109","M":"CheckEmail completed","email":"john.customer@pos.com","exists":true}
+{"L":"INFO","timestamp":"2026-02-01T10:13:30.416+0700","caller":"middleware/logging.go:72","M":"request completed","method":"POST","path":"/api/v1/auth/check-email","query":"","status":200,"duration":"2.0734ms","response_size":144}
+{"L":"INFO","timestamp":"2026-02-01T10:13:38.406+0700","caller":"middleware/logging.go:28","M":"incoming request","method":"POST","path":"/api/v1/auth/send-otp","query":"","remote_addr":"::1","user_agent":"PostmanRuntime/7.37.3","referer":"","body_size":69,"content_type":"application/json"}
+{"L":"DEBUG","timestamp":"2026-02-01T10:13:38.406+0700","caller":"adaptor/auth_adaptor.go:123","M":"SendOTP handler called","client_ip":"::1"}
+{"L":"DEBUG","timestamp":"2026-02-01T10:13:38.407+0700","caller":"usecase/auth.go:133","M":"Sending OTP","email":"john.customer@pos.com","purpose":"password_reset"}
+{"L":"INFO","timestamp":"2026-02-01T10:13:38.412+0700","caller":"repository/auth.go:155","M":"OTP created successfully","email":"john.customer@pos.com","purpose":"password_reset"}
+{"L":"WARN","timestamp":"2026-02-01T10:13:38.412+0700","caller":"utils/email_service.go:34","M":"SMTP not configured, skipping email send","to_email":"john.customer@pos.com"}
+{"L":"INFO","timestamp":"2026-02-01T10:13:38.413+0700","caller":"usecase/auth.go:185","M":"OTP sent successfully","email":"john.customer@pos.com","purpose":"password_reset"}
+{"L":"INFO","timestamp":"2026-02-01T10:13:38.413+0700","caller":"adaptor/auth_adaptor.go:156","M":"OTP sent successfully","email":"john.customer@pos.com","purpose":"password_reset"}
+{"L":"INFO","timestamp":"2026-02-01T10:13:38.413+0700","caller":"middleware/logging.go:72","M":"request completed","method":"POST","path":"/api/v1/auth/send-otp","query":"","status":200,"duration":"7.2144ms","response_size":190}

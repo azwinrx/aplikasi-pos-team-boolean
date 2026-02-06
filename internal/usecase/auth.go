@@ -17,6 +17,9 @@ import (
 // AuthUseCase mendefinisikan interface untuk auth business logic
 type AuthUseCase interface {
 	Login(ctx context.Context, req dto.LoginRequest) (*dto.LoginResponse, error)
+	Register(ctx context.Context, req dto.RegisterRequest) (*dto.RegisterResponse, error)
+	GetUserByID(ctx context.Context, userID uint) (*dto.GetUserResponse, error)
+	DeleteUser(ctx context.Context, userID uint) (*dto.DeleteUserResponse, error)
 	CheckEmail(ctx context.Context, req dto.CheckEmailRequest) (*dto.CheckEmailResponse, error)
 	SendOTP(ctx context.Context, req dto.SendOTPRequest) (*dto.SendOTPResponse, error)
 	ValidateOTP(ctx context.Context, req dto.ValidateOTPRequest) (*dto.ValidateOTPResponse, error)
@@ -98,7 +101,159 @@ func (u *authUsecase) Login(ctx context.Context, req dto.LoginRequest) (*dto.Log
 		Name:      user.Name,
 		Role:      user.Role,
 		Token:     token,
-		ExpiresAt: expiresAt,
+		ExpiresAt: expiresAt.Unix(),
+	}, nil
+}
+
+// Register membuat user baru (registrasi)
+func (u *authUsecase) Register(ctx context.Context, req dto.RegisterRequest) (*dto.RegisterResponse, error) {
+	u.logger.Debug("Register attempt", zap.String("email", req.Email))
+
+	// Check if email already exists
+	existingUser, err := u.authRepo.GetUserByEmail(ctx, req.Email)
+	if err != nil {
+		u.logger.Error("Database error during registration",
+			zap.String("email", req.Email),
+			zap.Error(err),
+		)
+		return nil, errors.New("database error")
+	}
+
+	if existingUser != nil && !existingUser.IsDeleted {
+		u.logger.Warn("Registration failed - email already exists",
+			zap.String("email", req.Email),
+		)
+		return nil, errors.New("email already registered")
+	}
+
+	// Hash password
+	hashedPassword, err := utils.HashPassword(req.Password)
+	if err != nil {
+		u.logger.Error("Failed to hash password",
+			zap.String("email", req.Email),
+			zap.Error(err),
+		)
+		return nil, errors.New("failed to create user")
+	}
+
+	// Create user entity
+	user := &entity.User{
+		Email:     req.Email,
+		Password:  hashedPassword,
+		Name:      req.Name,
+		Role:      "customer", // Always set to customer
+		Status:    "active",
+		IsDeleted: false,
+		CreatedAt: time.Now(),
+		UpdatedAt: time.Now(),
+	}
+
+	// Save to database
+	if err := u.authRepo.CreateUser(ctx, user); err != nil {
+		u.logger.Error("Failed to create user",
+			zap.String("email", req.Email),
+			zap.Error(err),
+		)
+		return nil, errors.New("failed to create user")
+	}
+
+	u.logger.Info("User registered successfully",
+		zap.String("email", req.Email),
+		zap.Uint("user_id", user.ID),
+	)
+
+	return &dto.RegisterResponse{
+		ID:      user.ID,
+		Email:   user.Email,
+		Name:    user.Name,
+		Role:    user.Role,
+		Message: "User registered successfully",
+	}, nil
+}
+
+// GetUserByID mendapatkan user berdasarkan ID
+func (u *authUsecase) GetUserByID(ctx context.Context, userID uint) (*dto.GetUserResponse, error) {
+	u.logger.Debug("Get user by ID", zap.Uint("user_id", userID))
+
+	// Get user from database
+	user, err := u.authRepo.GetUserByID(ctx, userID)
+	if err != nil {
+		u.logger.Error("Database error during get user",
+			zap.Uint("user_id", userID),
+			zap.Error(err),
+		)
+		return nil, errors.New("database error")
+	}
+
+	if user == nil {
+		u.logger.Warn("User not found",
+			zap.Uint("user_id", userID),
+		)
+		return nil, errors.New("user not found")
+	}
+
+	u.logger.Info("User retrieved successfully",
+		zap.Uint("user_id", userID),
+		zap.String("email", user.Email),
+	)
+
+	return &dto.GetUserResponse{
+		ID:        user.ID,
+		Email:     user.Email,
+		Name:      user.Name,
+		Role:      user.Role,
+		Status:    user.Status,
+		CreatedAt: user.CreatedAt.Unix(),
+		UpdatedAt: user.UpdatedAt.Unix(),
+	}, nil
+}
+
+// DeleteUser menghapus user (soft delete)
+func (u *authUsecase) DeleteUser(ctx context.Context, userID uint) (*dto.DeleteUserResponse, error) {
+	u.logger.Debug("Delete user", zap.Uint("user_id", userID))
+
+	// Get user first to check if exists
+	user, err := u.authRepo.GetUserByID(ctx, userID)
+	if err != nil {
+		u.logger.Error("Database error during delete user",
+			zap.Uint("user_id", userID),
+			zap.Error(err),
+		)
+		return nil, errors.New("database error")
+	}
+
+	if user == nil {
+		u.logger.Warn("Delete failed - user not found",
+			zap.Uint("user_id", userID),
+		)
+		return nil, errors.New("user not found")
+	}
+
+	if user.IsDeleted {
+		u.logger.Warn("Delete failed - user already deleted",
+			zap.Uint("user_id", userID),
+		)
+		return nil, errors.New("user already deleted")
+	}
+
+	// Mark user as deleted
+	if err := u.authRepo.MarkUserAsDeleted(ctx, userID); err != nil {
+		u.logger.Error("Failed to delete user",
+			zap.Uint("user_id", userID),
+			zap.Error(err),
+		)
+		return nil, errors.New("failed to delete user")
+	}
+
+	u.logger.Info("User deleted successfully",
+		zap.Uint("user_id", userID),
+		zap.String("email", user.Email),
+	)
+
+	return &dto.DeleteUserResponse{
+		ID:      user.ID,
+		Email:   user.Email,
+		Message: "User deleted successfully",
 	}, nil
 }
 
@@ -130,7 +285,7 @@ func (u *authUsecase) CheckEmail(ctx context.Context, req dto.CheckEmailRequest)
 
 // SendOTP mengirim OTP ke email
 func (u *authUsecase) SendOTP(ctx context.Context, req dto.SendOTPRequest) (*dto.SendOTPResponse, error) {
-	u.logger.Debug("Sending OTP", 
+	u.logger.Debug("Sending OTP",
 		zap.String("email", req.Email),
 		zap.String("purpose", req.Purpose),
 	)

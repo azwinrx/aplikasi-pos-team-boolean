@@ -12,9 +12,9 @@ type User struct {
 	Email     string         `gorm:"type:varchar(100);unique;not null;index" json:"email"`
 	Password  string         `gorm:"type:varchar(255);not null" json:"-"`
 	Name      string         `gorm:"type:varchar(100);not null" json:"name"`
-	Role      string         `gorm:"type:varchar(20);not null;default:'user';index" json:"role"`
+	Role      string         `gorm:"type:varchar(20);not null;default:'customer';index" json:"role"`
 	Status    string         `gorm:"type:varchar(20);not null;default:'active'" json:"status"` // active, inactive
-	IsDeleted bool           `gorm:"default:false;index" json:"is_deleted"`                     // Untuk melacak user yang dihapus
+	IsDeleted bool           `gorm:"default:false;index" json:"is_deleted"`                    // Untuk melacak user yang dihapus
 	CreatedAt time.Time      `gorm:"type:timestamp;not null;default:CURRENT_TIMESTAMP" json:"created_at"`
 	UpdatedAt time.Time      `gorm:"type:timestamp;not null;default:CURRENT_TIMESTAMP" json:"updated_at"`
 	DeletedAt gorm.DeletedAt `gorm:"index" json:"deleted_at,omitempty"`
