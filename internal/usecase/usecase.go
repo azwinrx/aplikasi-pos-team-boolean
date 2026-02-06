@@ -13,9 +13,11 @@ type UseCase struct {
 	repo repository.Repository
 
 	AuthUseCase        AuthUseCase
+	AdminUseCase       AdminUseCase
 	OrderUseCase       OrderUseCase
 	InventoriesUsecase InventoriesUsecase
 	StaffUseCase       StaffUseCase
+	NotificationUseCase NotificationUseCase
 	CategoryUseCase    CategoryUseCase
 	ProductUseCase     ProductUseCase
 	DashboardUseCase   DashboardUseCase
@@ -31,9 +33,11 @@ func NewUseCase(repo *repository.Repository, logger *zap.Logger, tx *gorm.DB) *U
 		repo: *repo,
 
 		AuthUseCase:        NewAuthUseCase(repo.AuthRepo, logger, emailService),
+		AdminUseCase:       NewAdminUseCase(repo.AuthRepo, emailService, logger),
 		OrderUseCase:       NewOrderUseCase(repo.OrderRepo, logger),
 		InventoriesUsecase: NewInventoriesUsecase(repo.InventoriesRepo, logger),
 		StaffUseCase:       NewStaffUseCase(repo.StaffRepo, logger),
+		NotificationUseCase: NewNotificationUseCase(repo.NotificationRepo, logger),
 		CategoryUseCase:    NewCategoryUseCase(repo.CategoryRepo, logger),
 		ProductUseCase:     NewProductUseCase(repo.ProductRepo, repo.CategoryRepo, logger),
 		DashboardUseCase:   NewDashboardUseCase(repo.DashboardRepo, logger),

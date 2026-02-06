@@ -19,6 +19,12 @@ func hashPassword(password string) (string, error) {
 func AutoMigrate(db *gorm.DB) error {
 	log.Println("Starting database auto migration...")
 
+	// Fix notifications table user_id column before migration
+	if err := fixNotificationsUserID(db); err != nil {
+		log.Printf("Warning: Failed to fix notifications user_id: %v", err)
+		// Continue with migration anyway
+	}
+
 	entities := []interface{}{
 		&entity.User{},
 		&entity.OTP{},
@@ -29,6 +35,7 @@ func AutoMigrate(db *gorm.DB) error {
 		&entity.Reservations{},
 		&entity.Order{},
 		&entity.OrderItem{},
+		&entity.Notification{},
 		&entity.Category{},
 		&entity.Product{},
 		// Tambahkan entity lain jika ada
@@ -39,6 +46,93 @@ func AutoMigrate(db *gorm.DB) error {
 	}
 
 	log.Println("Database auto migration completed successfully!")
+	return nil
+}
+
+// fixNotificationsUserID handles the migration fix for user_id column in notifications table
+func fixNotificationsUserID(db *gorm.DB) error {
+	log.Println("   Checking notifications table for user_id issues...")
+
+	// Check if notifications table exists using raw SQL
+	var tableExists bool
+	err := db.Raw("SELECT EXISTS (SELECT FROM information_schema.tables WHERE table_schema = CURRENT_SCHEMA() AND table_name = 'notifications')").Scan(&tableExists).Error
+	if err != nil {
+		log.Printf("   Warning: Failed to check if notifications table exists: %v", err)
+		return nil
+	}
+
+	if !tableExists {
+		log.Println("   ✓ Notifications table doesn't exist yet, skipping user_id fix")
+		return nil
+	}
+
+	// Try to delete any notifications with null user_id
+	// This is safe because we're in development and notifications are not critical data
+	result := db.Exec("DELETE FROM notifications WHERE user_id IS NULL")
+	if result.Error != nil {
+		// If the column doesn't exist yet, this will fail - that's OK
+		log.Printf("   Note: Could not delete null user_id notifications (column may not exist yet): %v", result.Error)
+		return nil
+	}
+
+	if result.RowsAffected > 0 {
+		log.Printf("   ✓ Deleted %d notifications with null user_id", result.RowsAffected)
+	} else {
+		log.Println("   ✓ No null user_id values found in notifications table")
+	}
+
+	return nil
+}
+
+// fixNotificationsUserIDAlternative provides alternative strategies for fixing null user_id
+// Strategy options: "update", "delete"
+func fixNotificationsUserIDAlternative(db *gorm.DB, strategy string) error {
+	// Check if notifications table exists
+	if !db.Migrator().HasTable(&entity.Notification{}) {
+		log.Println("   Notifications table doesn't exist yet, skipping user_id fix")
+		return nil
+	}
+
+	// Check if user_id column exists
+	if !db.Migrator().HasColumn(&entity.Notification{}, "user_id") {
+		log.Println("   user_id column doesn't exist yet, skipping fix")
+		return nil
+	}
+
+	log.Printf("   Fixing notifications user_id column using strategy: %s", strategy)
+
+	switch strategy {
+	case "delete":
+		// Delete all notifications with null user_id
+		result := db.Exec("DELETE FROM notifications WHERE user_id IS NULL")
+		if result.Error != nil {
+			return fmt.Errorf("failed to delete notifications with null user_id: %w", result.Error)
+		}
+		if result.RowsAffected > 0 {
+			log.Printf("   Deleted %d notifications with null user_id", result.RowsAffected)
+		} else {
+			log.Println("   No notifications with null user_id found")
+		}
+
+	case "update":
+		// Update all null user_id to first available user
+		var firstUserID uint
+		if err := db.Model(&entity.User{}).Select("id").Order("id ASC").Limit(1).Scan(&firstUserID).Error; err != nil {
+			return fmt.Errorf("no users found to assign notifications: %w", err)
+		}
+
+		result := db.Exec("UPDATE notifications SET user_id = ? WHERE user_id IS NULL", firstUserID)
+		if result.Error != nil {
+			return fmt.Errorf("failed to update null user_id: %w", result.Error)
+		}
+		if result.RowsAffected > 0 {
+			log.Printf("   Updated %d notifications with null user_id to user_id = %d", result.RowsAffected, firstUserID)
+		}
+
+	default:
+		return fmt.Errorf("unknown strategy: %s (use 'update' or 'delete')", strategy)
+	}
+
 	return nil
 }
 
@@ -397,6 +491,7 @@ func DropAllTables(db *gorm.DB) error {
 		&entity.Reservations{},
 		&entity.Inventories{},
 		&entity.Staff{},
+		&entity.Notification{},
 		&entity.OTP{},
 		&entity.User{},
 	}

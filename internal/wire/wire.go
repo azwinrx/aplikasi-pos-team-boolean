@@ -30,13 +30,13 @@ func InitializeApp(db *gorm.DB, logger *zap.Logger) *gin.Engine {
 	adaptorInstance := adaptor.NewAdaptor(uc, logger)
 
 	// Setup routes
-	setupRoutes(router, adaptorInstance.AuthAdaptor, adaptorInstance.InventoriesAdaptor, adaptorInstance.StaffAdaptor, adaptorInstance.OrderAdaptor, adaptorInstance.CategoryAdaptor, adaptorInstance.ProductAdaptor, adaptorInstance.RevenueAdaptor, adaptorInstance.ReservationsAdaptor, adaptorInstance.DashboardAdaptor, uc.DashboardUseCase, logger)
+	setupRoutes(router, adaptorInstance.AuthAdaptor, adaptorInstance.AdminAdaptor, adaptorInstance.InventoriesAdaptor, adaptorInstance.StaffAdaptor, adaptorInstance.OrderAdaptor, adaptorInstance.CategoryAdaptor, adaptorInstance.ProductAdaptor, adaptorInstance.RevenueAdaptor, adaptorInstance.ReservationsAdaptor, adaptorInstance.DashboardAdaptor, uc.DashboardUseCase, adaptorInstance.NotificationAdaptor, logger)
 
 	return router
 }
 
 // setupRoutes mengatur semua routing untuk aplikasi
-func setupRoutes(router *gin.Engine, authHandler *adaptor.AuthAdaptor, inventoriesHandler *adaptor.InventoriesAdaptor, staffHandler *adaptor.StaffAdaptor, orderHandler *adaptor.OrderAdaptor, categoryHandler *adaptor.CategoryAdaptor, productHandler *adaptor.ProductAdaptor, revenueHandler *adaptor.RevenueAdaptor, reservationsHandler *adaptor.ReservationsAdaptor, dashboardHandler adaptor.DashboardHandler, dashboardUC usecase.DashboardUseCase, logger *zap.Logger) {
+func setupRoutes(router *gin.Engine, authHandler *adaptor.AuthAdaptor, adminHandler *adaptor.AdminAdaptor, inventoriesHandler *adaptor.InventoriesAdaptor, staffHandler *adaptor.StaffAdaptor, orderHandler *adaptor.OrderAdaptor, categoryHandler *adaptor.CategoryAdaptor, productHandler *adaptor.ProductAdaptor, revenueHandler *adaptor.RevenueAdaptor, reservationsHandler *adaptor.ReservationsAdaptor, dashboardHandler adaptor.DashboardHandler, dashboardUC usecase.DashboardUseCase, notificationHandler *adaptor.NotificationAdaptor, logger *zap.Logger) {
 	// Health check
 	router.GET("/health", func(c *gin.Context) {
 		utils.ResponseSuccess(c.Writer, 200, "Server is running", map[string]string{
@@ -50,7 +50,7 @@ func setupRoutes(router *gin.Engine, authHandler *adaptor.AuthAdaptor, inventori
 	// API v1 group
 	v1 := router.Group("/api/v1")
 	{
-		// Auth routes
+		// Auth routes (public)
 		auth := v1.Group("/auth")
 		{
 			// 1. POST Register
@@ -76,6 +76,23 @@ func setupRoutes(router *gin.Engine, authHandler *adaptor.AuthAdaptor, inventori
 
 			// 8. DELETE User
 			auth.DELETE("/user/:id", authHandler.DeleteUser)
+		}
+
+		// Admin routes (protected)
+		admin := v1.Group("/admin")
+		admin.Use(middleware.AuthMiddleware(logger))
+		{
+			// 1. GET List all admins (with pagination)
+			admin.GET("", adminHandler.ListAdmins)
+
+			// 2. POST Create admin with auto-generated password sent via email
+			admin.POST("", adminHandler.CreateAdminWithEmail)
+
+			// 3. PUT Update user profile
+			admin.PUT("/profile", adminHandler.UpdateUserProfile)
+
+			// 4. GET User profile
+			admin.GET("/profile", adminHandler.GetUserProfile)
 		}
 
 		// Inventories routes
@@ -145,6 +162,19 @@ func setupRoutes(router *gin.Engine, authHandler *adaptor.AuthAdaptor, inventori
 			order.GET("/available-chairs", orderHandler.GetAvailableChairs)
 		}
 
+		// Notification routes
+		notifications := v1.Group("/notifications")
+		{
+			// 1. GET all notifications with filters and pagination
+			notifications.GET("", notificationHandler.ListNotifications)
+
+			// 2. PUT Update notification status
+			notifications.PUT("/:id/status", notificationHandler.UpdateNotificationStatus)
+
+			// 3. DELETE notification
+			notifications.DELETE("/:id", notificationHandler.DeleteNotification)
+		}
+
 		// Category routes (Menu)
 		categories := v1.Group("/categories")
 		{
@@ -204,6 +234,7 @@ func setupRoutes(router *gin.Engine, authHandler *adaptor.AuthAdaptor, inventori
 			// 5. Websocket realtime dashboard (revenue & sales)
 			dashboard.GET("/ws", dashboardWsHandler.ServeWs)
 		}
+
 		// Revenue Report routes
 		revenue := v1.Group("/revenue")
 		{
@@ -223,16 +254,19 @@ func setupRoutes(router *gin.Engine, authHandler *adaptor.AuthAdaptor, inventori
 			// 1. GET all reservations
 			reservations.GET("", reservationsHandler.GetAllReservations)
 
-			// 2. POST Create reservation
+			// 2. GET reservation by ID
+			reservations.GET("/:id", reservationsHandler.GetReservationByID)
+
+			// 3. POST Create reservation
 			reservations.POST("", reservationsHandler.CreateReservation)
 
-			// 3. PUT Update reservation
+			// 4. PUT Update reservation
 			reservations.PUT("/:id", reservationsHandler.UpdateReservation)
 
-			// 4. DELETE reservation
+			// 5. DELETE reservation
 			reservations.DELETE("/:id", reservationsHandler.DeleteReservation)
+		}
 	}
 
 	logger.Info("Routes registered successfully")
-}
 }

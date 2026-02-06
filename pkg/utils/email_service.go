@@ -223,3 +223,36 @@ func (es *EmailService) SendWelcomeEmail(toEmail, name, tempPassword string) err
 
 	return nil
 }
+
+// SendEmail mengirim email dengan subject dan body custom
+func (es *EmailService) SendEmail(toEmail, subject, body string) error {
+	if es.host == "" || es.port == "" || es.sender == "" || es.pass == "" {
+		es.logger.Warn("SMTP not configured, skipping email send", zap.String("to_email", toEmail))
+		return nil
+	}
+
+	addr := fmt.Sprintf("%s:%s", es.host, es.port)
+	auth := smtp.PlainAuth("", es.sender, es.pass, es.host)
+
+	headers := fmt.Sprintf("MIME-version: 1.0\r\nContent-Type: text/plain; charset=\"UTF-8\"\r\nFrom: %s\r\nTo: %s\r\nSubject: %s\r\n",
+		es.sender, toEmail, subject)
+
+	message := []byte(headers + "\r\n" + body)
+
+	err := smtp.SendMail(addr, auth, es.sender, []string{toEmail}, message)
+	if err != nil {
+		es.logger.Error("Failed to send email",
+			zap.String("to_email", toEmail),
+			zap.String("subject", subject),
+			zap.Error(err),
+		)
+		return fmt.Errorf("failed to send email: %w", err)
+	}
+
+	es.logger.Info("Email sent successfully",
+		zap.String("to_email", toEmail),
+		zap.String("subject", subject),
+	)
+
+	return nil
+}

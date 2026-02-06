@@ -9,12 +9,21 @@ import (
 	"github.com/google/uuid"
 )
 
-// GenerateUUIDToken
+// Claims adalah struktur untuk JWT claims
+type Claims struct {
+	UserID uint   `json:"user_id"`
+	Email  string `json:"email"`
+	Role   string `json:"role"`
+	Name   string `json:"name"`
+	jwt.RegisteredClaims
+}
+
+// GenerateUUIDToken generates a UUID token
 func GenerateUUIDToken() string {
 	return uuid.New().String()
 }
 
-// Generate random token
+// GenerateRandomToken generates a random token with specified length
 func GenerateRandomToken(length int) (string, error) {
 	bytes := make([]byte, length)
 	_, err := rand.Read(bytes)

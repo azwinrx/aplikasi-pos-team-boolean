@@ -49,6 +49,40 @@ func (h *ReservationsAdaptor) GetAllReservations(c *gin.Context) {
 	utils.ResponseSuccess(c.Writer, http.StatusOK, "Data reservasi berhasil diambil", response)
 }
 
+// GetReservationByID menangani request untuk mengambil reservasi berdasarkan ID
+func (h *ReservationsAdaptor) GetReservationByID(c *gin.Context) {
+	h.logger.Debug("GetReservationByID handler called")
+
+	idStr := c.Param("id")
+	id, err := strconv.ParseUint(idStr, 10, 32)
+	if err != nil {
+		h.logger.Warn("Invalid ID parameter",
+			zap.Error(err),
+			zap.String("id", idStr),
+			zap.String("client_ip", c.ClientIP()),
+		)
+		utils.ResponseError(c.Writer, http.StatusBadRequest, "Invalid ID parameter")
+		return
+	}
+
+	response, err := h.reservationsUsecase.GetReservationByID(c.Request.Context(), uint(id))
+	if err != nil {
+		h.logger.Error("Failed to get reservation by ID",
+			zap.Error(err),
+			zap.Uint("id", uint(id)),
+			zap.String("client_ip", c.ClientIP()),
+		)
+		utils.ResponseError(c.Writer, http.StatusInternalServerError, "Gagal mengambil data reservasi: "+err.Error())
+		return
+	}
+
+	h.logger.Info("GetReservationByID completed successfully",
+		zap.Uint("id", uint(id)),
+	)
+
+	utils.ResponseSuccess(c.Writer, http.StatusOK, "Data reservasi berhasil diambil", response)
+}
+
 // CreateReservation menangani request untuk membuat reservasi baru
 func (h *ReservationsAdaptor) CreateReservation(c *gin.Context) {
 	h.logger.Debug("CreateReservation handler called", zap.String("client_ip", c.ClientIP()))

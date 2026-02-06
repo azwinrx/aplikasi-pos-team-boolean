@@ -17,7 +17,10 @@ type AuthRepository interface {
 	GetUserByEmail(ctx context.Context, email string) (*entity.User, error)
 	GetUserByID(ctx context.Context, id uint) (*entity.User, error)
 	UpdateUserPassword(ctx context.Context, id uint, hashedPassword string) error
+	UpdateUser(ctx context.Context, user *entity.User) error
 	MarkUserAsDeleted(ctx context.Context, id uint) error
+	GetAdminsList(ctx context.Context, offset, limit int, role string) ([]entity.User, int64, error)
+	CountSuperadmins(ctx context.Context) (int64, error)
 
 	// OTP operations
 	CreateOTP(ctx context.Context, otp *entity.OTP) error
@@ -118,6 +121,80 @@ func (r *authRepository) UpdateUserPassword(ctx context.Context, id uint, hashed
 	)
 
 	return nil
+}
+
+// UpdateUser mengupdate data user
+func (r *authRepository) UpdateUser(ctx context.Context, user *entity.User) error {
+	if err := r.db.WithContext(ctx).Save(user).Error; err != nil {
+		r.logger.Error("Failed to update user",
+			zap.Uint("id", user.ID),
+			zap.Error(err),
+		)
+		return err
+	}
+
+	r.logger.Info("User updated successfully",
+		zap.Uint("id", user.ID),
+	)
+
+	return nil
+}
+
+// GetAdminsList mengambil daftar admin dengan pagination
+func (r *authRepository) GetAdminsList(ctx context.Context, offset, limit int, role string) ([]entity.User, int64, error) {
+	var admins []entity.User
+	var total int64
+
+	query := r.db.WithContext(ctx).Where("is_deleted = ?", false)
+
+	// Filter by role if provided
+	if role != "" {
+		query = query.Where("role = ?", role)
+	} else {
+		// Default filter for admin roles only
+		query = query.Where("role IN ?", []string{"admin", "superadmin"})
+	}
+
+	// Count total
+	if err := query.Model(&entity.User{}).Count(&total).Error; err != nil {
+		r.logger.Error("Failed to count admins",
+			zap.Error(err),
+		)
+		return nil, 0, err
+	}
+
+	// Get paginated results
+	if err := query.Order("created_at DESC").Offset(offset).Limit(limit).Find(&admins).Error; err != nil {
+		r.logger.Error("Failed to get admins list",
+			zap.Error(err),
+		)
+		return nil, 0, err
+	}
+
+	r.logger.Info("Admins list retrieved",
+		zap.Int64("total", total),
+		zap.Int("count", len(admins)),
+	)
+
+	return admins, total, nil
+}
+
+// CountSuperadmins menghitung jumlah superadmin
+func (r *authRepository) CountSuperadmins(ctx context.Context) (int64, error) {
+	var count int64
+
+	if err := r.db.WithContext(ctx).Where("role = ? AND is_deleted = ?", "superadmin", false).Model(&entity.User{}).Count(&count).Error; err != nil {
+		r.logger.Error("Failed to count superadmins",
+			zap.Error(err),
+		)
+		return 0, err
+	}
+
+	r.logger.Debug("Superadmins counted",
+		zap.Int64("count", count),
+	)
+
+	return count, nil
 }
 
 // MarkUserAsDeleted menandai user sebagai deleted

@@ -10,6 +10,7 @@ type Repository struct {
 	StaffRepo       StaffRepository
 	InventoriesRepo InventoriesRepository
 	OrderRepo       OrderRepository
+	NotificationRepo NotificationRepository
 	CategoryRepo    CategoryRepository
 	ProductRepo     ProductRepository
 	DashboardRepo   DashboardRepository
@@ -23,6 +24,7 @@ func NewRepository(db *gorm.DB, logger *zap.Logger) Repository {
 		InventoriesRepo: NewInventoriesRepository(db, logger),
 		StaffRepo:       NewStaffRepository(db, logger),
 		OrderRepo:       NewOrderRepository(db, logger),
+		NotificationRepo: NewNotificationRepository(db, logger),
 		CategoryRepo:    NewCategoryRepository(db, logger),
 		ProductRepo:     NewProductRepository(db, logger),
 		DashboardRepo:   NewDashboardRepository(db, logger),
