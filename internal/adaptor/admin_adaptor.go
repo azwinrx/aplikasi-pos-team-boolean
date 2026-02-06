@@ -31,14 +31,14 @@ func (a *AdminAdaptor) GetUserProfile(c *gin.Context) {
 	userID, exists := c.Get("user_id")
 	if !exists {
 		a.logger.Warn("user_id tidak ditemukan di context")
-		utils.ResponseError(c, http.StatusUnauthorized, "Unauthorized")
+		utils.ResponseError(c.Writer, http.StatusUnauthorized, "Unauthorized")
 		return
 	}
 
 	id, ok := userID.(uint)
 	if !ok {
 		a.logger.Warn("user_id type assertion failed")
-		utils.ResponseError(c, http.StatusUnauthorized, "Unauthorized")
+		utils.ResponseError(c.Writer, http.StatusUnauthorized, "Unauthorized")
 		return
 	}
 
@@ -48,11 +48,11 @@ func (a *AdminAdaptor) GetUserProfile(c *gin.Context) {
 			zap.Uint("user_id", id),
 			zap.Error(err),
 		)
-		utils.ResponseError(c, http.StatusInternalServerError, err.Error())
+		utils.ResponseError(c.Writer, http.StatusInternalServerError, err.Error())
 		return
 	}
 
-	utils.ResponseSuccess(c, http.StatusOK, "Profil user berhasil diambil", response)
+	utils.ResponseSuccess(c.Writer, http.StatusOK, "Profil user berhasil diambil", response)
 }
 
 // UpdateUserProfile mengupdate profil user yang login
@@ -61,14 +61,14 @@ func (a *AdminAdaptor) UpdateUserProfile(c *gin.Context) {
 	userID, exists := c.Get("user_id")
 	if !exists {
 		a.logger.Warn("user_id tidak ditemukan di context")
-		utils.ResponseError(c, http.StatusUnauthorized, "Unauthorized")
+		utils.ResponseError(c.Writer, http.StatusUnauthorized, "Unauthorized")
 		return
 	}
 
 	id, ok := userID.(uint)
 	if !ok {
 		a.logger.Warn("user_id type assertion failed")
-		utils.ResponseError(c, http.StatusUnauthorized, "Unauthorized")
+		utils.ResponseError(c.Writer, http.StatusUnauthorized, "Unauthorized")
 		return
 	}
 
@@ -77,7 +77,7 @@ func (a *AdminAdaptor) UpdateUserProfile(c *gin.Context) {
 		a.logger.Warn("Invalid request body",
 			zap.Error(err),
 		)
-		utils.ResponseError(c, http.StatusBadRequest, err.Error())
+		utils.ResponseError(c.Writer, http.StatusBadRequest, err.Error())
 		return
 	}
 
@@ -87,11 +87,11 @@ func (a *AdminAdaptor) UpdateUserProfile(c *gin.Context) {
 			zap.Uint("user_id", id),
 			zap.Error(err),
 		)
-		utils.ResponseError(c, http.StatusInternalServerError, err.Error())
+		utils.ResponseError(c.Writer, http.StatusInternalServerError, err.Error())
 		return
 	}
 
-	utils.ResponseSuccess(c, http.StatusOK, "Profil user berhasil diubah", response)
+	utils.ResponseSuccess(c.Writer, http.StatusOK, "Profil berhasil diubah", response)
 }
 
 // ListAdmins mengambil daftar admin (hanya superadmin)
@@ -101,7 +101,7 @@ func (a *AdminAdaptor) ListAdmins(c *gin.Context) {
 	userRole, exists := c.Get("user_role")
 	if !exists {
 		a.logger.Warn("user_role tidak ditemukan di context")
-		utils.ResponseError(c, http.StatusUnauthorized, "Unauthorized")
+		utils.ResponseError(c.Writer, http.StatusUnauthorized, "Unauthorized")
 		return
 	}
 
@@ -110,7 +110,7 @@ func (a *AdminAdaptor) ListAdmins(c *gin.Context) {
 		a.logger.Warn("User is not superadmin",
 			zap.String("role", role),
 		)
-		utils.ResponseError(c, http.StatusForbidden, "Anda tidak memiliki akses untuk melihat daftar admin")
+		utils.ResponseError(c.Writer, http.StatusForbidden, "Anda tidak memiliki akses untuk melihat daftar admin")
 		return
 	}
 
@@ -140,11 +140,11 @@ func (a *AdminAdaptor) ListAdmins(c *gin.Context) {
 		a.logger.Error("Failed to list admins",
 			zap.Error(err),
 		)
-		utils.ResponseError(c, http.StatusInternalServerError, err.Error())
+		utils.ResponseError(c.Writer, http.StatusInternalServerError, err.Error())
 		return
 	}
 
-	utils.ResponseSuccess(c, http.StatusOK, "Daftar admin berhasil diambil", response)
+	utils.ResponseSuccess(c.Writer, http.StatusOK, "Daftar admin berhasil diambil", response)
 }
 
 // EditAdminAccess mengedit akses admin (hanya superadmin)
@@ -154,7 +154,7 @@ func (a *AdminAdaptor) EditAdminAccess(c *gin.Context) {
 	userRole, exists := c.Get("user_role")
 	if !exists {
 		a.logger.Warn("user_role tidak ditemukan di context")
-		utils.ResponseError(c, http.StatusUnauthorized, "Unauthorized")
+		utils.ResponseError(c.Writer, http.StatusUnauthorized, "Unauthorized")
 		return
 	}
 
@@ -163,7 +163,7 @@ func (a *AdminAdaptor) EditAdminAccess(c *gin.Context) {
 		a.logger.Warn("User is not superadmin",
 			zap.String("role", role),
 		)
-		utils.ResponseError(c, http.StatusForbidden, "Hanya superadmin yang dapat mengedit akses admin")
+		utils.ResponseError(c.Writer, http.StatusForbidden, "Hanya superadmin yang dapat mengedit akses admin")
 		return
 	}
 
@@ -175,7 +175,7 @@ func (a *AdminAdaptor) EditAdminAccess(c *gin.Context) {
 			zap.String("admin_id", adminIDStr),
 			zap.Error(err),
 		)
-		utils.ResponseError(c, http.StatusBadRequest, "Admin ID tidak valid")
+		utils.ResponseError(c.Writer, http.StatusBadRequest, "Admin ID tidak valid")
 		return
 	}
 
@@ -185,21 +185,22 @@ func (a *AdminAdaptor) EditAdminAccess(c *gin.Context) {
 		a.logger.Warn("Invalid request body",
 			zap.Error(err),
 		)
-		utils.ResponseError(c, http.StatusBadRequest, err.Error())
+		utils.ResponseError(c.Writer, http.StatusBadRequest, err.Error())
 		return
 	}
 
+	// Call usecase
 	response, err := a.adminUseCase.EditAdminAccess(c.Request.Context(), uint(adminID), &req)
 	if err != nil {
 		a.logger.Error("Failed to edit admin access",
 			zap.Uint("admin_id", uint(adminID)),
 			zap.Error(err),
 		)
-		utils.ResponseError(c, http.StatusInternalServerError, err.Error())
+		utils.ResponseError(c.Writer, http.StatusInternalServerError, err.Error())
 		return
 	}
 
-	utils.ResponseSuccess(c, http.StatusOK, "Akses admin berhasil diubah", response)
+	utils.ResponseSuccess(c.Writer, http.StatusOK, "Akses admin berhasil diubah", response)
 }
 
 // CreateAdmin membuat admin baru (hanya superadmin)
@@ -209,7 +210,7 @@ func (a *AdminAdaptor) CreateAdmin(c *gin.Context) {
 	userRole, exists := c.Get("user_role")
 	if !exists {
 		a.logger.Warn("user_role tidak ditemukan di context")
-		utils.ResponseError(c, http.StatusUnauthorized, "Unauthorized")
+		utils.ResponseError(c.Writer, http.StatusUnauthorized, "Unauthorized")
 		return
 	}
 
@@ -218,7 +219,7 @@ func (a *AdminAdaptor) CreateAdmin(c *gin.Context) {
 		a.logger.Warn("User is not superadmin",
 			zap.String("role", role),
 		)
-		utils.ResponseError(c, http.StatusForbidden, "Hanya superadmin yang dapat membuat admin baru")
+		utils.ResponseError(c.Writer, http.StatusForbidden, "Hanya superadmin yang dapat membuat admin baru")
 		return
 	}
 
@@ -228,7 +229,7 @@ func (a *AdminAdaptor) CreateAdmin(c *gin.Context) {
 		a.logger.Warn("Invalid request body",
 			zap.Error(err),
 		)
-		utils.ResponseError(c, http.StatusBadRequest, err.Error())
+		utils.ResponseError(c.Writer, http.StatusBadRequest, err.Error())
 		return
 	}
 
@@ -238,11 +239,17 @@ func (a *AdminAdaptor) CreateAdmin(c *gin.Context) {
 			zap.String("email", req.Email),
 			zap.Error(err),
 		)
-		utils.ResponseError(c, http.StatusInternalServerError, err.Error())
+		utils.ResponseError(c.Writer, http.StatusInternalServerError, err.Error())
 		return
 	}
 
-	utils.ResponseSuccess(c, http.StatusCreated, "Admin berhasil dibuat. Password telah dikirim ke email", response)
+	utils.ResponseSuccess(c.Writer, http.StatusCreated, "Admin berhasil dibuat. Password telah dikirim ke email", response)
+}
+
+// CreateAdminWithEmail is an alias for CreateAdmin
+// POST /api/v1/admin
+func (a *AdminAdaptor) CreateAdminWithEmail(c *gin.Context) {
+	a.CreateAdmin(c)
 }
 
 // Logout melakukan logout
@@ -251,14 +258,14 @@ func (a *AdminAdaptor) Logout(c *gin.Context) {
 	userID, exists := c.Get("user_id")
 	if !exists {
 		a.logger.Warn("user_id tidak ditemukan di context")
-		utils.ResponseError(c, http.StatusUnauthorized, "Unauthorized")
+		utils.ResponseError(c.Writer, http.StatusUnauthorized, "Unauthorized")
 		return
 	}
 
 	id, ok := userID.(uint)
 	if !ok {
 		a.logger.Warn("user_id type assertion failed")
-		utils.ResponseError(c, http.StatusUnauthorized, "Unauthorized")
+		utils.ResponseError(c.Writer, http.StatusUnauthorized, "Unauthorized")
 		return
 	}
 
@@ -268,13 +275,9 @@ func (a *AdminAdaptor) Logout(c *gin.Context) {
 			zap.Uint("user_id", id),
 			zap.Error(err),
 		)
-		utils.ResponseError(c, http.StatusInternalServerError, err.Error())
+		utils.ResponseError(c.Writer, http.StatusInternalServerError, err.Error())
 		return
 	}
 
-	response := dto.LogoutResponse{
-		Message: "Berhasil logout",
-	}
-
-	utils.ResponseSuccess(c, http.StatusOK, "Logout berhasil", response)
+	utils.ResponseSuccess(c.Writer, http.StatusOK, "Logout berhasil", nil)
 }

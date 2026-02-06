@@ -1,8 +1,8 @@
 package adaptor
 
 import (
-	"aplikasi-pos-team-boolean/internal/usecase"
 	"aplikasi-pos-team-boolean/internal/dto"
+	"aplikasi-pos-team-boolean/internal/usecase"
 	"aplikasi-pos-team-boolean/pkg/utils"
 	"net/http"
 	"strconv"
@@ -13,19 +13,12 @@ import (
 
 // NotificationAdaptor menangani HTTP requests untuk notification
 type NotificationAdaptor struct {
-	usecase NotificationUseCase
+	usecase usecase.NotificationUseCase
 	logger  *zap.Logger
 }
 
-// NotificationUseCase interface untuk notification usecase
-type NotificationUseCase interface {
-	ListNotifications(ctx interface{}, userID uint, req *dto.NotificationListRequest) (*dto.NotificationListResponse, error)
-	UpdateNotificationStatus(ctx interface{}, userID uint, notificationID uint, req *dto.UpdateNotificationStatusRequest) (*dto.UpdateNotificationStatusResponse, error)
-	DeleteNotification(ctx interface{}, userID uint, notificationID uint) (*dto.DeleteNotificationResponse, error)
-}
-
 // NewNotificationAdaptor membuat instance baru dari NotificationAdaptor
-func NewNotificationAdaptor(uc NotificationUseCase, logger *zap.Logger) *NotificationAdaptor {
+func NewNotificationAdaptor(uc usecase.NotificationUseCase, logger *zap.Logger) *NotificationAdaptor {
 	return &NotificationAdaptor{
 		usecase: uc,
 		logger:  logger,
@@ -38,10 +31,7 @@ func (a *NotificationAdaptor) ListNotifications(c *gin.Context) {
 	userID, exists := c.Get("user_id")
 	if !exists {
 		a.logger.Warn("User ID not found in context")
-		c.JSON(http.StatusUnauthorized, utils.ErrorResponse(
-			http.StatusUnauthorized,
-			"User tidak terautentikasi",
-		))
+		utils.ResponseError(c.Writer, http.StatusUnauthorized, "User tidak terautentikasi")
 		return
 	}
 
@@ -56,10 +46,7 @@ func (a *NotificationAdaptor) ListNotifications(c *gin.Context) {
 					zap.Any("user_id", userID),
 					zap.Error(err),
 				)
-				c.JSON(http.StatusUnauthorized, utils.ErrorResponse(
-					http.StatusUnauthorized,
-					"User ID tidak valid",
-				))
+				utils.ResponseError(c.Writer, http.StatusUnauthorized, "User ID tidak valid")
 				return
 			}
 			uid = uint(uidInt)
@@ -67,16 +54,14 @@ func (a *NotificationAdaptor) ListNotifications(c *gin.Context) {
 			a.logger.Error("Invalid user ID type",
 				zap.Any("user_id", userID),
 			)
-			c.JSON(http.StatusUnauthorized, utils.ErrorResponse(
-				http.StatusUnauthorized,
-				"User ID tidak valid",
-			))
+			utils.ResponseError(c.Writer, http.StatusUnauthorized, "User ID tidak valid")
 			return
 		}
 	}
 
 	// Parse query parameters
 	var req dto.NotificationListRequest
+	req.UserID = uid
 
 	// Parse pagination
 	if pageStr := c.DefaultQuery("page", "1"); pageStr != "" {
@@ -108,18 +93,11 @@ func (a *NotificationAdaptor) ListNotifications(c *gin.Context) {
 			zap.Uint("user_id", uid),
 			zap.Error(err),
 		)
-		c.JSON(http.StatusInternalServerError, utils.ErrorResponse(
-			http.StatusInternalServerError,
-			"Gagal mengambil daftar notifikasi: "+err.Error(),
-		))
+		utils.ResponseError(c.Writer, http.StatusInternalServerError, "Gagal mengambil daftar notifikasi: "+err.Error())
 		return
 	}
 
-	c.JSON(http.StatusOK, utils.SuccessResponse(
-		http.StatusOK,
-		"Daftar notifikasi berhasil diambil",
-		response,
-	))
+	utils.ResponseSuccess(c.Writer, http.StatusOK, "Daftar notifikasi berhasil diambil", response)
 }
 
 // UpdateNotificationStatus menghandle PUT /notifications/:id/status
@@ -128,10 +106,7 @@ func (a *NotificationAdaptor) UpdateNotificationStatus(c *gin.Context) {
 	userID, exists := c.Get("user_id")
 	if !exists {
 		a.logger.Warn("User ID not found in context")
-		c.JSON(http.StatusUnauthorized, utils.ErrorResponse(
-			http.StatusUnauthorized,
-			"User tidak terautentikasi",
-		))
+		utils.ResponseError(c.Writer, http.StatusUnauthorized, "User tidak terautentikasi")
 		return
 	}
 
@@ -146,10 +121,7 @@ func (a *NotificationAdaptor) UpdateNotificationStatus(c *gin.Context) {
 					zap.Any("user_id", userID),
 					zap.Error(err),
 				)
-				c.JSON(http.StatusUnauthorized, utils.ErrorResponse(
-					http.StatusUnauthorized,
-					"User ID tidak valid",
-				))
+				utils.ResponseError(c.Writer, http.StatusUnauthorized, "User ID tidak valid")
 				return
 			}
 			uid = uint(uidInt)
@@ -157,10 +129,7 @@ func (a *NotificationAdaptor) UpdateNotificationStatus(c *gin.Context) {
 			a.logger.Error("Invalid user ID type",
 				zap.Any("user_id", userID),
 			)
-			c.JSON(http.StatusUnauthorized, utils.ErrorResponse(
-				http.StatusUnauthorized,
-				"User ID tidak valid",
-			))
+			utils.ResponseError(c.Writer, http.StatusUnauthorized, "User ID tidak valid")
 			return
 		}
 	}
@@ -173,10 +142,7 @@ func (a *NotificationAdaptor) UpdateNotificationStatus(c *gin.Context) {
 			zap.String("id", idStr),
 			zap.Error(err),
 		)
-		c.JSON(http.StatusBadRequest, utils.ErrorResponse(
-			http.StatusBadRequest,
-			"ID notifikasi tidak valid",
-		))
+		utils.ResponseError(c.Writer, http.StatusBadRequest, "ID notifikasi tidak valid")
 		return
 	}
 
@@ -186,10 +152,7 @@ func (a *NotificationAdaptor) UpdateNotificationStatus(c *gin.Context) {
 		a.logger.Error("Failed to bind request body",
 			zap.Error(err),
 		)
-		c.JSON(http.StatusBadRequest, utils.ErrorResponse(
-			http.StatusBadRequest,
-			"Request tidak valid: "+err.Error(),
-		))
+		utils.ResponseError(c.Writer, http.StatusBadRequest, "Request tidak valid: "+err.Error())
 		return
 	}
 
@@ -215,18 +178,11 @@ func (a *NotificationAdaptor) UpdateNotificationStatus(c *gin.Context) {
 			statusCode = http.StatusForbidden
 		}
 
-		c.JSON(statusCode, utils.ErrorResponse(
-			statusCode,
-			err.Error(),
-		))
+		utils.ResponseError(c.Writer, statusCode, err.Error())
 		return
 	}
 
-	c.JSON(http.StatusOK, utils.SuccessResponse(
-		http.StatusOK,
-		"Status notifikasi berhasil diubah",
-		response,
-	))
+	utils.ResponseSuccess(c.Writer, http.StatusOK, "Status notifikasi berhasil diubah", response)
 }
 
 // DeleteNotification menghandle DELETE /notifications/:id
@@ -235,10 +191,7 @@ func (a *NotificationAdaptor) DeleteNotification(c *gin.Context) {
 	userID, exists := c.Get("user_id")
 	if !exists {
 		a.logger.Warn("User ID not found in context")
-		c.JSON(http.StatusUnauthorized, utils.ErrorResponse(
-			http.StatusUnauthorized,
-			"User tidak terautentikasi",
-		))
+		utils.ResponseError(c.Writer, http.StatusUnauthorized, "User tidak terautentikasi")
 		return
 	}
 
@@ -253,10 +206,7 @@ func (a *NotificationAdaptor) DeleteNotification(c *gin.Context) {
 					zap.Any("user_id", userID),
 					zap.Error(err),
 				)
-				c.JSON(http.StatusUnauthorized, utils.ErrorResponse(
-					http.StatusUnauthorized,
-					"User ID tidak valid",
-				))
+				utils.ResponseError(c.Writer, http.StatusUnauthorized, "User ID tidak valid")
 				return
 			}
 			uid = uint(uidInt)
@@ -264,10 +214,7 @@ func (a *NotificationAdaptor) DeleteNotification(c *gin.Context) {
 			a.logger.Error("Invalid user ID type",
 				zap.Any("user_id", userID),
 			)
-			c.JSON(http.StatusUnauthorized, utils.ErrorResponse(
-				http.StatusUnauthorized,
-				"User ID tidak valid",
-			))
+			utils.ResponseError(c.Writer, http.StatusUnauthorized, "User ID tidak valid")
 			return
 		}
 	}
@@ -280,10 +227,7 @@ func (a *NotificationAdaptor) DeleteNotification(c *gin.Context) {
 			zap.String("id", idStr),
 			zap.Error(err),
 		)
-		c.JSON(http.StatusBadRequest, utils.ErrorResponse(
-			http.StatusBadRequest,
-			"ID notifikasi tidak valid",
-		))
+		utils.ResponseError(c.Writer, http.StatusBadRequest, "ID notifikasi tidak valid")
 		return
 	}
 
@@ -308,16 +252,9 @@ func (a *NotificationAdaptor) DeleteNotification(c *gin.Context) {
 			statusCode = http.StatusForbidden
 		}
 
-		c.JSON(statusCode, utils.ErrorResponse(
-			statusCode,
-			err.Error(),
-		))
+		utils.ResponseError(c.Writer, statusCode, err.Error())
 		return
 	}
 
-	c.JSON(http.StatusOK, utils.SuccessResponse(
-		http.StatusOK,
-		"Notifikasi berhasil dihapus",
-		response,
-	))
+	utils.ResponseSuccess(c.Writer, http.StatusOK, "Notifikasi berhasil dihapus", response)
 }

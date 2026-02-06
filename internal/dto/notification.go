@@ -4,12 +4,12 @@ import "time"
 
 // NotificationListRequest untuk filter notifikasi
 type NotificationListRequest struct {
-	UserID   uint   `json:"user_id" binding:"required"`
-	Status   string `json:"status"` // new, readed, all
-	Type     string `json:"type"`   // order, payment, system, alert
-	Page     int    `json:"page"`
-	Limit    int    `json:"limit"`
-	SortBy   string `json:"sort_by"`   // created_at, status
+	UserID    uint   `json:"user_id" binding:"required"`
+	Status    string `json:"status"` // new, readed, all
+	Type      string `json:"type"`   // order, payment, system, alert
+	Page      int    `json:"page"`
+	Limit     int    `json:"limit"`
+	SortBy    string `json:"sort_by"`    // created_at, status
 	SortOrder string `json:"sort_order"` // asc, desc
 }
 
@@ -24,16 +24,17 @@ type NotificationResponse struct {
 	ReadedAt  *time.Time `json:"readed_at,omitempty"`
 	Data      string     `json:"data,omitempty"`
 	CreatedAt time.Time  `json:"created_at"`
+	UpdatedAt time.Time  `json:"updated_at"`
 }
 
 // NotificationListResponse untuk list notifikasi dengan pagination
 type NotificationListResponse struct {
-	Data       []NotificationResponse `json:"data"`
-	Total      int                    `json:"total"`
-	Page       int                    `json:"page"`
-	Limit      int                    `json:"limit"`
-	TotalPages int                    `json:"total_pages"`
-	UnreadCount int                   `json:"unread_count"`
+	Data        []NotificationResponse `json:"data"`
+	Total       int                    `json:"total"`
+	Page        int                    `json:"page"`
+	Limit       int                    `json:"limit"`
+	TotalPages  int                    `json:"total_pages"`
+	UnreadCount int                    `json:"unread_count"`
 }
 
 // UpdateNotificationStatusRequest untuk update status notifikasi
@@ -44,10 +45,11 @@ type UpdateNotificationStatusRequest struct {
 
 // UpdateNotificationStatusResponse untuk response update status
 type UpdateNotificationStatusResponse struct {
-	ID       uint      `json:"id"`
-	Status   string    `json:"status"`
-	ReadedAt *time.Time `json:"readed_at,omitempty"`
-	Message  string    `json:"message"`
+	ID        uint       `json:"id"`
+	Status    string     `json:"status"`
+	ReadedAt  *time.Time `json:"readed_at,omitempty"`
+	UpdatedAt time.Time  `json:"updated_at"`
+	Message   string     `json:"message"`
 }
 
 // DeleteNotificationRequest untuk delete notifikasi

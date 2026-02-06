@@ -14,6 +14,7 @@ import (
 
 type ReservationsUseCase interface {
 	GetAllReservations(ctx context.Context) ([]dto.ReservationListItem, error)
+	GetReservationByID(ctx context.Context, id uint) (*dto.ReservationDetail, error)
 	CreateReservation(ctx context.Context, req dto.ReservationCreateRequest) (*dto.ReservationDetail, error)
 	UpdateReservation(ctx context.Context, id uint, req dto.ReservationUpdateRequest) error
 	DeleteReservation(ctx context.Context, id uint) error
@@ -53,8 +54,8 @@ func (uc *ReservationUseCase) GetAllReservations(ctx context.Context) ([]dto.Res
 }
 
 // GetReservationByID returns reservation detail by id
-func (uc *ReservationUseCase) GetReservationByID(ctx context.Context, id int64) (*dto.ReservationDetail, error) {
-	res, err := uc.repo.GetById(ctx, id)
+func (uc *ReservationUseCase) GetReservationByID(ctx context.Context, id uint) (*dto.ReservationDetail, error) {
+	res, err := uc.repo.GetById(ctx, int64(id))
 	if err != nil {
 		return nil, err
 	}

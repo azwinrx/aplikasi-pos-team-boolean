@@ -1,0 +1,117 @@
+{"L":"INFO","timestamp":"2026-02-06T13:59:08.765+0700","caller":"utils/logger.go:71","M":"Logger initialized","log_file":"logs\\app-2026-02-06.log","debug_mode":true}
+{"L":"INFO","timestamp":"2026-02-06T13:59:08.766+0700","caller":"aplikasi-pos-team-boolean/main.go:41","M":"Application starting","environment":"","debug":true}
+{"L":"INFO","timestamp":"2026-02-06T13:59:08.843+0700","caller":"aplikasi-pos-team-boolean/main.go:52","M":"Database connection successful"}
+{"L":"INFO","timestamp":"2026-02-06T13:59:08.843+0700","caller":"aplikasi-pos-team-boolean/main.go:63","M":"Running database migration","seed":true}
+{"L":"FATAL","timestamp":"2026-02-06T13:59:09.295+0700","caller":"aplikasi-pos-team-boolean/main.go:65","M":"Failed to run migration","error":"failed to auto migrate: ERROR: column \"user_id\" of relation \"notifications\" contains null values (SQLSTATE 23502)","S":"main.main\n\tD:/Lumoshive Bootcamp/Code/aplikasi-pos-team-boolean/main.go:65\nruntime.main\n\tC:/Program Files/Go/src/runtime/proc.go:285"}
+{"L":"INFO","timestamp":"2026-02-06T13:59:22.404+0700","caller":"utils/logger.go:71","M":"Logger initialized","log_file":"logs\\app-2026-02-06.log","debug_mode":true}
+{"L":"INFO","timestamp":"2026-02-06T13:59:22.405+0700","caller":"aplikasi-pos-team-boolean/main.go:41","M":"Application starting","environment":"","debug":true}
+{"L":"INFO","timestamp":"2026-02-06T13:59:22.461+0700","caller":"aplikasi-pos-team-boolean/main.go:52","M":"Database connection successful"}
+{"L":"INFO","timestamp":"2026-02-06T13:59:22.461+0700","caller":"aplikasi-pos-team-boolean/main.go:63","M":"Running database migration","seed":true}
+{"L":"FATAL","timestamp":"2026-02-06T13:59:22.783+0700","caller":"aplikasi-pos-team-boolean/main.go:65","M":"Failed to run migration","error":"failed to auto migrate: ERROR: column \"user_id\" of relation \"notifications\" contains null values (SQLSTATE 23502)","S":"main.main\n\tD:/Lumoshive Bootcamp/Code/aplikasi-pos-team-boolean/main.go:65\nruntime.main\n\tC:/Program Files/Go/src/runtime/proc.go:285"}
+{"L":"INFO","timestamp":"2026-02-06T14:01:40.666+0700","caller":"utils/logger.go:71","M":"Logger initialized","log_file":"logs\\app-2026-02-06.log","debug_mode":true}
+{"L":"INFO","timestamp":"2026-02-06T14:01:40.667+0700","caller":"aplikasi-pos-team-boolean/main.go:41","M":"Application starting","environment":"","debug":true}
+{"L":"INFO","timestamp":"2026-02-06T14:01:40.731+0700","caller":"aplikasi-pos-team-boolean/main.go:52","M":"Database connection successful"}
+{"L":"INFO","timestamp":"2026-02-06T14:01:40.731+0700","caller":"aplikasi-pos-team-boolean/main.go:63","M":"Running database migration","seed":true}
+{"L":"FATAL","timestamp":"2026-02-06T14:01:41.078+0700","caller":"aplikasi-pos-team-boolean/main.go:65","M":"Failed to run migration","error":"failed to auto migrate: ERROR: column \"user_id\" of relation \"notifications\" contains null values (SQLSTATE 23502)","S":"main.main\n\tD:/Lumoshive Bootcamp/Code/aplikasi-pos-team-boolean/main.go:65\nruntime.main\n\tC:/Program Files/Go/src/runtime/proc.go:285"}
+{"L":"INFO","timestamp":"2026-02-06T14:01:47.492+0700","caller":"utils/logger.go:71","M":"Logger initialized","log_file":"logs\\app-2026-02-06.log","debug_mode":true}
+{"L":"INFO","timestamp":"2026-02-06T14:01:47.492+0700","caller":"aplikasi-pos-team-boolean/main.go:41","M":"Application starting","environment":"","debug":true}
+{"L":"INFO","timestamp":"2026-02-06T14:01:47.552+0700","caller":"aplikasi-pos-team-boolean/main.go:52","M":"Database connection successful"}
+{"L":"INFO","timestamp":"2026-02-06T14:01:47.552+0700","caller":"aplikasi-pos-team-boolean/main.go:63","M":"Running database migration","seed":true}
+{"L":"FATAL","timestamp":"2026-02-06T14:01:47.882+0700","caller":"aplikasi-pos-team-boolean/main.go:65","M":"Failed to run migration","error":"failed to auto migrate: ERROR: column \"user_id\" of relation \"notifications\" contains null values (SQLSTATE 23502)","S":"main.main\n\tD:/Lumoshive Bootcamp/Code/aplikasi-pos-team-boolean/main.go:65\nruntime.main\n\tC:/Program Files/Go/src/runtime/proc.go:285"}
+{"L":"INFO","timestamp":"2026-02-06T14:02:17.312+0700","caller":"utils/logger.go:71","M":"Logger initialized","log_file":"logs\\app-2026-02-06.log","debug_mode":true}
+{"L":"INFO","timestamp":"2026-02-06T14:02:17.312+0700","caller":"aplikasi-pos-team-boolean/main.go:41","M":"Application starting","environment":"","debug":true}
+{"L":"INFO","timestamp":"2026-02-06T14:02:17.377+0700","caller":"aplikasi-pos-team-boolean/main.go:52","M":"Database connection successful"}
+{"L":"INFO","timestamp":"2026-02-06T14:02:17.377+0700","caller":"aplikasi-pos-team-boolean/main.go:63","M":"Running database migration","seed":true}
+{"L":"FATAL","timestamp":"2026-02-06T14:02:17.695+0700","caller":"aplikasi-pos-team-boolean/main.go:65","M":"Failed to run migration","error":"failed to auto migrate: ERROR: column \"user_id\" of relation \"notifications\" contains null values (SQLSTATE 23502)","S":"main.main\n\tD:/Lumoshive Bootcamp/Code/aplikasi-pos-team-boolean/main.go:65\nruntime.main\n\tC:/Program Files/Go/src/runtime/proc.go:285"}
+{"L":"INFO","timestamp":"2026-02-06T14:02:24.125+0700","caller":"utils/logger.go:71","M":"Logger initialized","log_file":"logs\\app-2026-02-06.log","debug_mode":true}
+{"L":"INFO","timestamp":"2026-02-06T14:02:24.125+0700","caller":"aplikasi-pos-team-boolean/main.go:41","M":"Application starting","environment":"","debug":true}
+{"L":"INFO","timestamp":"2026-02-06T14:02:24.180+0700","caller":"aplikasi-pos-team-boolean/main.go:52","M":"Database connection successful"}
+{"L":"INFO","timestamp":"2026-02-06T14:02:24.180+0700","caller":"aplikasi-pos-team-boolean/main.go:63","M":"Running database migration","seed":true}
+{"L":"FATAL","timestamp":"2026-02-06T14:02:24.497+0700","caller":"aplikasi-pos-team-boolean/main.go:65","M":"Failed to run migration","error":"failed to auto migrate: ERROR: column \"user_id\" of relation \"notifications\" contains null values (SQLSTATE 23502)","S":"main.main\n\tD:/Lumoshive Bootcamp/Code/aplikasi-pos-team-boolean/main.go:65\nruntime.main\n\tC:/Program Files/Go/src/runtime/proc.go:285"}
+{"L":"INFO","timestamp":"2026-02-06T14:02:52.887+0700","caller":"utils/logger.go:71","M":"Logger initialized","log_file":"logs\\app-2026-02-06.log","debug_mode":true}
+{"L":"INFO","timestamp":"2026-02-06T14:02:52.887+0700","caller":"aplikasi-pos-team-boolean/main.go:41","M":"Application starting","environment":"","debug":true}
+{"L":"INFO","timestamp":"2026-02-06T14:02:52.950+0700","caller":"aplikasi-pos-team-boolean/main.go:52","M":"Database connection successful"}
+{"L":"INFO","timestamp":"2026-02-06T14:02:52.950+0700","caller":"aplikasi-pos-team-boolean/main.go:63","M":"Running database migration","seed":true}
+{"L":"FATAL","timestamp":"2026-02-06T14:02:53.272+0700","caller":"aplikasi-pos-team-boolean/main.go:65","M":"Failed to run migration","error":"failed to auto migrate: ERROR: column \"user_id\" of relation \"notifications\" contains null values (SQLSTATE 23502)","S":"main.main\n\tD:/Lumoshive Bootcamp/Code/aplikasi-pos-team-boolean/main.go:65\nruntime.main\n\tC:/Program Files/Go/src/runtime/proc.go:285"}
+{"L":"INFO","timestamp":"2026-02-06T14:04:31.217+0700","caller":"utils/logger.go:71","M":"Logger initialized","log_file":"logs\\app-2026-02-06.log","debug_mode":true}
+{"L":"INFO","timestamp":"2026-02-06T14:04:31.217+0700","caller":"aplikasi-pos-team-boolean/main.go:41","M":"Application starting","environment":"","debug":true}
+{"L":"INFO","timestamp":"2026-02-06T14:04:31.275+0700","caller":"aplikasi-pos-team-boolean/main.go:52","M":"Database connection successful"}
+{"L":"INFO","timestamp":"2026-02-06T14:04:31.275+0700","caller":"aplikasi-pos-team-boolean/main.go:63","M":"Running database migration","seed":true}
+{"L":"FATAL","timestamp":"2026-02-06T14:04:31.609+0700","caller":"aplikasi-pos-team-boolean/main.go:65","M":"Failed to run migration","error":"failed to auto migrate: ERROR: column \"user_id\" of relation \"notifications\" contains null values (SQLSTATE 23502)","S":"main.main\n\tD:/Lumoshive Bootcamp/Code/aplikasi-pos-team-boolean/main.go:65\nruntime.main\n\tC:/Program Files/Go/src/runtime/proc.go:285"}
+{"L":"INFO","timestamp":"2026-02-06T14:08:36.988+0700","caller":"utils/logger.go:71","M":"Logger initialized","log_file":"logs\\app-2026-02-06.log","debug_mode":true}
+{"L":"INFO","timestamp":"2026-02-06T14:08:36.988+0700","caller":"aplikasi-pos-team-boolean/main.go:41","M":"Application starting","environment":"","debug":true}
+{"L":"INFO","timestamp":"2026-02-06T14:08:37.069+0700","caller":"aplikasi-pos-team-boolean/main.go:52","M":"Database connection successful"}
+{"L":"INFO","timestamp":"2026-02-06T14:08:37.069+0700","caller":"aplikasi-pos-team-boolean/main.go:63","M":"Running database migration","seed":true}
+{"L":"INFO","timestamp":"2026-02-06T14:08:37.708+0700","caller":"wire/wire.go:271","M":"Routes registered successfully"}
+{"L":"INFO","timestamp":"2026-02-06T14:08:37.708+0700","caller":"aplikasi-pos-team-boolean/main.go:89","M":"Server starting","port":"8080"}
+{"L":"INFO","timestamp":"2026-02-06T14:08:48.291+0700","caller":"middleware/logging.go:28","M":"incoming request","method":"GET","path":"/health","query":"","remote_addr":"::1","user_agent":"PostmanRuntime/7.37.3","referer":"","body_size":0,"content_type":""}
+{"L":"INFO","timestamp":"2026-02-06T14:08:48.292+0700","caller":"middleware/logging.go:72","M":"request completed","method":"GET","path":"/health","query":"","status":200,"duration":"1.1864ms","response_size":74}
+{"L":"INFO","timestamp":"2026-02-06T14:08:49.640+0700","caller":"aplikasi-pos-team-boolean/main.go:102","M":"Shutting down server..."}
+{"L":"INFO","timestamp":"2026-02-06T14:08:49.640+0700","caller":"aplikasi-pos-team-boolean/main.go:114","M":"Server exited successfully"}
+{"L":"INFO","timestamp":"2026-02-06T14:09:29.136+0700","caller":"utils/logger.go:71","M":"Logger initialized","log_file":"logs\\app-2026-02-06.log","debug_mode":true}
+{"L":"INFO","timestamp":"2026-02-06T14:09:29.136+0700","caller":"aplikasi-pos-team-boolean/main.go:41","M":"Application starting","environment":"","debug":true}
+{"L":"INFO","timestamp":"2026-02-06T14:09:29.207+0700","caller":"aplikasi-pos-team-boolean/main.go:52","M":"Database connection successful"}
+{"L":"INFO","timestamp":"2026-02-06T14:09:29.207+0700","caller":"aplikasi-pos-team-boolean/main.go:63","M":"Running database migration","seed":true}
+{"L":"INFO","timestamp":"2026-02-06T14:09:29.595+0700","caller":"wire/wire.go:271","M":"Routes registered successfully"}
+{"L":"INFO","timestamp":"2026-02-06T14:09:29.595+0700","caller":"aplikasi-pos-team-boolean/main.go:89","M":"Server starting","port":"8080"}
+{"L":"INFO","timestamp":"2026-02-06T14:09:36.351+0700","caller":"middleware/logging.go:28","M":"incoming request","method":"GET","path":"/api/v1/notifications","query":"status=new&type=order&page=1&limit=10","remote_addr":"::1","user_agent":"PostmanRuntime/7.37.3","referer":"","body_size":0,"content_type":""}
+{"L":"WARN","timestamp":"2026-02-06T14:09:36.352+0700","caller":"adaptor/notification_adaptor.go:33","M":"User ID not found in context"}
+{"L":"WARN","timestamp":"2026-02-06T14:09:36.352+0700","caller":"middleware/logging.go:61","M":"request completed with client error","method":"GET","path":"/api/v1/notifications","query":"status=new&type=order&page=1&limit=10","status":401,"duration":"1.5129ms","response_size":55,"remote_addr":"::1"}
+{"L":"INFO","timestamp":"2026-02-06T14:10:04.260+0700","caller":"middleware/logging.go:28","M":"incoming request","method":"POST","path":"/api/v1/auth/login","query":"","remote_addr":"::1","user_agent":"PostmanRuntime/7.37.3","referer":"","body_size":69,"content_type":"application/json"}
+{"L":"DEBUG","timestamp":"2026-02-06T14:10:04.260+0700","caller":"adaptor/auth_adaptor.go:82","M":"Login handler called","client_ip":"::1"}
+{"L":"DEBUG","timestamp":"2026-02-06T14:10:04.261+0700","caller":"usecase/auth.go:47","M":"Login attempt","email":"azwinrifai123@gmail.com"}
+{"L":"DEBUG","timestamp":"2026-02-06T14:10:04.276+0700","caller":"repository/auth.go:71","M":"User not found","email":"azwinrifai123@gmail.com"}
+{"L":"WARN","timestamp":"2026-02-06T14:10:04.276+0700","caller":"usecase/auth.go:60","M":"Login failed - user not found","email":"azwinrifai123@gmail.com"}
+{"L":"WARN","timestamp":"2026-02-06T14:10:04.276+0700","caller":"adaptor/auth_adaptor.go:103","M":"Login failed","email":"azwinrifai123@gmail.com","error":"invalid email or password","client_ip":"::1"}
+{"L":"WARN","timestamp":"2026-02-06T14:10:04.276+0700","caller":"middleware/logging.go:61","M":"request completed with client error","method":"POST","path":"/api/v1/auth/login","query":"","status":401,"duration":"16.0242ms","response_size":66,"remote_addr":"::1"}
+{"L":"INFO","timestamp":"2026-02-06T14:13:56.306+0700","caller":"middleware/logging.go:28","M":"incoming request","method":"POST","path":"/api/v1/auth/login","query":"","remote_addr":"::1","user_agent":"PostmanRuntime/7.37.3","referer":"","body_size":67,"content_type":"application/json"}
+{"L":"DEBUG","timestamp":"2026-02-06T14:13:56.306+0700","caller":"adaptor/auth_adaptor.go:82","M":"Login handler called","client_ip":"::1"}
+{"L":"DEBUG","timestamp":"2026-02-06T14:13:56.306+0700","caller":"usecase/auth.go:47","M":"Login attempt","email":"john.customer@pos.com"}
+{"L":"WARN","timestamp":"2026-02-06T14:13:56.399+0700","caller":"usecase/auth.go:77","M":"Login failed - invalid password","email":"john.customer@pos.com"}
+{"L":"WARN","timestamp":"2026-02-06T14:13:56.399+0700","caller":"adaptor/auth_adaptor.go:103","M":"Login failed","email":"john.customer@pos.com","error":"invalid email or password","client_ip":"::1"}
+{"L":"WARN","timestamp":"2026-02-06T14:13:56.400+0700","caller":"middleware/logging.go:61","M":"request completed with client error","method":"POST","path":"/api/v1/auth/login","query":"","status":401,"duration":"94.735ms","response_size":66,"remote_addr":"::1"}
+{"L":"INFO","timestamp":"2026-02-06T14:14:13.231+0700","caller":"middleware/logging.go:28","M":"incoming request","method":"POST","path":"/api/v1/auth/register","query":"","remote_addr":"::1","user_agent":"PostmanRuntime/7.37.3","referer":"","body_size":84,"content_type":"application/json"}
+{"L":"DEBUG","timestamp":"2026-02-06T14:14:13.231+0700","caller":"adaptor/auth_adaptor.go:29","M":"Register handler called","client_ip":"::1"}
+{"L":"DEBUG","timestamp":"2026-02-06T14:14:13.232+0700","caller":"usecase/auth.go:110","M":"Register attempt","email":"john@example.com"}
+{"L":"DEBUG","timestamp":"2026-02-06T14:14:13.233+0700","caller":"repository/auth.go:71","M":"User not found","email":"john@example.com"}
+{"L":"INFO","timestamp":"2026-02-06T14:14:13.395+0700","caller":"repository/auth.go:57","M":"User created successfully","email":"john@example.com","id":4}
+{"L":"INFO","timestamp":"2026-02-06T14:14:13.395+0700","caller":"usecase/auth.go:160","M":"User registered successfully","email":"john@example.com","user_id":4}
+{"L":"INFO","timestamp":"2026-02-06T14:14:13.395+0700","caller":"adaptor/auth_adaptor.go:68","M":"Registration successful","email":"john@example.com","user_id":4}
+{"L":"INFO","timestamp":"2026-02-06T14:14:13.395+0700","caller":"middleware/logging.go:72","M":"request completed","method":"POST","path":"/api/v1/auth/register","query":"","status":201,"duration":"164.6944ms","response_size":176}
+{"L":"INFO","timestamp":"2026-02-06T14:14:18.490+0700","caller":"middleware/logging.go:28","M":"incoming request","method":"POST","path":"/api/v1/auth/login","query":"","remote_addr":"::1","user_agent":"PostmanRuntime/7.37.3","referer":"","body_size":62,"content_type":"application/json"}
+{"L":"DEBUG","timestamp":"2026-02-06T14:14:18.490+0700","caller":"adaptor/auth_adaptor.go:82","M":"Login handler called","client_ip":"::1"}
+{"L":"DEBUG","timestamp":"2026-02-06T14:14:18.490+0700","caller":"usecase/auth.go:47","M":"Login attempt","email":"john@example.com"}
+{"L":"INFO","timestamp":"2026-02-06T14:14:18.586+0700","caller":"usecase/auth.go:93","M":"Login successful","email":"john@example.com","user_id":4}
+{"L":"INFO","timestamp":"2026-02-06T14:14:18.586+0700","caller":"adaptor/auth_adaptor.go:116","M":"Login successful","email":"john@example.com","user_id":4}
+{"L":"INFO","timestamp":"2026-02-06T14:14:18.587+0700","caller":"middleware/logging.go:72","M":"request completed","method":"POST","path":"/api/v1/auth/login","query":"","status":200,"duration":"97.5045ms","response_size":355}
+{"L":"INFO","timestamp":"2026-02-06T14:14:34.261+0700","caller":"middleware/logging.go:28","M":"incoming request","method":"POST","path":"/api/v1/auth/check-email","query":"","remote_addr":"::1","user_agent":"PostmanRuntime/7.37.3","referer":"","body_size":33,"content_type":"application/json"}
+{"L":"DEBUG","timestamp":"2026-02-06T14:14:34.261+0700","caller":"adaptor/auth_adaptor.go:256","M":"CheckEmail handler called","client_ip":"::1"}
+{"L":"DEBUG","timestamp":"2026-02-06T14:14:34.261+0700","caller":"usecase/auth.go:262","M":"Checking email","email":"john@example.com"}
+{"L":"INFO","timestamp":"2026-02-06T14:14:34.262+0700","caller":"adaptor/auth_adaptor.go:289","M":"CheckEmail completed","email":"john@example.com","exists":true}
+{"L":"INFO","timestamp":"2026-02-06T14:14:34.262+0700","caller":"middleware/logging.go:72","M":"request completed","method":"POST","path":"/api/v1/auth/check-email","query":"","status":200,"duration":"1.1291ms","response_size":139}
+{"L":"INFO","timestamp":"2026-02-06T14:14:51.821+0700","caller":"middleware/logging.go:28","M":"incoming request","method":"GET","path":"/api/v1/notifications","query":"status=new&type=order&page=1&limit=10","remote_addr":"::1","user_agent":"PostmanRuntime/7.37.3","referer":"","body_size":0,"content_type":""}
+{"L":"WARN","timestamp":"2026-02-06T14:14:51.821+0700","caller":"adaptor/notification_adaptor.go:33","M":"User ID not found in context"}
+{"L":"WARN","timestamp":"2026-02-06T14:14:51.821+0700","caller":"middleware/logging.go:61","M":"request completed with client error","method":"GET","path":"/api/v1/notifications","query":"status=new&type=order&page=1&limit=10","status":401,"duration":"0s","response_size":55,"remote_addr":"::1"}
+{"L":"INFO","timestamp":"2026-02-06T14:14:55.930+0700","caller":"middleware/logging.go:28","M":"incoming request","method":"GET","path":"/api/v1/notifications","query":"status=new&type=order&page=1&limit=10","remote_addr":"::1","user_agent":"PostmanRuntime/7.37.3","referer":"","body_size":0,"content_type":""}
+{"L":"WARN","timestamp":"2026-02-06T14:14:55.930+0700","caller":"adaptor/notification_adaptor.go:33","M":"User ID not found in context"}
+{"L":"WARN","timestamp":"2026-02-06T14:14:55.930+0700","caller":"middleware/logging.go:61","M":"request completed with client error","method":"GET","path":"/api/v1/notifications","query":"status=new&type=order&page=1&limit=10","status":401,"duration":"505.6µs","response_size":55,"remote_addr":"::1"}
+{"L":"INFO","timestamp":"2026-02-06T14:16:06.307+0700","caller":"aplikasi-pos-team-boolean/main.go:102","M":"Shutting down server..."}
+{"L":"INFO","timestamp":"2026-02-06T14:16:06.307+0700","caller":"aplikasi-pos-team-boolean/main.go:114","M":"Server exited successfully"}
+{"L":"INFO","timestamp":"2026-02-06T14:16:27.193+0700","caller":"utils/logger.go:71","M":"Logger initialized","log_file":"logs\\app-2026-02-06.log","debug_mode":true}
+{"L":"INFO","timestamp":"2026-02-06T14:16:27.194+0700","caller":"aplikasi-pos-team-boolean/main.go:41","M":"Application starting","environment":"","debug":true}
+{"L":"INFO","timestamp":"2026-02-06T14:16:27.252+0700","caller":"aplikasi-pos-team-boolean/main.go:52","M":"Database connection successful"}
+{"L":"INFO","timestamp":"2026-02-06T14:16:27.252+0700","caller":"aplikasi-pos-team-boolean/main.go:63","M":"Running database migration","seed":true}
+{"L":"INFO","timestamp":"2026-02-06T14:16:27.636+0700","caller":"wire/wire.go:271","M":"Routes registered successfully"}
+{"L":"INFO","timestamp":"2026-02-06T14:16:27.636+0700","caller":"aplikasi-pos-team-boolean/main.go:89","M":"Server starting","port":"8080"}
+{"L":"INFO","timestamp":"2026-02-06T14:16:40.236+0700","caller":"middleware/logging.go:28","M":"incoming request","method":"GET","path":"/api/v1/notifications","query":"status=new&type=order&page=1&limit=10","remote_addr":"::1","user_agent":"PostmanRuntime/7.37.3","referer":"","body_size":0,"content_type":""}
+{"L":"WARN","timestamp":"2026-02-06T14:16:40.236+0700","caller":"adaptor/notification_adaptor.go:33","M":"User ID not found in context"}
+{"L":"WARN","timestamp":"2026-02-06T14:16:40.236+0700","caller":"middleware/logging.go:61","M":"request completed with client error","method":"GET","path":"/api/v1/notifications","query":"status=new&type=order&page=1&limit=10","status":401,"duration":"505.6µs","response_size":55,"remote_addr":"::1"}
+{"L":"INFO","timestamp":"2026-02-06T14:16:45.133+0700","caller":"middleware/logging.go:28","M":"incoming request","method":"POST","path":"/api/v1/auth/login","query":"","remote_addr":"::1","user_agent":"PostmanRuntime/7.37.3","referer":"","body_size":62,"content_type":"application/json"}
+{"L":"DEBUG","timestamp":"2026-02-06T14:16:45.134+0700","caller":"adaptor/auth_adaptor.go:82","M":"Login handler called","client_ip":"::1"}
+{"L":"DEBUG","timestamp":"2026-02-06T14:16:45.134+0700","caller":"usecase/auth.go:47","M":"Login attempt","email":"john@example.com"}
+{"L":"INFO","timestamp":"2026-02-06T14:16:45.233+0700","caller":"usecase/auth.go:93","M":"Login successful","email":"john@example.com","user_id":4}
+{"L":"INFO","timestamp":"2026-02-06T14:16:45.233+0700","caller":"adaptor/auth_adaptor.go:116","M":"Login successful","email":"john@example.com","user_id":4}
+{"L":"INFO","timestamp":"2026-02-06T14:16:45.233+0700","caller":"middleware/logging.go:72","M":"request completed","method":"POST","path":"/api/v1/auth/login","query":"","status":200,"duration":"99.9437ms","response_size":355}
+{"L":"INFO","timestamp":"2026-02-06T14:16:49.739+0700","caller":"middleware/logging.go:28","M":"incoming request","method":"GET","path":"/api/v1/notifications","query":"status=new&type=order&page=1&limit=10","remote_addr":"::1","user_agent":"PostmanRuntime/7.37.3","referer":"","body_size":0,"content_type":""}
+{"L":"WARN","timestamp":"2026-02-06T14:16:49.739+0700","caller":"adaptor/notification_adaptor.go:33","M":"User ID not found in context"}
+{"L":"WARN","timestamp":"2026-02-06T14:16:49.739+0700","caller":"middleware/logging.go:61","M":"request completed with client error","method":"GET","path":"/api/v1/notifications","query":"status=new&type=order&page=1&limit=10","status":401,"duration":"0s","response_size":55,"remote_addr":"::1"}
